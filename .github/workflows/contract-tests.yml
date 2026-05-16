@@ -1,0 +1,26 @@
+name: AF API Contract Tests
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('services/matching-api/requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+      - run: pip install -r services/matching-api/requirements.txt pytest
+      - run: pytest services/matching-api/tests/contract/ -v
+      - name: Notifiera vid fel
+        if: failure()
+        run: |
+          curl -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+          -H "Content-Type: application/json" \
+          -d '{"text":"🚨 Crosstrees: AF API-schema har förändrats. Se RUNBOOK.md#af-api-schema-change."}'

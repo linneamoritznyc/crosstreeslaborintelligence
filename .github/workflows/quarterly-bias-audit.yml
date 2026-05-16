@@ -1,0 +1,29 @@
+name: Quarterly Bias Audit
+on:
+  schedule:
+    - cron: '0 6 1 1,4,7,10 *'
+  workflow_dispatch:
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('services/data-pipeline/requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+      - run: pip install -r services/data-pipeline/requirements.txt
+      - run: python -m src.evaluate.bias_audit
+        working-directory: services/data-pipeline
+      - name: Notifiera vid fel
+        if: failure()
+        run: |
+          curl -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+          -H "Content-Type: application/json" \
+          -d '{"text":"🚨 Crosstrees: Kvartalsgranskning av bias misslyckades. Se RUNBOOK.md#bias-audit-failure. EU AI Act Artikel 9."}'
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

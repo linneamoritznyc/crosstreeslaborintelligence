@@ -1,0 +1,55 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: npx commitlint --from HEAD~1 --to HEAD
+
+  test-python:
+    runs-on: ubuntu-latest
+    if: |
+      contains(toJson(github.event.head_commit.modified), 'services/')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+      - run: pip install -r services/matching-api/requirements.txt
+      - run: pip install pytest pytest-asyncio
+      - run: pytest services/matching-api/tests/unit/ -v
+
+  test-typescript:
+    runs-on: ubuntu-latest
+    if: |
+      contains(toJson(github.event.head_commit.modified), 'apps/')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+      - run: npm install -g pnpm && pnpm install --frozen-lockfile
+      - run: pnpm lint
+
+  lint-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install ruff && ruff check services/
