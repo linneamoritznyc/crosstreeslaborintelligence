@@ -36,6 +36,38 @@ def _coerce_level(value: object) -> int | None:
     return None
 
 
+_JACCARD_THRESHOLD = 0.25
+
+
+def build_substitutability_matrix(
+    occ_skills: dict[str, set[str]],
+) -> dict[tuple[str, str], float]:
+    """Beräknar Jaccard-likhet mellan yrkespar baserat på delade kompetenser.
+
+    Returnerar par (a, b) där Jaccard >= tröskeln. Används i enhetstester
+    och som alternativ när AF saknar explicita substituerbarhetsnivåer.
+    """
+    occupations = list(occ_skills.keys())
+    scores: dict[tuple[str, str], float] = {}
+    for i, a in enumerate(occupations):
+        for b in occupations[i + 1 :]:
+            skills_a = occ_skills[a]
+            skills_b = occ_skills[b]
+            union = skills_a | skills_b
+            if not union:
+                continue
+            jaccard = len(skills_a & skills_b) / len(union)
+            if jaccard >= _JACCARD_THRESHOLD:
+                scores[(a, b)] = jaccard
+    log.info(
+        "substitutability.jaccard_matrix",
+        occupations=len(occupations),
+        pairs_above_threshold=len(scores),
+        threshold=_JACCARD_THRESHOLD,
+    )
+    return scores
+
+
 def transform_substitutability(relations: list[dict]) -> list[dict]:
     """Returnerar en lista riktade kanter klara att MERGE:as i Neo4j."""
     edges: list[dict] = []

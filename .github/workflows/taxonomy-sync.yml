@@ -17,19 +17,11 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('services/data-pipeline/requirements.txt') }}
           restore-keys: ${{ runner.os }}-pip-
       - run: pip install -r services/data-pipeline/requirements.txt
-      - run: python -m src.extract.taxonomy
+      - name: Kör pipeline (extract → transform → load → validate)
+        run: python -m src.pipeline
         working-directory: services/data-pipeline
-      - run: python -m src.transform.occupations
-        working-directory: services/data-pipeline
-      - run: python -m src.transform.skills
-        working-directory: services/data-pipeline
-      - run: python -m src.transform.substitutability
-        working-directory: services/data-pipeline
-      - run: python -m src.load.neo4j_loader
-        working-directory: services/data-pipeline
-      - run: python -m src.load.qdrant_loader
-        working-directory: services/data-pipeline
-      - run: python -m src.transform.validate
+      - name: Validera graf
+        run: python -m src.transform.validate
         working-directory: services/data-pipeline
       - name: Notifiera vid fel
         if: failure()
@@ -39,6 +31,9 @@ jobs:
           -d '{"text":"⚠️ Crosstrees: Veckovis taxonomisynk misslyckades. Se RUNBOOK.md#taxonomy-sync-failure."}'
     env:
       NEO4J_URI: ${{ secrets.NEO4J_URI }}
+      NEO4J_USERNAME: ${{ secrets.NEO4J_USERNAME }}
       NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
+      REDIS_URL: ${{ secrets.REDIS_URL }}
       QDRANT_URL: ${{ secrets.QDRANT_URL }}
       QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
+      JONKOPING_LAN_CODE: '06'

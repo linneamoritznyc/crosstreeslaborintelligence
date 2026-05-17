@@ -1,1 +1,66 @@
-[]
+[
+  {
+    "id": "35a28d4b-5a50-4ab9-9ac8-6a5f5c43d5b6",
+    "name": "Mjukvaruutvecklare",
+    "ssyk_code": "2512",
+    "definition": "Analyserar, konstruerar, testar och underhåller programvara och system.",
+    "workplace_model": "hybrid",
+    "deprecated": null
+  },
+  {
+    "id": "7a24c02f-b1d0-4e5a-bfc3-ef209f3a1d88",
+    "name": "Systemarkitekt",
+    "ssyk_code": "2511",
+    "definition": "Planerar och utformar IT-system och teknisk infrastruktur.",
+    "workplace_model": "hybrid",
+    "deprecated": null
+  },
+  {
+    "id": "c3e89102-d4f7-11ee-a506-0242ac120002",
+    "name": "Undersköterska",
+    "ssyk_code": "5321",
+    "definition": "Ger vård och omsorg till patienter och brukare inom hälso- och sjukvård.",
+    "workplace_model": "on_site",
+    "deprecated": null
+  },
+  {
+    "id": "f5b12347-d4f7-11ee-a506-0242ac120002",
+    "name": "Sjuksköterska",
+    "ssyk_code": "2221",
+    "definition": "Planerar och utför omvårdnad samt administrerar medicinsk behandling.",
+    "workplace_model": "on_site",
+    "deprecated": null
+  },
+  {
+    "id": "a1c45678-d4f7-11ee-a506-0242ac120002",
+    "name": "Lärare i grundskolan",
+    "ssyk_code": "2321",
+    "definition": "Planerar och genomför undervisning för elever i grundskolan.",
+    "workplace_model": "on_site",
+    "deprecated": null
+  },
+  {
+    "id": "b2d56789-d4f7-11ee-a506-0242ac120002",
+    "name": "Automationstekniker",
+    "ssyk_code": "3115",
+    "definition": "Installerar, programmerar och underhåller industrirobotar och automationssystem.",
+    "workplace_model": "on_site",
+    "deprecated": null
+  },
+  {
+    "id": "c3e67890-d4f7-11ee-a506-0242ac120002",
+    "name": "Dataingenjör",
+    "ssyk_code": "2529",
+    "definition": "Bygger och underhåller datapipelines och infrastruktur för dataanalys.",
+    "workplace_model": "hybrid",
+    "deprecated": null
+  },
+  {
+    "id": "d4f78901-d4f7-11ee-a506-0242ac120002",
+    "name": "Logistikkoordinator",
+    "ssyk_code": "4321",
+    "definition": "Koordinerar transport, lager och leveranskedjor.",
+    "workplace_model": "on_site",
+    "deprecated": null
+  }
+]

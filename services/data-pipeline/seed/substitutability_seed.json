@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "source_id": "35a28d4b-5a50-4ab9-9ac8-6a5f5c43d5b6",
+    "target_id": "7a24c02f-b1d0-4e5a-bfc3-ef209f3a1d88",
+    "score": 75,
+    "direction": "can_become"
+  },
+  {
+    "source_id": "7a24c02f-b1d0-4e5a-bfc3-ef209f3a1d88",
+    "target_id": "35a28d4b-5a50-4ab9-9ac8-6a5f5c43d5b6",
+    "score": 75,
+    "direction": "can_replace"
+  },
+  {
+    "source_id": "35a28d4b-5a50-4ab9-9ac8-6a5f5c43d5b6",
+    "target_id": "c3e67890-d4f7-11ee-a506-0242ac120002",
+    "score": 50,
+    "direction": "can_become"
+  },
+  {
+    "source_id": "c3e67890-d4f7-11ee-a506-0242ac120002",
+    "target_id": "35a28d4b-5a50-4ab9-9ac8-6a5f5c43d5b6",
+    "score": 50,
+    "direction": "can_replace"
+  },
+  {
+    "source_id": "c3e89102-d4f7-11ee-a506-0242ac120002",
+    "target_id": "f5b12347-d4f7-11ee-a506-0242ac120002",
+    "score": 50,
+    "direction": "can_become"
+  },
+  {
+    "source_id": "f5b12347-d4f7-11ee-a506-0242ac120002",
+    "target_id": "c3e89102-d4f7-11ee-a506-0242ac120002",
+    "score": 50,
+    "direction": "can_replace"
+  },
+  {
+    "source_id": "b2d56789-d4f7-11ee-a506-0242ac120002",
+    "target_id": "c3e67890-d4f7-11ee-a506-0242ac120002",
+    "score": 25,
+    "direction": "can_become"
+  },
+  {
+    "source_id": "c3e67890-d4f7-11ee-a506-0242ac120002",
+    "target_id": "b2d56789-d4f7-11ee-a506-0242ac120002",
+    "score": 25,
+    "direction": "can_replace"
+  }
+]

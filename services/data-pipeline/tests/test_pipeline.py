@@ -1,25 +1,28 @@
 import pytest
 from src.transform.occupations import transform_occupations
 from src.transform.skills import transform_skills
-from src.transform.substitutability import build_substitutability_matrix
+from src.transform.substitutability import build_substitutability_matrix, transform_substitutability
 from src.evaluate.pagerank_sensitivity import compute_pagerank
 from src.evaluate.bias_audit import audit_match_results
 
 
 def test_transform_occupations_filters_incomplete():
     raw = [
-        {"conceptId": "o1", "preferredLabel": "Mjukvaruutvecklare"},
-        {"conceptId": "", "preferredLabel": "Saknar id"},
-        {"conceptId": "o3", "preferredLabel": ""},
+        {"concept_id": "o1", "preferred_label": "Mjukvaruutvecklare"},
+        {"concept_id": "", "preferred_label": "Saknar id"},
+        {"concept_id": "o3", "preferred_label": ""},
     ]
-    result = transform_occupations(raw)
+    result = transform_occupations(raw, ssyk_groups=[], working_hours_concepts=[])
     assert len(result) == 1
     assert result[0]["id"] == "o1"
     assert result[0]["name"] == "Mjukvaruutvecklare"
 
 
 def test_transform_skills_filters_incomplete():
-    raw = [{"conceptId": "s1", "preferredLabel": "Python"}, {"conceptId": "", "preferredLabel": "Tomt"}]
+    raw = [
+        {"concept_id": "s1", "preferred_label": "Python"},
+        {"concept_id": "", "preferred_label": "Tomt"},
+    ]
     result = transform_skills(raw)
     assert len(result) == 1
     assert result[0]["id"] == "s1"
@@ -34,6 +37,26 @@ def test_substitutability_jaccard_threshold():
     scores = build_substitutability_matrix(occ_skills)
     assert ("o1", "o2") in scores
     assert ("o1", "o3") not in scores and ("o3", "o1") not in scores
+
+
+def test_transform_substitutability_creates_two_edges():
+    relations = [
+        {
+            "from_occupation_id": "o1",
+            "to_occupation_id": "o2",
+            "substitutability_level": 2,
+        }
+    ]
+    edges = transform_substitutability(relations)
+    assert len(edges) == 2
+    directions = {e["direction"] for e in edges}
+    assert directions == {"can_become", "can_replace"}
+
+
+def test_transform_substitutability_skips_self_loops():
+    relations = [{"from_occupation_id": "o1", "to_occupation_id": "o1", "substitutability_level": 3}]
+    edges = transform_substitutability(relations)
+    assert edges == []
 
 
 def test_pagerank_sum_approximately_one():
