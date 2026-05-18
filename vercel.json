@@ -1,0 +1,5 @@
+{
+  "buildCommand": "pnpm --filter=kompetensradet build",
+  "outputDirectory": "apps/kompetensradet/.next",
+  "installCommand": "pnpm install --frozen-lockfile"
+}
