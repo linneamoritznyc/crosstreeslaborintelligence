@@ -1,90 +1,92 @@
-# Demo Deployment Runbook — Kompetensrådet
+# Demo Deployment Runbook
 
-**Mål:** Få Kompetensrådet-demon publik på `kompetensradet.crosstrees.se`
-(eller en `*.vercel.app`-URL) inom 30 minuter.
+**Mål:** Få båda apparna publika inom 30 minuter.
 
-## Förutsättningar
+| App | Domän (mål) | Vercel-projekt | Root Directory |
+|---|---|---|---|
+| Kompetensrådet | `kompetensradet.crosstrees.se` | `kompetensradet` | `apps/kompetensradet` |
+| TalentFlow | `talentflow.crosstrees.se` | `talentflow` | `apps/talentflow` |
 
-- GitHub-repo `linneamoritznyc/crosstreeslaborintelligence` med branchen
-  `claude/prepare-demo-deployment-qSKUD` (eller `main` om du mergat).
-- Vercel-konto kopplat till GitHub.
-- Backend (FastAPI) deployad på Railway och nåbar på en publik URL.
+Båda fronterna pratar med **samma FastAPI-backend** på Railway.
 
-## Steg 1 — Verifiera FastAPI-backend (Railway)
+## Steg 1 — FastAPI-backend (Railway)
 
 1. Logga in på railway.app.
-2. Öppna projektet `crosstrees-api` (eller motsvarande).
-3. Kontrollera att tjänsten är **Running** och har följande miljövariabler:
-   - `ANTHROPIC_API_KEY`
-   - `CORS_ORIGINS=https://kompetensradet.crosstrees.se,https://*.vercel.app`
-     (lägg till Vercel-URL efter deploy)
-   - `CLAUDE_MODEL=claude-sonnet-4-6`
-   - `SCB_API_BASE=https://statistikdatabasen.scb.se/api/v2`
-   - `JONKOPING_LAN_CODE=06`
-   - Övriga (Neo4j, Qdrant, Redis) — kan vara tomma för demo;
-     systemet faller tillbaka graciöst.
-4. Anteckna API-URL:en (t.ex. `https://crosstrees-api.up.railway.app`).
-5. Testa: `curl https://<api>/health` ska returnera 200 OK.
+2. Öppna projektet (eller skapa ett nytt: `Deploy from GitHub repo` → välj repot
+   → välj `services/matching-api` som root).
+3. Sätt miljövariabler i Railway-projektet:
+   ```
+   ANTHROPIC_API_KEY=sk-ant-...
+   CLAUDE_MODEL=claude-sonnet-4-6
+   CORS_ORIGINS=https://kompetensradet.crosstrees.se,https://talentflow.crosstrees.se
+   SCB_API_BASE=https://statistikdatabasen.scb.se/api/v2
+   JONKOPING_LAN_CODE=06
+   ALGORITHM_VERSION=pagerank_v1.0
+   ```
+   (Lägg till de exakta Vercel-URL:erna i `CORS_ORIGINS` efter steg 2.)
+4. Verifiera: `curl https://<din-railway-url>/health` → 200 OK.
+5. Anteckna API-URL:en — den ska in i båda Vercel-projektens env vars.
 
-## Steg 2 — Importera repot i Vercel
+## Steg 2 — Vercel-projekt 1: Kompetensrådet
 
-1. På vercel.com → **Add New… → Project**.
-2. Välj GitHub-repot `linneamoritznyc/crosstreeslaborintelligence`.
-3. **VIKTIGT** — när Vercel frågar:
-   - **Project Name:** `kompetensradet` (eller fritt)
+1. Vercel → **Add New… → Project** → välj repot.
+2. **VIKTIGT — innan du klickar Deploy:**
+   - **Project Name:** `kompetensradet`
    - **Framework Preset:** Next.js (auto-detekteras)
-   - **Root Directory:** lämna som `./` — root-`vercel.json` styr resten.
-4. **Environment Variables** — lägg till:
+   - **Root Directory:** klicka *Edit* och välj `apps/kompetensradet`
+3. **Environment Variables:**
    ```
-   NEXT_PUBLIC_API_URL = https://crosstrees-api.up.railway.app
+   NEXT_PUBLIC_API_URL = <din Railway-URL>
    ```
-   (Använd din faktiska Railway-URL.)
-5. Klicka **Deploy**.
-6. Vänta 2–3 minuter. Build-loggen kör `pnpm install` + `pnpm --filter=kompetensradet build`.
+4. Klicka **Deploy**. Vänta 2–3 min.
+5. Vercel ger dig en URL (`kompetensradet-xxxx.vercel.app`).
 
-## Steg 3 — Verifiera deployment
+## Steg 3 — Vercel-projekt 2: TalentFlow
 
-Efter deploy:
-1. Öppna Vercel-URL:en (t.ex. `kompetensradet-xxxx.vercel.app`).
-2. Klicka **Branschanalys → Industri** → kartan ska rita 13 kommuner.
-3. **ROI-kalkyl** → tryck "Beräkna ROI" → bootstrap-CI visas.
-4. **AI-rådgivare** → ställ en fråga → svaret strömmar in.
-5. **Exportera** → välj sektor → PDF laddas ner.
+1. Tillbaka till Vercel → **Add New… → Project** → välj **samma repo** igen.
+2. **VIKTIGT:**
+   - **Project Name:** `talentflow`
+   - **Framework Preset:** Next.js
+   - **Root Directory:** välj `apps/talentflow`
+3. **Environment Variables:**
+   ```
+   NEXT_PUBLIC_API_URL = <din Railway-URL>     (samma som ovan)
+   ```
+4. Klicka **Deploy**.
 
-## Steg 4 — Lägg till Vercel-URL i Railway CORS
+## Steg 4 — Uppdatera CORS i Railway
 
-Tillbaka i Railway:
-1. Uppdatera `CORS_ORIGINS` till att inkludera den exakta Vercel-URL:en.
-2. Spara → Railway redeployar automatiskt (~30 s).
-3. Verifiera att karta + chatt fortfarande fungerar.
+1. Tillbaka i Railway → uppdatera `CORS_ORIGINS` till båda Vercel-URL:erna:
+   ```
+   CORS_ORIGINS=https://kompetensradet-xxxx.vercel.app,https://talentflow-yyyy.vercel.app
+   ```
+2. Railway redeployar automatiskt (~30 s).
 
-## Steg 5 — Eget domännamn (frivilligt)
+## Steg 5 — Egna domäner (frivilligt)
 
-Vercel → Settings → Domains → lägg till `kompetensradet.crosstrees.se`.
-Lägg till en CNAME `cname.vercel-dns.com` i DNS hos din registrar.
+För varje Vercel-projekt: **Settings → Domains** → lägg till önskad subdomän
+(`kompetensradet.crosstrees.se`, `talentflow.crosstrees.se`). Lägg till
+CNAME `cname.vercel-dns.com` i DNS hos din registrar. Uppdatera CORS i
+Railway när domänerna är aktiva.
 
 ## Felsökning
 
 | Symptom | Trolig orsak | Åtgärd |
 |---|---|---|
-| Build misslyckas på `pnpm install` | Saknar `pnpm-lock.yaml` | `vercel.json` använder `--no-frozen-lockfile`, ska lösas |
+| Vercel-build: `Cannot find module` | Root Directory inte satt | Settings → General → Root Directory = `apps/<app>` |
+| Build misslyckas på `pnpm install` | Saknad lockfile | `vercel.json` använder `--no-frozen-lockfile`, ska lösas |
 | Kartan visar tom yta | API svarar inte | Kontrollera Railway-status och CORS |
-| "API-fel 0" i konsolen | CORS blockerar | Lägg till exakt Vercel-URL i Railway `CORS_ORIGINS` |
+| "API-fel 0" eller CORS i konsolen | Exakt URL saknas i `CORS_ORIGINS` | Lägg till och vänta på Railway-redeploy |
 | AI-chatten gör inget | `ANTHROPIC_API_KEY` saknas i Railway | Lägg till och redeploy |
 | ROI-knappen ger 422 | Fältvärden utanför validering | Antal 1–10 000, kostnad 0–1 000 000 |
+| 404 på `/cv/parse` (TalentFlow) | Railway-deploy körde inte `python-multipart` | Re-deploy efter `requirements.txt`-uppdatering |
 
 ## Demo-flödet för Kompetensrådet (3 minuter)
 
-Förslag på live-demo:
-
-1. **(0:00)** Öppna startsidan, peka på legaltexten i sidfoten.
-2. **(0:20)** Klicka *Branschanalys → Industri*. Karta laddas.
-   Hovra på Jönköping — visa befolkning + bristindex.
-3. **(0:50)** *Omställning* — visa yrken med substituerbarhet > 70%.
-4. **(1:20)** *ROI-kalkyl* — ändra antal till 50, kostnad 60 000.
-   Klicka "Beräkna" — visa bootstrap-CI:t. Öppna antaganden.
-5. **(2:00)** *AI-rådgivare* — ställ "Vilka YH-utbildningar täcker
-   IT-bristen?". Visa hur svaret inleds med datakällor och avslutas
-   med myndighetsförbehåll.
-6. **(2:40)** *Exportera* → PDF.
+1. **(0:00)** Öppna startsidan — peka på legaltexten i footern (EU 2024/1689, Bilaga III punkt 4).
+2. **(0:20)** Klicka *Branschanalys → Industri*. Kartan laddas. Hovra Jönköping — visa befolkning + bristindex.
+3. **(0:50)** *Omställning* — yrken med substituerbarhet > 70%, omställningsvägar.
+4. **(1:20)** *ROI-kalkyl* — ändra antal till 50, kostnad 60 000. Klicka "Beräkna" — visa bootstrap-CI. Öppna antaganden.
+5. **(2:00)** *AI-rådgivare* — ställ "Vilka YH-utbildningar täcker IT-bristen?". Visa hur svaret inleds med datakällor och avslutas med myndighetsförbehåll.
+6. **(2:40)** *Exportera* → PDF laddas ner.
 7. **(3:00)** Klart.
