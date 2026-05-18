@@ -14,3 +14,5 @@ python-dotenv==1.0.1
 structlog==24.4.0
 reportlab==4.2.5
 python-multipart==0.0.9
+pypdf==5.0.0
+docx2txt==0.8
