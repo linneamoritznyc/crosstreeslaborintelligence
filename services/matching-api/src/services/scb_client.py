@@ -5,6 +5,7 @@ ROI-beräkning baseras på SCB lönestatistik för kompetenseffekter.
 """
 from __future__ import annotations
 
+import io
 import os
 from typing import Any
 
@@ -24,34 +25,54 @@ _ROI_LONEOKNING_PER_KRON = 0.15  # 15 öre lönehöjning per investerad krona/å
 
 
 async def get_brist_data(sektor: str) -> list[dict]:
-    """Hämtar bristindex för yrken i Jönköpings län från SCB AM0208."""
-    async with httpx.AsyncClient(timeout=30) as client:
-        res = await client.get(
-            f"{_BASE}/sv/AM/AM0208",
-            params={"lan": _LAN, "sektor": sektor},
-        )
-        if res.status_code == 404:
-            log.info("scb.brist_data.not_found", sektor=sektor)
-            return []
-        res.raise_for_status()
-    data: Any = res.json()
+    """Hämtar bristindex för yrken i Jönköpings län från SCB AM0208.
+
+    Returnerar tom lista om källan är otillgänglig — aldrig fabricerade värden.
+    """
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            res = await client.get(
+                f"{_BASE}/sv/AM/AM0208",
+                params={"lan": _LAN, "sektor": sektor},
+            )
+            if res.status_code == 404:
+                log.info("scb.brist_data.not_found", sektor=sektor)
+                return []
+            if not res.is_success:
+                log.warning("scb.brist_data.http_error", sektor=sektor, status=res.status_code)
+                return []
+            data: Any = res.json()
+    except Exception as exc:
+        log.warning("scb.brist_data.unavailable", sektor=sektor, err=str(exc))
+        return []
+
     result: list[dict] = data if isinstance(data, list) else []
     log.info("scb.brist_data", sektor=sektor, count=len(result))
     return result
 
 
 async def get_karta_data(sektor: str) -> list[dict]:
-    """Hämtar kommunvis fördelning av bristyrken för kartvisning."""
-    async with httpx.AsyncClient(timeout=30) as client:
-        res = await client.get(
-            f"{_BASE}/sv/AM/AM0208/kommuner",
-            params={"lan": _LAN, "sektor": sektor},
-        )
-        if res.status_code == 404:
-            log.info("scb.karta_data.not_found", sektor=sektor)
-            return []
-        res.raise_for_status()
-    data: Any = res.json()
+    """Hämtar kommunvis fördelning av bristyrken för kartvisning.
+
+    Returnerar tom lista om källan är otillgänglig — aldrig fabricerade värden.
+    """
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            res = await client.get(
+                f"{_BASE}/sv/AM/AM0208/kommuner",
+                params={"lan": _LAN, "sektor": sektor},
+            )
+            if res.status_code == 404:
+                log.info("scb.karta_data.not_found", sektor=sektor)
+                return []
+            if not res.is_success:
+                log.warning("scb.karta_data.http_error", sektor=sektor, status=res.status_code)
+                return []
+            data: Any = res.json()
+    except Exception as exc:
+        log.warning("scb.karta_data.unavailable", sektor=sektor, err=str(exc))
+        return []
+
     result: list[dict] = data if isinstance(data, list) else []
     log.info("scb.karta_data", sektor=sektor, count=len(result))
     return result
@@ -102,23 +123,27 @@ async def generate_pdf_report(sektor: str) -> bytes:
         from reportlab.lib.pagesizes import A4
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
         from reportlab.lib.styles import getSampleStyleSheet
-        import io
 
         buffer = io.BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=A4)
         styles = getSampleStyleSheet()
-        story = [
+        story: list = [
             Paragraph(f"Kompetensrådet i Jönköpings län — Rapport: {sektor}", styles["Title"]),
             Spacer(1, 12),
             Paragraph("Bristyrken i länet", styles["Heading2"]),
         ]
-        for rad in brist:
-            namn = rad.get("occupation_name", "Okänt yrke")
-            idx = rad.get("brist_index", "–")
-            story.append(Paragraph(f"{namn}: {idx}", styles["Normal"]))
+        if brist:
+            for rad in brist:
+                namn = rad.get("occupation_name", "Okänt yrke")
+                idx = rad.get("brist_index", "–")
+                story.append(Paragraph(f"{namn}: {idx}", styles["Normal"]))
+        else:
+            story.append(Paragraph("Ingen bristdata tillgänglig för denna sektor.", styles["Normal"]))
+
         doc.build(story)
         log.info("scb.pdf_report", sektor=sektor, rows=len(brist))
         return buffer.getvalue()
+
     except ImportError:
         log.warning("scb.pdf_report.reportlab_missing", sektor=sektor)
         lines = [
@@ -126,8 +151,11 @@ async def generate_pdf_report(sektor: str) -> bytes:
             b"",
             b"Bristyrken:",
         ]
-        for rad in brist:
-            namn = rad.get("occupation_name", "Okänt yrke")
-            idx = rad.get("brist_index", "–")
-            lines.append(f"  {namn}: {idx}".encode("utf-8"))
+        if brist:
+            for rad in brist:
+                namn = rad.get("occupation_name", "Okänt yrke")
+                idx = rad.get("brist_index", "–")
+                lines.append(f"  {namn}: {idx}".encode("utf-8"))
+        else:
+            lines.append(b"  Ingen data tillganglig.")
         return b"\n".join(lines)

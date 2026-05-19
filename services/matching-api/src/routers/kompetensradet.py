@@ -1,19 +1,30 @@
 from fastapi import APIRouter, Query
 from ..services.scb_client import get_brist_data, get_karta_data
-from ..services.fit_score import calculate_fit_score
 from ..services.cache import get_with_swr, OCCUPATION_OVERVIEW_TTL, JOB_SEARCH_REVALIDATE_AFTER
 
 router = APIRouter()
 
+# Kända sektorer i Jönköpings läns arbetsmarknad.
+# Källa: Kompetensrådets sektorsindelning (regionalt beslut 2023).
+_SEKTORER = {
+    "industri": "Industri och tillverkning",
+    "vard": "Vård och omsorg",
+    "it": "IT och digitalisering",
+    "bygg": "Bygg och anläggning",
+    "handel": "Handel och logistik",
+    "utbildning": "Utbildning och forskning",
+}
+
+
+@router.get("/sektorer")
+async def lista_sektorer() -> list[dict]:
+    return [{"id": k, "namn": v} for k, v in _SEKTORER.items()]
+
 
 @router.get("/sektorer/{sektor}")
-async def sektor_info(sektor: str):
-    return await get_with_swr(
-        f"kompetensradet:sektor:{sektor}",
-        lambda: get_brist_data(sektor),
-        OCCUPATION_OVERVIEW_TTL,
-        JOB_SEARCH_REVALIDATE_AFTER,
-    )
+async def sektor_info(sektor: str) -> dict:
+    namn = _SEKTORER.get(sektor, sektor.replace("-", " ").capitalize())
+    return {"id": sektor, "namn": namn}
 
 
 @router.get("/brist")
@@ -37,13 +48,28 @@ async def karta_data(sektor: str = Query(...)):
 
 
 @router.get("/omstallning")
-async def omstallning():
+async def omstallning(sektor: str = Query(default="alla")):
+    cache_key = f"kompetensradet:omstallning:{sektor}"
+    if sektor == "alla":
+        return await get_with_swr(
+            cache_key,
+            _fetch_all_omstallning,
+            OCCUPATION_OVERVIEW_TTL,
+            JOB_SEARCH_REVALIDATE_AFTER,
+        )
     return await get_with_swr(
-        "kompetensradet:omstallning",
-        lambda: get_brist_data("omstallning"),
+        cache_key,
+        lambda: get_brist_data(sektor),
         OCCUPATION_OVERVIEW_TTL,
         JOB_SEARCH_REVALIDATE_AFTER,
     )
+
+
+async def _fetch_all_omstallning() -> list:
+    result = []
+    for sek in _SEKTORER:
+        result.extend(await get_brist_data(sek))
+    return result
 
 
 @router.get("/roi")
@@ -59,7 +85,10 @@ async def roi_kalkyl(
 @router.get("/export/pdf")
 async def export_pdf(sektor: str = Query(...)):
     from ..services.scb_client import generate_pdf_report
-    pdf_bytes = await generate_pdf_report(sektor)
     from fastapi.responses import Response
-    return Response(content=pdf_bytes, media_type="application/pdf",
-                    headers={"Content-Disposition": f'attachment; filename="rapport_{sektor}.pdf"'})
+    pdf_bytes = await generate_pdf_report(sektor)
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="rapport_{sektor}.pdf"'},
+    )

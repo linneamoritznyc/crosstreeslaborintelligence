@@ -1,5 +1,7 @@
 import OmstallningsPanel from "@/components/OmstallningsPanel";
 
+export const dynamic = "force-dynamic";
+
 export default function OmstallningPage() {
   return (
     <main>

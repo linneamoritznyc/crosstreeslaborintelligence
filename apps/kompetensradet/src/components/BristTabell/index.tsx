@@ -13,31 +13,43 @@ interface Props {
 }
 
 export default async function BristTabell({ sektor }: Props) {
-  const data = await apiClient<BristYrke[]>(`/kompetensradet/brist?sektor=${sektor}`);
+  let data: BristYrke[] = [];
+  try {
+    data = await apiClient<BristYrke[]>(`/kompetensradet/brist?sektor=${sektor}`);
+  } catch {
+    // API unavailable — show honest empty state
+  }
 
   return (
     <section aria-label="Bristyrken">
       <h2>Bristyrken i sektorn</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Yrke</th>
-            <th>Bristindex</th>
-            <th>Antal annonser</th>
-            <th>Prognos</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((rad) => (
-            <tr key={rad.occupation_id}>
-              <td>{rad.occupation_name}</td>
-              <td>{rad.brist_index.toFixed(2)}</td>
-              <td>{rad.antal_annonser}</td>
-              <td>{rad.prognos}</td>
+      {data.length === 0 ? (
+        <p className="empty-state">
+          Ingen bristdata tillgänglig för denna sektor just nu.
+          Data hämtas från SCB AM0208 och Arbetsförmedlingen.
+        </p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Yrke</th>
+              <th>Bristindex</th>
+              <th>Antal annonser</th>
+              <th>Prognos</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.map((rad) => (
+              <tr key={rad.occupation_id}>
+                <td>{rad.occupation_name}</td>
+                <td>{rad.brist_index.toFixed(2)}</td>
+                <td>{rad.antal_annonser}</td>
+                <td>{rad.prognos}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </section>
   );
 }
