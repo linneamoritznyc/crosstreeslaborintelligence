@@ -8,6 +8,12 @@ interface BristYrke {
   prognos: "ökande" | "stabil" | "minskande";
 }
 
+const prognosKlass: Record<string, string> = {
+  ökande: "tag tag-green",
+  stabil: "tag tag-yellow",
+  minskande: "tag tag-red",
+};
+
 interface Props {
   sektor: string;
 }
@@ -17,39 +23,48 @@ export default async function BristTabell({ sektor }: Props) {
   try {
     data = await apiClient<BristYrke[]>(`/kompetensradet/brist?sektor=${sektor}`);
   } catch {
-    // API unavailable — show honest empty state
+    // SCB kan sakna data för sektorn
+  }
+
+  if (data.length === 0) {
+    return (
+      <section aria-label="Bristyrken">
+        <h2>Bristyrken i sektorn</h2>
+        <div className="alert alert-empty">
+          Ingen bristdata från SCB för sektorn &ldquo;{sektor}&rdquo;.
+          Data uppdateras när SCB AM0208-integrationen är konfigurerad.
+        </div>
+      </section>
+    );
   }
 
   return (
     <section aria-label="Bristyrken">
       <h2>Bristyrken i sektorn</h2>
-      {data.length === 0 ? (
-        <p className="empty-state">
-          Ingen bristdata tillgänglig för denna sektor just nu.
-          Data hämtas från SCB AM0208 och Arbetsförmedlingen.
-        </p>
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Yrke</th>
-              <th>Bristindex</th>
-              <th>Antal annonser</th>
-              <th>Prognos</th>
+      <table>
+        <thead>
+          <tr>
+            <th>Yrke</th>
+            <th>Bristindex</th>
+            <th>Annonser</th>
+            <th>Prognos</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((rad) => (
+            <tr key={rad.occupation_id}>
+              <td>{rad.occupation_name}</td>
+              <td>{rad.brist_index.toFixed(2)}</td>
+              <td>{rad.antal_annonser.toLocaleString("sv-SE")}</td>
+              <td>
+                <span className={prognosKlass[rad.prognos] ?? "tag"}>
+                  {rad.prognos}
+                </span>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {data.map((rad) => (
-              <tr key={rad.occupation_id}>
-                <td>{rad.occupation_name}</td>
-                <td>{rad.brist_index.toFixed(2)}</td>
-                <td>{rad.antal_annonser}</td>
-                <td>{rad.prognos}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+          ))}
+        </tbody>
+      </table>
     </section>
   );
 }

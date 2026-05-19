@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -12,29 +12,32 @@ export default function KompetensChatt() {
   const [input, setInput] = useState("");
   const [skickar, setSkickar] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   async function sendMessage(e: React.FormEvent) {
     e.preventDefault();
     if (!input.trim()) return;
-
     const userMessage: ChatMessage = { role: "user", content: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setSkickar(true);
-
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chatt/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: [...messages, userMessage] }),
       });
-      if (!res.ok) throw new Error(`Chatt-fel (${res.status})`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const { content } = await res.json();
       setMessages((prev) => [...prev, { role: "assistant", content }]);
     } catch (err) {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Fel: kunde inte nå AI-rådgivaren." },
+        { role: "assistant", content: "Kunde inte nå AI-rådgivaren just nu." },
       ]);
     } finally {
       setSkickar(false);
@@ -43,27 +46,39 @@ export default function KompetensChatt() {
   }
 
   return (
-    <section aria-label="AI-chatt">
-      <ul aria-live="polite">
+    <div className="chat-container" aria-label="AI-chatt">
+      <div className="chat-messages" aria-live="polite">
+        {messages.length === 0 && (
+          <div style={{ color: "var(--muted)", fontSize: "0.9rem", alignSelf: "center", marginTop: "auto" }}>
+            Ställ en fråga om arbetsmarknaden i Jönköpings län
+          </div>
+        )}
         {messages.map((m, i) => (
-          <li key={i} data-role={m.role}>
-            <strong>{m.role === "user" ? "Du" : "Rådgivaren"}:</strong> {m.content}
-          </li>
+          <div key={i} className={m.role === "user" ? "chat-msg chat-msg-user" : "chat-msg chat-msg-ai"}>
+            {m.content}
+          </div>
         ))}
-      </ul>
-      <form onSubmit={sendMessage}>
+        {skickar && (
+          <div className="chat-msg chat-msg-ai" style={{ color: "var(--muted)" }}>
+            …
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+      <form className="chat-input-row" onSubmit={sendMessage}>
         <input
           ref={inputRef}
+          className="chat-input"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ställ en fråga om arbetsmarknaden…"
+          placeholder="Skriv din fråga…"
           disabled={skickar}
           aria-label="Din fråga"
         />
-        <button type="submit" disabled={skickar || !input.trim()}>
-          {skickar ? "Skickar…" : "Skicka"}
+        <button className="chat-send" type="submit" disabled={skickar || !input.trim()}>
+          Skicka
         </button>
       </form>
-    </section>
+    </div>
   );
 }

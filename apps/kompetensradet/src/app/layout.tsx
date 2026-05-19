@@ -8,39 +8,40 @@ export const metadata: Metadata = {
   description: "Regional arbetsmarknadsanalys och kompetensstyrning",
 };
 
+const navLinks = [
+  { href: "/", label: "Översikt" },
+  { href: "/analys/industri", label: "Industri" },
+  { href: "/analys/vård", label: "Vård och omsorg" },
+  { href: "/analys/it", label: "IT och digitalisering" },
+  { href: "/analys/bygg", label: "Bygg och anläggning" },
+  { href: "/omstallning", label: "Omställningsstöd" },
+  { href: "/roi", label: "ROI-kalkylator" },
+  { href: "/chatt", label: "AI-rådgivare" },
+  { href: "/export", label: "Exportera rapport" },
+  { href: "/om", label: "Om systemet" },
+];
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="sv">
       <body>
-        <header className="site-header">
-          <Link href="/" className="wordmark">Kompetensrådet · Jönköpings län</Link>
-          <nav className="site-nav" aria-label="Huvudnavigation">
-            <Link href="/analys/industri">Analys</Link>
-            <Link href="/omstallning">Omställning</Link>
-            <Link href="/roi">ROI</Link>
-            <Link href="/chatt">AI-rådgivare</Link>
-            <Link href="/export">Exportera</Link>
-            <Link href="/om">Om systemet</Link>
-          </nav>
-        </header>
-
         {/* EU AI Act 2024/1689 Art. 14 — mänsklig tillsyn krävs vid beslut */}
         <div className="ai-act-disclaimer" role="note" aria-label="AI Act-upplysning">
-          <strong>AI-stöd för beslut:</strong> Detta system är ett stöd för mänskligt
-          beslutsfattande — inte ett automatiserat beslutssystem. Verifiera alltid
-          rekommendationer mot aktuell källdata. Systemet klassificeras som
-          högriskssystem enligt EU AI Act 2024/1689, bilaga III punkt 4.
+          <strong>AI-stöd:</strong> Verifiera alltid rekommendationer mot källdata.
+          Högriskssystem enligt EU AI Act 2024/1689, bilaga III punkt 4.
         </div>
-
-        <div className="site-content">
+        <div className="shell">
+          <nav className="sidebar">
+            <div className="sidebar-logo">
+              Kompetensrådet<br />Jönköpings län
+            </div>
+            <div className="sidebar-title">Navigation</div>
+            {navLinks.map((l) => (
+              <Link key={l.href} href={l.href}>{l.label}</Link>
+            ))}
+          </nav>
           {children}
         </div>
-
-        <footer className="site-footer">
-          Kompetensrådet i Jönköpings län · Crosstrees Labor Intelligence ·
-          {" "}Loggning i enlighet med EU AI Act Art. 12 ·{" "}
-          <Link href="/om">Om systemet</Link>
-        </footer>
       </body>
     </html>
   );

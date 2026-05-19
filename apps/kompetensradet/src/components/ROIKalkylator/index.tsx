@@ -3,10 +3,24 @@
 import { useState } from "react";
 
 interface ROIResultat {
-  roi_procent: number;
-  payback_manader: number;
-  netto_vinst_kr: number;
+  roi_procent: number | null;
+  payback_manader: number | null;
+  netto_vinst_kr: number | null;
   antaganden: string[];
+}
+
+const SEKTORER = [
+  { value: "industri", label: "Industri" },
+  { value: "vård", label: "Vård och omsorg" },
+  { value: "it", label: "IT och digitalisering" },
+  { value: "bygg", label: "Bygg och anläggning" },
+  { value: "transport", label: "Transport och logistik" },
+  { value: "handel", label: "Handel" },
+];
+
+function formatKr(n: number | null): string {
+  if (n === null) return "—";
+  return n.toLocaleString("sv-SE", { style: "currency", currency: "SEK", maximumFractionDigits: 0 });
 }
 
 export default function ROIKalkylator() {
@@ -25,8 +39,10 @@ export default function ROIKalkylator() {
       sektor: (form.elements.namedItem("sektor") as HTMLSelectElement).value,
     });
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/kompetensradet/roi?${params}`);
-      if (!res.ok) throw new Error(`Beräkning misslyckades (${res.status})`);
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/kompetensradet/roi?${params}`
+      );
+      if (!res.ok) throw new Error(`Beräkning misslyckades (HTTP ${res.status})`);
       setResultat(await res.json());
     } catch (err) {
       setFel(err instanceof Error ? err.message : "Okänt fel");
@@ -40,43 +56,47 @@ export default function ROIKalkylator() {
       <form onSubmit={handleSubmit}>
         <label>
           Antal deltagare
-          <input name="antal" type="number" min="1" required />
+          <input name="antal" type="number" min="1" defaultValue="10" required />
         </label>
         <label>
           Utbildningskostnad per person (kr)
-          <input name="kostnad" type="number" min="0" required />
+          <input name="kostnad" type="number" min="0" defaultValue="5000" required />
         </label>
         <label>
           Sektor
           <select name="sektor" required>
             <option value="">— välj —</option>
-            <option value="industri">Industri</option>
-            <option value="vard">Vård och omsorg</option>
-            <option value="it">IT och digitalisering</option>
-            <option value="bygg">Bygg och anläggning</option>
+            {SEKTORER.map((s) => (
+              <option key={s.value} value={s.value}>{s.label}</option>
+            ))}
           </select>
         </label>
         <button type="submit" disabled={beraknar}>
           {beraknar ? "Beräknar…" : "Beräkna ROI"}
         </button>
-        {fel && <p role="alert">{fel}</p>}
+        {fel && <p className="alert alert-error" role="alert">{fel}</p>}
       </form>
+
       {resultat && (
-        <section aria-label="ROI-resultat">
+        <div className="roi-result">
           <h2>Resultat</h2>
           <dl>
             <dt>ROI</dt>
-            <dd>{resultat.roi_procent.toFixed(1)}%</dd>
+            <dd>{resultat.roi_procent !== null ? `${resultat.roi_procent.toFixed(1)} %` : "—"}</dd>
             <dt>Återbetalningstid</dt>
-            <dd>{resultat.payback_manader} månader</dd>
+            <dd>{resultat.payback_manader !== null ? `${resultat.payback_manader} mån` : "—"}</dd>
             <dt>Nettovinst</dt>
-            <dd>{resultat.netto_vinst_kr.toLocaleString("sv-SE")} kr</dd>
+            <dd>{formatKr(resultat.netto_vinst_kr)}</dd>
           </dl>
-          <h3>Antaganden</h3>
-          <ul>
-            {resultat.antaganden.map((a, i) => <li key={i}>{a}</li>)}
-          </ul>
-        </section>
+          {resultat.antaganden.length > 0 && (
+            <>
+              <h3>Antaganden</h3>
+              <ul style={{ paddingLeft: "1.1rem", fontSize: "0.85rem", color: "var(--muted)" }}>
+                {resultat.antaganden.map((a, i) => <li key={i}>{a}</li>)}
+              </ul>
+            </>
+          )}
+        </div>
       )}
     </section>
   );
