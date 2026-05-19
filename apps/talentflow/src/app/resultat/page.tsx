@@ -1,6 +1,8 @@
 import Link from "next/link";
 import ResultTabs from "@/components/ResultTabs";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
   searchParams: Promise<{ session?: string }>;
 }

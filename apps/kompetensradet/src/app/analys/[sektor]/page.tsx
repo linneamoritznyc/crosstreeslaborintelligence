@@ -4,6 +4,8 @@ import LanskartaD3 from "@/components/LanskartaD3";
 import AIDisclaimer from "@/components/AIDisclaimer";
 import { apiClient } from "@/lib/api-client";
 
+export const dynamic = "force-dynamic";
+
 interface SektorMeta {
   id: string;
   namn: string;

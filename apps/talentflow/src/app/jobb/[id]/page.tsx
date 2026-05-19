@@ -4,6 +4,8 @@ import BackLink from "@/components/BackLink";
 import SourceTag from "@/components/SourceTag";
 import { apiClient } from "@/lib/api-client";
 
+export const dynamic = "force-dynamic";
+
 interface JobDetail {
   id?: string;
   headline?: string;
