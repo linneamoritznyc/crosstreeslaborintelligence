@@ -1,0 +1,417 @@
+/* Kompetensrådet — Jönköpings län */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue:        #004E9A;
+  --blue-dark:   #003A75;
+  --blue-light:  #E8F0FB;
+  --teal:        #0087CC;
+  --surface:     #FFFFFF;
+  --bg:          #F2F5F9;
+  --border:      #CBD5E0;
+  --text:        #1A2332;
+  --muted:       #5A6A7A;
+  --error:       #C0392B;
+  --r:           6px;
+  --shadow:      0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:   0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.04);
+  --font:        -apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+}
+
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+body {
+  font-family: var(--font);
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+
+.site-header {
+  background: var(--blue);
+  color: #fff;
+  padding: 0.875rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,.18);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.site-logo {
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.site-logo span   { font-size: 1.2rem; font-weight: 700; letter-spacing: -.02em; }
+.site-logo small  { font-size: .75rem; opacity: .8; }
+
+.site-header nav  { display: flex; gap: .25rem; flex-wrap: wrap; }
+
+.site-header nav a {
+  color: rgba(255,255,255,.85);
+  text-decoration: none;
+  padding: .375rem .75rem;
+  border-radius: var(--r);
+  font-size: .875rem;
+  font-weight: 500;
+  transition: background .15s, color .15s;
+  white-space: nowrap;
+}
+
+.site-header nav a:hover { background: rgba(255,255,255,.18); color: #fff; }
+
+/* ── MAIN ── */
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+/* ── TYPOGRAPHY ── */
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--blue-dark);
+  line-height: 1.25;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid var(--blue);
+}
+
+h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 2rem 0 1rem;
+}
+
+h2:first-child { margin-top: 0; }
+
+h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 1.5rem 0 .75rem;
+}
+
+p { color: var(--muted); line-height: 1.7; margin-bottom: 1rem; }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+strong { font-weight: 600; }
+small  { font-size: .875rem; color: var(--muted); }
+
+/* ── CARDS / SECTIONS ── */
+
+section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+section:first-of-type { margin-top: 1.5rem; }
+
+/* ── HOME NAV ── */
+
+main > nav > ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+main > nav > ul > li > a {
+  display: flex;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--blue);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  color: var(--blue);
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all .15s;
+}
+
+main > nav > ul > li > a:hover {
+  background: var(--blue-light);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+/* ── TABLES ── */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: .875rem;
+}
+
+thead { background: var(--blue); color: #fff; }
+
+thead th {
+  padding: .75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: .8rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+tbody tr { border-bottom: 1px solid var(--border); }
+tbody tr:hover { background: var(--blue-light); }
+tbody tr:last-child { border-bottom: none; }
+tbody td { padding: .75rem 1rem; color: var(--text); vertical-align: middle; }
+
+/* ── FORMS ── */
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 460px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  font-weight: 500;
+  font-size: .875rem;
+  color: var(--text);
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="file"],
+select, textarea {
+  width: 100%;
+  padding: .625rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  font-size: 1rem;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--surface);
+  transition: border-color .15s, box-shadow .15s;
+  appearance: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(0,78,154,.12);
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%235A6A7A' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right .75rem center;
+  padding-right: 2.5rem;
+}
+
+button {
+  padding: .625rem 1.5rem;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: var(--r);
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+  align-self: flex-start;
+}
+
+button:hover:not(:disabled)  { background: var(--blue-dark); }
+button:active:not(:disabled) { transform: translateY(1px); }
+button:disabled               { opacity: .5; cursor: not-allowed; }
+
+/* ── ROI RESULTS ── */
+
+section[aria-label="ROI-resultat"] dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  background: var(--blue-light);
+  border: 1px solid var(--blue);
+  border-radius: var(--r);
+  padding: 1.5rem;
+  margin: 1rem 0;
+}
+
+dt {
+  font-size: .75rem;
+  color: var(--muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: .25rem;
+}
+
+dd {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--blue-dark);
+}
+
+section[aria-label="ROI-resultat"] h2 { margin-top: 1.5rem; }
+section[aria-label="ROI-resultat"] h3 { margin-top: 1rem; }
+
+section[aria-label="ROI-resultat"] ul {
+  list-style: disc;
+  margin-left: 1.25rem;
+}
+
+section[aria-label="ROI-resultat"] ul li {
+  font-size: .875rem;
+  color: var(--muted);
+  padding: .2rem 0;
+}
+
+/* ── OMSTALLNING LIST ── */
+
+section[aria-label="Omställningsyrken"] > ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+section[aria-label="Omställningsyrken"] > ul > li {
+  padding: 1rem 1.25rem;
+  background: var(--bg);
+  border-radius: var(--r);
+  border-left: 3px solid var(--teal);
+  font-size: .875rem;
+}
+
+section[aria-label="Omställningsyrken"] > ul > li strong {
+  font-size: 1rem;
+  color: var(--blue-dark);
+  display: block;
+  margin-bottom: .25rem;
+}
+
+section[aria-label="Omställningsyrken"] > ul > li > ul {
+  margin-top: .5rem;
+  margin-left: 0;
+  list-style: none;
+}
+
+section[aria-label="Omställningsyrken"] > ul > li > ul > li {
+  font-size: .8rem;
+  color: var(--muted);
+  padding: .15rem 0;
+  border: none;
+  background: none;
+}
+
+/* ── CHATT ── */
+
+section[aria-label="AI-chatt"] ul[aria-live] {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  min-height: 220px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding: 1rem;
+  background: var(--bg);
+  border-radius: var(--r);
+  margin-bottom: 1rem;
+  list-style: none;
+}
+
+section[aria-label="AI-chatt"] ul[aria-live] li {
+  max-width: 85%;
+  padding: .75rem 1rem;
+  border-radius: var(--r);
+  font-size: .875rem;
+  line-height: 1.5;
+  background: none;
+  border-left: none;
+}
+
+section[aria-label="AI-chatt"] ul[aria-live] li[data-role="user"] {
+  align-self: flex-end;
+  background: var(--blue);
+  color: #fff;
+  border-radius: 16px 16px 4px 16px;
+}
+
+section[aria-label="AI-chatt"] ul[aria-live] li[data-role="user"] strong { display: none; }
+
+section[aria-label="AI-chatt"] ul[aria-live] li[data-role="assistant"] {
+  align-self: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px 16px 16px 4px;
+}
+
+section[aria-label="AI-chatt"] ul[aria-live] li[data-role="assistant"] strong {
+  font-size: .7rem;
+  color: var(--muted);
+  display: block;
+  margin-bottom: .2rem;
+  font-weight: 500;
+}
+
+section[aria-label="AI-chatt"] form {
+  flex-direction: row;
+  align-items: center;
+  max-width: 100%;
+  gap: .75rem;
+}
+
+section[aria-label="AI-chatt"] form input { flex: 1; }
+section[aria-label="AI-chatt"] form button { flex-shrink: 0; }
+
+/* ── D3 MAP ── */
+
+section[aria-label="Länkarta"] svg { width: 100%; max-width: 100%; height: auto; }
+
+/* ── ERRORS ── */
+
+[role="alert"] {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: var(--error);
+  padding: .75rem 1rem;
+  border-radius: var(--r);
+  font-size: .875rem;
+  font-weight: 500;
+  margin-top: .5rem;
+}
+
+/* ── BRISTYRKEN TABELL container ── */
+
+section[aria-label="Bristyrken"] { padding: 0; overflow: hidden; }
+section[aria-label="Bristyrken"] table { border-radius: 0; }

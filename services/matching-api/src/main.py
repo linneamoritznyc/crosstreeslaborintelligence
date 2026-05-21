@@ -23,7 +23,7 @@ app.state.limiter = limiter
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.environ["CORS_ORIGINS"].split(","),
+    allow_origins=os.environ.get("CORS_ORIGINS", "https://kompetensradet.crosstrees.se,https://talentflow.crosstrees.se,http://localhost:3000,http://localhost:3001").split(","),
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
