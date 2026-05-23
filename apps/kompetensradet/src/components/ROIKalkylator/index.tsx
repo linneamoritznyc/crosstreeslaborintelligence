@@ -65,29 +65,42 @@ export default function ROIKalkylator() {
   return (
     <section>
       <form onSubmit={handleSubmit}>
-        <label>
-          Antal deltagare
-          <input name="antal" type="number" min="1" defaultValue="30" required />
-        </label>
-        <label>
-          Utbildningskostnad per person (kr)
-          <input name="kostnad" type="number" min="0" defaultValue="120000" required />
-        </label>
-        <label>
-          Sektor
-          <select name="sektor" required defaultValue="industri">
-            <option value="">— välj —</option>
-            {SEKTORER.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.namn}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button type="submit" disabled={beraknar}>
+        <label htmlFor="antal">Antal deltagare</label>
+        <input
+          id="antal"
+          name="antal"
+          type="number"
+          min="1"
+          defaultValue="30"
+          required
+        />
+        <label htmlFor="kostnad">Utbildningskostnad per person (kr)</label>
+        <input
+          id="kostnad"
+          name="kostnad"
+          type="number"
+          min="0"
+          defaultValue="120000"
+          required
+        />
+        <label htmlFor="sektor">Sektor</label>
+        <select id="sektor" name="sektor" required defaultValue="industri">
+          <option value="">— välj —</option>
+          {SEKTORER.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.namn}
+            </option>
+          ))}
+        </select>
+        <br />
+        <button type="submit" disabled={beraknar} style={{ marginTop: "1.5rem" }}>
           {beraknar ? "Beräknar…" : "Beräkna ROI"}
         </button>
-        {fel && <p role="alert">{fel}</p>}
+        {fel && (
+          <p role="alert" style={{ color: "var(--signal-rust)" }}>
+            {fel}
+          </p>
+        )}
       </form>
       {resultat && (
         <section aria-label="ROI-resultat">
@@ -98,21 +111,33 @@ export default function ROIKalkylator() {
             </p>
           ) : (
             <>
-              <dl>
-                <dt>Nettovinst (medelvärde)</dt>
-                <dd>
-                  <strong>{formatMkr(resultat.netto_vinst_kr)}</strong>{" "}
-                  <small>
-                    [95% KI: {formatMkr(resultat.ci_95_low)} — {formatMkr(resultat.ci_95_high)}]
-                  </small>
-                </dd>
-                <dt>ROI</dt>
-                <dd>{resultat.roi_procent?.toFixed(1)}%</dd>
-                <dt>Återbetalningstid</dt>
-                <dd>{resultat.payback_manader} månader</dd>
-                <dt>Nettovinst (exakt belopp)</dt>
-                <dd>{formatKr(resultat.netto_vinst_kr)}</dd>
-              </dl>
+              <table>
+                <tbody>
+                  <tr>
+                    <th>Nettovinst (medelvärde)</th>
+                    <td>
+                      {formatMkr(resultat.netto_vinst_kr)}
+                      <br />
+                      <small className="data">
+                        95% KI: {formatMkr(resultat.ci_95_low)} —{" "}
+                        {formatMkr(resultat.ci_95_high)}
+                      </small>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>ROI</th>
+                    <td>{resultat.roi_procent?.toFixed(1)}%</td>
+                  </tr>
+                  <tr>
+                    <th>Återbetalningstid</th>
+                    <td>{resultat.payback_manader} månader</td>
+                  </tr>
+                  <tr>
+                    <th>Nettovinst exakt</th>
+                    <td>{formatKr(resultat.netto_vinst_kr)}</td>
+                  </tr>
+                </tbody>
+              </table>
               <h3>Antaganden och datakällor</h3>
               <ul>
                 {resultat.antaganden.map((a, i) => (

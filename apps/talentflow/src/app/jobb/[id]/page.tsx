@@ -38,7 +38,7 @@ export default async function JobbDetaljPage({ params }: Props) {
     jobb = await apiClient<AFJob>(`/jobs/${id}`);
   } catch {
     return (
-      <main style={{ maxWidth: 720, margin: "2rem auto", padding: "0 1rem" }}>
+      <main>
         <h1>Annonsen kunde inte hämtas</h1>
         <p>
           Försök igen om en stund. <Link href="/">Tillbaka till start.</Link>
@@ -48,20 +48,18 @@ export default async function JobbDetaljPage({ params }: Props) {
   }
 
   return (
-    <main style={{ maxWidth: 720, margin: "2rem auto", padding: "0 1rem" }}>
+    <main>
       <h1>{readTitle(jobb)}</h1>
-      <p>
-        <strong>{readEmployer(jobb)}</strong>
-        {jobb.workplace_address?.municipality && ` — ${jobb.workplace_address.municipality}`}
+      <p className="coord">
+        {readEmployer(jobb)}
+        {jobb.workplace_address?.municipality && ` · ${jobb.workplace_address.municipality}`}
       </p>
-      <section>
-        <h2>Beskrivning</h2>
-        <p style={{ whiteSpace: "pre-wrap" }}>{readDescription(jobb)}</p>
-      </section>
+      <h2>Beskrivning</h2>
+      <p style={{ whiteSpace: "pre-wrap", maxWidth: "70ch" }}>{readDescription(jobb)}</p>
       {jobb.application_details?.url && (
         <p>
           <a href={jobb.application_details.url} target="_blank" rel="noopener noreferrer">
-            Ansök på arbetsgivarens sida →
+            ANSÖK PÅ ARBETSGIVARENS SIDA →
           </a>
         </p>
       )}

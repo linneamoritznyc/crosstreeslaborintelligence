@@ -12,19 +12,23 @@ export default async function KarriarPage({ searchParams }: Props) {
 
   if (!session) {
     return (
-      <main style={{ maxWidth: 720, margin: "2rem auto", padding: "0 1rem" }}>
+      <main>
         <h1>Din karriärväg</h1>
         <p>
           Ingen CV-session angiven.{" "}
-          <Link href="/">Gå tillbaka och ladda upp ditt CV.</Link>
+          <Link href="/">Tillbaka till start.</Link>
         </p>
       </main>
     );
   }
 
   return (
-    <main style={{ maxWidth: 960, margin: "2rem auto", padding: "0 1rem" }}>
+    <main>
       <h1>Din karriärväg</h1>
+      <p>
+        Beräknad via Personalized PageRank på Arbetsförmedlingens
+        substitutabilitetsgraf.
+      </p>
       <Suspense fallback={<p>Laddar karriärkarta…</p>}>
         <KarriarGraf sessionId={session} />
       </Suspense>

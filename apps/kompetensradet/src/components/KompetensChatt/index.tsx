@@ -54,25 +54,35 @@ export default function KompetensChatt() {
   return (
     <section aria-label="AI-chatt">
       {messages.length === 0 && (
-        <div style={{ marginBottom: "1rem" }}>
-          <p>Exempelfrågor (klicka för att fråga direkt):</p>
-          <ul>
+        <div style={{ margin: "1.5rem 0" }}>
+          <h3>Exempelfrågor</h3>
+          <ul style={{ listStyle: "none", padding: 0 }}>
             {EXAMPELFRAGOR.map((f) => (
-              <li key={f}>
+              <li
+                key={f}
+                style={{
+                  borderTop: "1px solid var(--chart-line-faint)",
+                  padding: "0.5rem 0",
+                }}
+              >
                 <button
                   type="button"
                   onClick={() => send(f)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "#0066cc",
-                    cursor: "pointer",
-                    padding: 0,
-                    textAlign: "left",
-                  }}
                   disabled={skickar}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                    fontFamily: "inherit",
+                    fontSize: "inherit",
+                    color: "var(--signal-rust)",
+                    textTransform: "none",
+                    letterSpacing: 0,
+                    textAlign: "left",
+                    cursor: "pointer",
+                  }}
                 >
-                  {f}
+                  → {f}
                 </button>
               </li>
             ))}
@@ -85,20 +95,28 @@ export default function KompetensChatt() {
             key={i}
             data-role={m.role}
             style={{
-              padding: "0.75rem 1rem",
-              margin: "0.5rem 0",
-              background: m.role === "user" ? "#eef" : "#f5f5f5",
-              borderRadius: "6px",
+              borderTop: "1px solid var(--chart-line)",
+              padding: "1rem 0",
               whiteSpace: "pre-wrap",
             }}
           >
-            <strong>{m.role === "user" ? "Du" : "Rådgivaren"}:</strong>{" "}
+            <small className="data">
+              {m.role === "user" ? "DU" : "RÅDGIVAREN"}
+            </small>
+            <br />
             {m.content}
           </li>
         ))}
         {skickar && (
-          <li style={{ padding: "0.5rem 1rem", color: "#666" }}>
-            <em>Rådgivaren skriver…</em>
+          <li
+            style={{
+              borderTop: "1px solid var(--chart-line)",
+              padding: "1rem 0",
+              fontStyle: "italic",
+              color: "var(--ink-faint)",
+            }}
+          >
+            Rådgivaren skriver…
           </li>
         )}
       </ul>
@@ -107,7 +125,13 @@ export default function KompetensChatt() {
           e.preventDefault();
           send(input);
         }}
-        style={{ display: "flex", gap: "0.5rem", marginTop: "1rem" }}
+        style={{
+          display: "flex",
+          gap: "0.5rem",
+          marginTop: "1.5rem",
+          borderTop: "1px solid var(--ink)",
+          paddingTop: "1rem",
+        }}
       >
         <input
           ref={inputRef}
@@ -116,7 +140,7 @@ export default function KompetensChatt() {
           placeholder="Ställ en fråga om arbetsmarknaden i Jönköpings län…"
           disabled={skickar}
           aria-label="Din fråga"
-          style={{ flex: 1, padding: "0.5rem" }}
+          style={{ flex: 1 }}
         />
         <button type="submit" disabled={skickar || !input.trim()}>
           {skickar ? "Skickar…" : "Skicka"}

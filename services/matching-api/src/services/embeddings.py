@@ -1,7 +1,7 @@
 """Session-bunden kompetenslagring.
 
-Redis används för session-baserad skill-lagring (1h TTL per CV).
-Tolerant mot saknad Redis — UI får tom lista och degraderar gracefully.
+Redis används primärt. Faller tillbaka till in-memory dict om Redis saknas
+— transient men räcker för demo-läge när containern lever.
 """
 from __future__ import annotations
 
@@ -9,6 +9,8 @@ import json
 import os
 
 from .cache import EMBEDDING_TTL, redis_client
+
+_memory_sessions: dict[str, list[str]] = {}
 
 
 async def store_session_skills(session_id: str, skill_ids: list[str]) -> None:
@@ -19,17 +21,17 @@ async def store_session_skills(session_id: str, skill_ids: list[str]) -> None:
             json.dumps(skill_ids),
         )
     except Exception:
-        pass
+        _memory_sessions[session_id] = skill_ids
 
 
 async def get_session_skill_ids(session_id: str) -> list[str]:
     try:
         raw = await redis_client.get(f"session:{session_id}:skills")
+        if raw is not None:
+            return json.loads(raw)
     except Exception:
-        return []
-    if raw is None:
-        return []
-    return json.loads(raw)
+        pass
+    return _memory_sessions.get(session_id, [])
 
 
 def qdrant_configured() -> bool:

@@ -12,21 +12,24 @@ export default async function ResultatPage({ searchParams }: Props) {
 
   if (!session) {
     return (
-      <main style={{ maxWidth: 720, margin: "2rem auto", padding: "0 1rem" }}>
+      <main>
         <h1>Dina matchningar</h1>
         <p>
           Ingen CV-session angiven.{" "}
-          <Link href="/">Gå tillbaka och ladda upp ditt CV.</Link>
+          <Link href="/">Tillbaka till start.</Link>
         </p>
       </main>
     );
   }
 
   return (
-    <main style={{ maxWidth: 960, margin: "2rem auto", padding: "0 1rem" }}>
+    <main>
       <h1>Dina matchningar</h1>
-      <nav style={{ marginBottom: "1rem" }}>
-        <Link href={`/karriar?session=${session}`}>Se karriärpotential →</Link>
+      <p>Live från Arbetsförmedlingens Platsbanken, rankade på kompetensöverlapp.</p>
+      <nav style={{ paddingTop: "0.75rem", marginBottom: "1.5rem" }}>
+        <small className="data">
+          <Link href={`/karriar?session=${session}`}>→ KARRIÄRPOTENTIAL</Link>
+        </small>
       </nav>
       <Suspense fallback={<p>Laddar matchningar…</p>}>
         <JobbLista sessionId={session} />

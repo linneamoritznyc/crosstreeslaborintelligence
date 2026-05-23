@@ -1,10 +1,19 @@
+import Link from "next/link";
 import ROIKalkylator from "@/components/ROIKalkylator";
 
 export default function ROIPage() {
   return (
     <main>
-      <h1>ROI-kalkylator för utbildningsinsatser</h1>
-      <p>Beräkna avkastning på investering för kompetensutvecklingsprogram.</p>
+      <nav style={{ paddingTop: "0.5rem", marginBottom: "1rem" }}>
+        <small className="data">
+          <Link href="/">← TILLBAKA</Link>
+        </small>
+      </nav>
+      <h1>ROI-kalkylator</h1>
+      <p>
+        Beräkna avkastning på utbildningsinsats med 95% konfidensintervall via
+        bootstrap-resampling. Alla antaganden visas explicit.
+      </p>
       <ROIKalkylator />
     </main>
   );

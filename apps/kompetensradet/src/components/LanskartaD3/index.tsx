@@ -55,40 +55,67 @@ export default function LanskartaD3({ sektor }: Props) {
       .scale(14000)
       .translate([width / 2, height / 2]);
 
+    // Chart grid background — latitude/longitude graticule
+    const graticuleColor = "#d8cfb8";
+    for (let lat = 57.0; lat <= 58.5; lat += 0.25) {
+      const y = projection([14.5, lat])?.[1];
+      if (y !== undefined) {
+        svg
+          .append("line")
+          .attr("x1", 0).attr("x2", width)
+          .attr("y1", y).attr("y2", y)
+          .attr("stroke", graticuleColor)
+          .attr("stroke-width", 0.5);
+      }
+    }
+    for (let lon = 13.0; lon <= 16.0; lon += 0.5) {
+      const x = projection([lon, 57.65])?.[0];
+      if (x !== undefined) {
+        svg
+          .append("line")
+          .attr("y1", 0).attr("y2", height)
+          .attr("x1", x).attr("x2", x)
+          .attr("stroke", graticuleColor)
+          .attr("stroke-width", 0.5);
+      }
+    }
+
     const maxBrist = d3.max(data, (d) => d.brist_index) ?? 1;
     const colorScale = d3
-      .scaleSequential(d3.interpolateReds)
+      .scaleSequential((t) => d3.interpolateRgb("#f5f0e8", "#7a2e1a")(t))
       .domain([0, Math.max(maxBrist, 1)]);
 
-    svg
-      .selectAll("circle")
+    const g = svg.append("g");
+
+    g.selectAll("circle")
       .data(data)
       .join("circle")
       .attr("cx", (d) => projection([d.lon, d.lat])?.[0] ?? 0)
       .attr("cy", (d) => projection([d.lon, d.lat])?.[1] ?? 0)
-      .attr("r", (d) => 8 + Math.sqrt(d.brist_index) * 2)
+      .attr("r", (d) => 10 + Math.sqrt(d.brist_index) * 2.5)
       .attr("fill", (d) => colorScale(d.brist_index))
-      .attr("stroke", "#333")
+      .attr("stroke", "#1a1a18")
       .attr("stroke-width", 1)
       .attr("opacity", 0.85)
       .append("title")
       .text((d) => `${d.namn}: ${d.antal_annonser} annonser`);
 
-    svg
-      .selectAll("text.kommun")
+    g.selectAll("text.kommun")
       .data(data)
       .join("text")
       .attr("class", "kommun")
-      .attr("x", (d) => (projection([d.lon, d.lat])?.[0] ?? 0) + 12)
+      .attr("x", (d) => (projection([d.lon, d.lat])?.[0] ?? 0) + 14)
       .attr("y", (d) => (projection([d.lon, d.lat])?.[1] ?? 0) + 4)
-      .attr("font-size", "11px")
-      .attr("fill", "#222")
-      .text((d) => d.namn);
+      .attr("font-family", "Courier Prime, monospace")
+      .attr("font-size", "10px")
+      .attr("fill", "#1a1a18")
+      .text((d) => d.namn.toUpperCase());
   }, [data]);
 
   return (
     <section aria-label="Länkarta">
       <h2>Bristkarta — Jönköpings län</h2>
+      <p className="coord">57°24&prime;N · 15°04&prime;E — projektion EPSG:3857</p>
       {fel && <p role="alert">{fel}</p>}
       {!fel && !data && <p>Laddar kartdata…</p>}
       {data && data.every((d) => d.antal_annonser === 0) && (
@@ -102,10 +129,15 @@ export default function LanskartaD3({ sektor }: Props) {
         height={480}
         role="img"
         aria-label="Bristkarta per kommun i Jönköpings län"
-        style={{ background: "#f8f9fb", border: "1px solid #e0e0e0" }}
+        style={{
+          background: "var(--parchment)",
+          border: "1px solid var(--ink)",
+          maxWidth: "100%",
+          height: "auto",
+        }}
       />
       <DataLabel
-        source="SCB Geodata 2025 (kommungränser) + AF Platsbanken (annonsräkning)"
+        source="SCB Geodata RegSO 2025 + AF Platsbanken"
         date={new Date().toLocaleDateString("sv-SE")}
       />
     </section>

@@ -1,0 +1,258 @@
+/* Crosstrees brand — nautical chart aesthetic.
+   Light mode only. Parchment background, hand-drawn ink lines, no shadows.
+*/
+
+@import url("https://fonts.googleapis.com/css2?family=Alumni+Sans:wght@900&family=IM+Fell+English:ital@1&family=Libre+Baskerville:wght@400;700&family=Courier+Prime:wght@400;700&display=swap");
+
+:root {
+  --parchment: #f5f0e8;
+  --ink: #1a1a18;
+  --ink-soft: #4a4a44;
+  --ink-faint: #6e6a60;
+  --signal-rust: #7a2e1a;
+  --chart-line: #c8bfae;
+  --chart-line-faint: #e0d8c4;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--parchment);
+  color: var(--ink);
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  padding: 2.5rem 1.5rem 4rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-family: "Alumni Sans", "Alumni Sans Condensed", Impact, sans-serif;
+  font-weight: 900;
+  font-stretch: condensed;
+  font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  margin: 0.5rem 0 1rem;
+  line-height: 1.05;
+}
+
+h2 {
+  font-family: "IM Fell English", "Libre Baskerville", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.6rem;
+  margin: 2rem 0 0.75rem;
+  letter-spacing: 0.01em;
+}
+
+h3 {
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin: 1.25rem 0 0.5rem;
+}
+
+p {
+  margin: 0 0 0.85rem;
+  max-width: 64ch;
+}
+
+a {
+  color: var(--signal-rust);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Data, coordinates, technical labels, CTAs */
+small,
+code,
+.coord,
+.data,
+button[type="submit"],
+input,
+select,
+th,
+td {
+  font-family: "Courier Prime", "Courier New", monospace;
+}
+
+small {
+  color: var(--ink-faint);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+}
+
+button,
+button[type="submit"] {
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--parchment);
+  color: var(--signal-rust);
+  border: 1px solid var(--signal-rust);
+  padding: 0.7rem 1.4rem;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background-color 120ms linear;
+}
+
+button:hover:not(:disabled) {
+  background: var(--signal-rust);
+  color: var(--parchment);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="file"],
+input:not([type]),
+select,
+textarea {
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-size: 0.95rem;
+  background: var(--parchment);
+  border: 1px solid var(--chart-line);
+  border-radius: 0;
+  padding: 0.55rem 0.7rem;
+  color: var(--ink);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 1px solid var(--signal-rust);
+  outline-offset: 1px;
+}
+
+label {
+  display: block;
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0.85rem 0 0.25rem;
+}
+
+/* Cartographic tables — fine ink lines */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.5rem 0 1.5rem;
+  font-size: 0.92rem;
+}
+
+th,
+td {
+  border-bottom: 1px solid var(--chart-line-faint);
+  padding: 0.55rem 0.6rem;
+  text-align: left;
+}
+
+th {
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--ink);
+}
+
+/* Dividers, nav, footers — chart contour lines */
+hr,
+nav,
+footer {
+  border: none;
+  border-top: 1px solid var(--chart-line);
+}
+
+ul {
+  padding-left: 1.25rem;
+}
+
+li {
+  margin: 0.25rem 0;
+}
+
+article,
+section {
+  margin: 1.5rem 0;
+}
+
+aside[role="note"] {
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--ink-soft);
+  border-left: 1px solid var(--signal-rust) !important;
+  background: transparent !important;
+  padding: 0.5rem 1rem !important;
+  margin: 1rem 0 !important;
+}
+
+aside[role="note"] strong {
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-style: normal;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--signal-rust);
+}
+
+/* Brand mark / wordmark */
+.wordmark {
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  color: var(--ink);
+}
+
+.coord {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.04em;
+}
+
+/* Hero masthead */
+.masthead {
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding: 1.5rem 0;
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.masthead h1 {
+  margin: 0;
+}

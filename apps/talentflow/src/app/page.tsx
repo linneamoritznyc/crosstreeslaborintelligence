@@ -1,30 +1,48 @@
 import CVUpload from "@/components/CVUpload";
 import AIActDisclaimer from "@/components/AIActDisclaimer";
+import DemoSession from "@/components/DemoSession";
 
 export default function StartPage() {
   return (
-    <main style={{ maxWidth: 720, margin: "2rem auto", padding: "0 1rem" }}>
-      <h1>TalentFlow</h1>
+    <main>
+      <h1>Navigera på kompetens, inte titlar</h1>
       <p>
-        Ladda upp ditt CV och se vad du är värd på arbetsmarknaden. Få
-        jobbmatchningar, karriärvägar och konkreta utbildningsförslag.
+        Ladda upp ditt CV och få jobb och karriärvägar som faktiskt matchar dina
+        kompetenser — inte bara dina tidigare titlar.
       </p>
+
       <AIActDisclaimer variant="intro" />
-      <p style={{ fontSize: "0.9rem", color: "#444" }}>
-        <strong>Datakällor:</strong> Arbetsförmedlingens Platsbanken, AF
-        substitutabilitetsdata, ESCO-kompetenstaxonomi, SCB Lönestrukturstatistik
-        2024.
-      </p>
-      <p style={{ fontSize: "0.9rem", color: "#444" }}>
-        <strong>Integritet:</strong> Ditt CV bearbetas av AI för att extrahera
-        kompetenser. Inget sparas permanent. Resultatet är tillgängligt i en
-        timme och försvinner sedan automatiskt.
-      </p>
-      <p style={{ fontSize: "0.85rem", color: "#666" }}>
-        Utvecklare: Crosstrees Labor Intelligence, Vetlanda, Sverige —{" "}
-        kontakt@crosstrees.se
-      </p>
-      <CVUpload />
+
+      <section>
+        <h2>Ladda upp ditt CV</h2>
+        <CVUpload />
+      </section>
+
+      <section>
+        <h2>Eller pröva en demoprofil</h2>
+        <p>Utan att ladda upp något. Välj en exempelyrkesgrupp och se flödet.</p>
+        <DemoSession />
+      </section>
+
+      <section>
+        <h3>Datakällor</h3>
+        <p>
+          Arbetsförmedlingens Platsbanken, AF substitutabilitetsdata,
+          ESCO-kompetenstaxonomi, SCB Lönestrukturstatistik 2024.
+        </p>
+        <h3>Integritet</h3>
+        <p>
+          Ditt CV bearbetas av AI för att extrahera kompetenser. Inget sparas
+          permanent. Resultatet är tillgängligt i en timme och försvinner sedan
+          automatiskt.
+        </p>
+      </section>
+
+      <footer style={{ paddingTop: "1.5rem", marginTop: "3rem" }}>
+        <small className="data">
+          UTVECKLARE — CROSSTREES LABOR INTELLIGENCE · VETLANDA · KONTAKT@CROSSTREES.SE
+        </small>
+      </footer>
     </main>
   );
 }
