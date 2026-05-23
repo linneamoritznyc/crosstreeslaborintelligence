@@ -2,6 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "pnpm --filter=kompetensgrafen build",
   "outputDirectory": "apps/kompetensgrafen/.next",
-  "installCommand": "pnpm install --no-frozen-lockfile",
+  "installCommand": "npm install -g pnpm@10.13.1 && pnpm install --no-frozen-lockfile",
   "framework": "nextjs"
 }
