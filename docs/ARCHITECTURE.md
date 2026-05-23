@@ -3,10 +3,10 @@
 ## Översikt
 
 ```
-Medborgare            Kompetensrådet
+Medborgare            Kompetensgrafen
     │                       │
     ▼                       ▼
-TalentFlow           Kompetensrådet
+TalentFlow           Kompetensgrafen
 (Next.js → Vercel)   (Next.js → Vercel)
     │                       │
     └──────────┬────────────┘
@@ -25,7 +25,7 @@ TalentFlow           Kompetensrådet
 1. **CV-uppladdning**: TalentFlow → `/cv/parse` → Claude AI → skill-ID:n → Redis-session
 2. **Jobbmatchning**: skill-ID:n → `/match/score` → `calculate_fit_score()` → Wilson-CI
 3. **Karriärgraf**: Neo4j SUBSTITUTABLE_BY-relationer → PageRank → rekommenderade nästa steg
-4. **Regional analys**: SCB PxWebApi → `/kompetensradet/brist` → BristTabell
+4. **Regional analys**: SCB PxWebApi → `/kompetensgrafen/brist` → BristTabell
 
 ## Skalning
 

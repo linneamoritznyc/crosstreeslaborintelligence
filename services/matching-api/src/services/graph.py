@@ -34,10 +34,10 @@ async def get_career_graph(session_id: str) -> dict:
     async with _driver.session() as db:
         result = await db.run(
             """
-            MATCH (o:Occupation)-[r:SUBSTITUTABLE_BY]->(target:Occupation)
+            MATCH (o:Occupation)-[r:SUBSTITUTABLE_WITH]->(target:Occupation)
             RETURN o.id AS from_id, o.name AS from_name,
                    target.id AS to_id, target.name AS to_name,
-                   r.score AS score, r.direction AS direction
+                   r.score AS score, null AS direction
             LIMIT 50
             """
         )

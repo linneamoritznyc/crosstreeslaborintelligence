@@ -6,7 +6,7 @@ import os
 
 from .routers import (
     occupations, skills, recommend, match,
-    jobs, cv, jobed, trends, kompetensradet, chatt, health
+    jobs, cv, jobed, trends, kompetensgrafen, chatt, health, demo
 )
 from .middleware.logging import setup_logging
 from .middleware.rate_limit import limiter
@@ -21,10 +21,12 @@ app = FastAPI(
 
 app.state.limiter = limiter
 
+_cors_default = "http://localhost:3000,http://localhost:3001"
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.environ.get("CORS_ORIGINS", "*").split(","),
-    allow_methods=["GET", "POST"],
+    allow_origins=os.environ.get("CORS_ORIGINS", _cors_default).split(","),
+    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -36,6 +38,7 @@ app.include_router(jobs.router, prefix="/jobs", tags=["Jobb"])
 app.include_router(cv.router, prefix="/cv", tags=["CV"])
 app.include_router(jobed.router, prefix="/jobed", tags=["Utbildning"])
 app.include_router(trends.router, prefix="/trends", tags=["Trender"])
-app.include_router(kompetensradet.router, prefix="/kompetensradet", tags=["Kompetensrådet"])
+app.include_router(kompetensgrafen.router, prefix="/kompetensgrafen", tags=["Kompetensgrafen"])
 app.include_router(chatt.router, prefix="/chatt", tags=["Chatt"])
 app.include_router(health.router, tags=["Hälsa"])
+app.include_router(demo.router, prefix="/demo", tags=["Demo"])
