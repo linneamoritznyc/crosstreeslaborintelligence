@@ -5,7 +5,7 @@
 Två separata Next.js-applikationer med gemensam FastAPI-backend:
 
 - **TalentFlow** (`talentflow.crosstrees.se`): CV-uppladdning, jobbmatchning, karriärplanering för medborgare
-- **Kompetensrådet** (`kompetensradet.crosstrees.se`): Regional arbetsmarknadsanalys för Jönköpings läns kompetensråd
+- **Kompetensgrafen** (`kompetensgrafen.crosstrees.se`): Regional arbetsmarknadsanalys för Jönköpings läns kompetensråd
 
 ## 2. Teknisk stack
 

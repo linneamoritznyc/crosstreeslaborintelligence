@@ -8,7 +8,7 @@ const DISCLAIMERS: Record<NonNullable<Props["variant"]>, string> = {
   graph:
     "Karriärövergångarna är AI-genererade rekommendationer baserade på Arbetsförmedlingens substitutabilitetsdata. Beslut fattas av användaren.",
   chat:
-    "Detta är en AI-genererad analys. Beslut fattas av ansvarig handläggare vid Kompetensrådet.",
+    "Detta är en AI-genererad analys. Beslut fattas av ansvarig handläggare vid Kompetensgrafen.",
   roi:
     "ROI-beräkningen är en uppskattning baserad på SCB- och AF-data. Antaganden visas explicit. Beslut fattas av ansvarig handläggare.",
 };

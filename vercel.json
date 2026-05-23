@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "pnpm --filter=kompetensradet build",
-  "outputDirectory": "apps/kompetensradet/.next",
+  "buildCommand": "pnpm --filter=kompetensgrafen build",
+  "outputDirectory": "apps/kompetensgrafen/.next",
   "installCommand": "pnpm install --no-frozen-lockfile",
   "framework": "nextjs"
 }

@@ -14,8 +14,8 @@ Den svenska arbetsmarknaden lider av strukturella matchningsproblem:
 - Anställda som vill planera karriärbyte
 - Nyexaminerade som söker sin första tjänst
 
-### Kompetensrådet — regionala tjänstemän
-- Handläggare på Kompetensrådet i Jönköpings län
+### Kompetensgrafen — regionala tjänstemän
+- Handläggare på Kompetensgrafen i Jönköpings län
 - Beslutsfattare som behöver underlag för utbildningsinvesteringar
 
 ## Kärnfunktioner
@@ -27,7 +27,7 @@ Den svenska arbetsmarknaden lider av strukturella matchningsproblem:
 4. Kompetensgapanalys mot målyrke
 5. Utbildningsrekommendationer (Jobed Connect)
 
-### Kompetensrådet
+### Kompetensgrafen
 1. Bristyrkesöversikt per sektor och kommun
 2. Substitutabilitetskarta för omställningsplanering
 3. ROI-kalkylator för utbildningsinvesteringar

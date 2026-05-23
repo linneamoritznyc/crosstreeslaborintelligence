@@ -4,7 +4,7 @@ import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Kompetensrådet — Jönköpings län",
+  title: "Kompetensgrafen — Jönköpings län",
   description: "Regional arbetsmarknadsanalys och kompetensstyrning",
 };
 
@@ -13,7 +13,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="sv">
       <body>
         <div className="bar">
-          <Link href="/" className="mark">Crosstrees · Kompetensrådet</Link>
+          <Link href="/" className="mark">Crosstrees · Kompetensgrafen</Link>
           <nav className="nav">
             <Link href="/">Översikt</Link>
             <Link href="/omstallning">Omställning</Link>

@@ -17,7 +17,7 @@ interface Props {
 export default async function BristTabell({ sektor }: Props) {
   let data: BristYrke[];
   try {
-    data = await apiClient<BristYrke[]>(`/kompetensradet/brist?sektor=${sektor}`);
+    data = await apiClient<BristYrke[]>(`/kompetensgrafen/brist?sektor=${sektor}`);
   } catch {
     return (
       <section aria-label="Bristyrken">

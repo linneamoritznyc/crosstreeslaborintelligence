@@ -91,7 +91,7 @@ async def calculate_roi(antal: int, kostnad_kr: float, sektor: str) -> dict:
 
 
 async def generate_pdf_report(sektor: str) -> bytes:
-    """Genererar PDF-rapport på svenska för Kompetensrådet.
+    """Genererar PDF-rapport på svenska för Kompetensgrafen.
 
     Producerar välformaterad PDF med reportlab. Returnerar tom byte-sträng
     vid saknad data — aldrig fabricerat innehåll.
@@ -108,7 +108,7 @@ async def generate_pdf_report(sektor: str) -> bytes:
         doc = SimpleDocTemplate(buffer, pagesize=A4)
         styles = getSampleStyleSheet()
         story = [
-            Paragraph(f"Kompetensrådet i Jönköpings län — Rapport: {sektor}", styles["Title"]),
+            Paragraph(f"Kompetensgrafen i Jönköpings län — Rapport: {sektor}", styles["Title"]),
             Spacer(1, 12),
             Paragraph("Bristyrken i länet", styles["Heading2"]),
         ]
@@ -122,7 +122,7 @@ async def generate_pdf_report(sektor: str) -> bytes:
     except ImportError:
         log.warning("scb.pdf_report.reportlab_missing", sektor=sektor)
         lines = [
-            f"Kompetensrådet i Jönköpings län — Rapport: {sektor}".encode("utf-8"),
+            f"Kompetensgrafen i Jönköpings län — Rapport: {sektor}".encode("utf-8"),
             b"",
             b"Bristyrken:",
         ]

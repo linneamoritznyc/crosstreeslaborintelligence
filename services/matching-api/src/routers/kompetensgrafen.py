@@ -1,4 +1,4 @@
-"""Kompetensrådet-router — Neo4j + AF Platsbanken som primära källor.
+"""Kompetensgrafen-router — Neo4j + AF Platsbanken som primära källor.
 
 PDF-export, ROI-kalkyl och karta delegeras till dedikerade service-moduler.
 Alla endpunkter degraderar enligt matrisen om beroenden saknas.
@@ -14,9 +14,9 @@ from ..services.cache import (
     OCCUPATION_OVERVIEW_TTL,
     get_with_swr,
 )
-from ..services.kompetensradet_geo import get_karta_for_sektor
-from ..services.kompetensradet_roi import calculate_roi, generate_pdf_report
-from ..services.kompetensradet_service import (
+from ..services.kompetensgrafen_geo import get_karta_for_sektor
+from ..services.kompetensgrafen_roi import calculate_roi, generate_pdf_report
+from ..services.kompetensgrafen_service import (
     get_brist_for_sektor,
     get_omstallning,
     list_occupations_for_sektor,
@@ -66,7 +66,7 @@ async def lista_sektorer():
 async def brist_yrken(sektor: str = Query(...)):
     _validera(sektor)
     return await get_with_swr(
-        f"kompetensradet:brist:{sektor}",
+        f"kompetensgrafen:brist:{sektor}",
         lambda: get_brist_for_sektor(sektor),
         OCCUPATION_OVERVIEW_TTL,
         JOB_SEARCH_REVALIDATE_AFTER,
@@ -77,7 +77,7 @@ async def brist_yrken(sektor: str = Query(...)):
 async def karta_data(sektor: str = Query(...)):
     _validera(sektor)
     return await get_with_swr(
-        f"kompetensradet:karta:{sektor}",
+        f"kompetensgrafen:karta:{sektor}",
         lambda: get_karta_for_sektor(sektor),
         OCCUPATION_OVERVIEW_TTL,
         JOB_SEARCH_REVALIDATE_AFTER,

@@ -28,7 +28,7 @@ Crosstrees klassificeras som **högrisk-AI-system** enligt EU AI Act Bilaga III,
 
 ### Artikel 14 — Mänsklig tillsyn
 - **Krav**: Möjlighet till mänsklig override av AI-beslut
-- **Implementation**: Kompetensrådet-handläggare kan åsidosätta algoritmiska rekommendationer
+- **Implementation**: Kompetensgrafen-handläggare kan åsidosätta algoritmiska rekommendationer
 
 ### Artikel 17 — Kvalitetsledningssystem
 - **Krav**: Dokumenterat QMS

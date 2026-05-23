@@ -20,7 +20,7 @@ Systemet består av två separata produkter med distinkta målgrupper:
 | Produkt | Målgrupp | Syfte |
 |---|---|---|
 | TalentFlow | Svenska medborgare | Kostnadsfritt karriärverktyg — CV-baserad matchning mot Platsbankens annonser och AF:s substitutabilitetsgraf |
-| Kompetensrådet | Regionalt Kompetensråd (B2G) | Beslutsunderlag för YH-utbildningar, omställningsinsatser och kompetensförsörjning |
+| Kompetensgrafen | Regionalt Kompetensråd (B2G) | Beslutsunderlag för YH-utbildningar, omställningsinsatser och kompetensförsörjning |
 
 ### 1.3 AI-systemets klassificering
 Båda produkterna klassificeras som **högrisk-AI-system** enligt **Bilaga III, punkt 4**
@@ -50,7 +50,7 @@ Crosstrees kombinerar tre oberoende beräkningar för varje matchning:
 - Källa: AF Platsbanken (live), AF Yrkesbarometern (halvårsvis), SCB Yrkesregistret
 - Geografisk filtrering: Jönköpings länskod 06
 
-### 2.2 Fit-score-beräkning (TalentFlow + Kompetensrådet)
+### 2.2 Fit-score-beräkning (TalentFlow + Kompetensgrafen)
 Viktad TF-IDF-intersection med Wilson-score-konfidensintervall:
 
 ```
@@ -62,7 +62,7 @@ score = (matchade_required_idf / required_idf_total) × 0.60
 Konfidensintervall via Wilson-score 95% (z=1.96). Returnerar **None** om
 jobbdata saknas — aldrig fabricerade default-värden.
 
-### 2.3 ROI-kalkylator (Kompetensrådet)
+### 2.3 ROI-kalkylator (Kompetensgrafen)
 Bootstrap-resampling (n=1000) över historiska placeringsgrader per sektor.
 Returnerar 95%-konfidensintervall via 2.5- och 97.5-percentilen. Punkt-
 estimat utan CI är aldrig acceptabelt.
@@ -171,7 +171,7 @@ Obligatoriska AI Act-fraser injiceras automatiskt:
 
 - **TalentFlow CV-uppladdning:** informationstext före upload (se README)
 - **Varje Fit Score:** komponent `<AIActDisclaimer variant="score" />`
-- **Kompetensrådet AI-chatt:** Systemmeddelande prependerar och appenderar
+- **Kompetensgrafen AI-chatt:** Systemmeddelande prependerar och appenderar
   obligatoriska fraser ("Som AI-system analyserar jag följande data…" / "Detta
   är en AI-genererad analys. Beslut fattas av ansvarig handläggare…")
 

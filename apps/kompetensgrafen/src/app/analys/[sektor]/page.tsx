@@ -14,7 +14,7 @@ export default async function AnalysPage({ params }: Props) {
   let sektorNamn = sektor;
   try {
     const sektorData = await apiClient<{ namn: string }>(
-      `/kompetensradet/sektorer/${sektor}`
+      `/kompetensgrafen/sektorer/${sektor}`
     );
     sektorNamn = sektorData.namn;
   } catch {

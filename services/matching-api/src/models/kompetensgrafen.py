@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field, HttpUrl
 # Prognosbedömningar enligt SCB AM0208 — endast tre giltiga värden.
 Prognos = Literal["ökande", "stabil", "minskande"]
 
-# Sektorer som Kompetensrådet i Jönköpings län täcker.
+# Sektorer som Kompetensgrafen i Jönköpings län täcker.
 Sektor = Literal["industri", "vård", "it", "bygg", "handel", "transport", "övrigt"]
 
 

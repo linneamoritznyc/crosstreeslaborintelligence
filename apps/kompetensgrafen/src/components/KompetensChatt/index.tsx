@@ -42,7 +42,7 @@ export default function KompetensChatt() {
         {
           role: "assistant",
           content:
-            "Som AI-system analyserar jag följande data: ingen tillgänglig (anslutning misslyckades).\n\nAI-analys tillfälligt otillgänglig — försök igen om en stund.\n\nDetta är en AI-genererad analys. Beslut fattas av ansvarig handläggare vid Kompetensrådet.",
+            "Som AI-system analyserar jag följande data: ingen tillgänglig (anslutning misslyckades).\n\nAI-analys tillfälligt otillgänglig — försök igen om en stund.\n\nDetta är en AI-genererad analys. Beslut fattas av ansvarig handläggare vid Kompetensgrafen.",
         },
       ]);
     } finally {

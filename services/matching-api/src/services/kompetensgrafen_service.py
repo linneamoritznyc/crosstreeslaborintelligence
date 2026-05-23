@@ -1,4 +1,4 @@
-"""Kompetensrådet-specifik logik: omställningsanalys, brist, karta, ROI.
+"""Kompetensgrafen-specifik logik: omställningsanalys, brist, karta, ROI.
 
 Använder Neo4j-data (substitutabilitetsgraf) som primär källa, AF Platsbanken
 för live-annonsräkning. SCB-anrop är optionella tilläggsdata.
@@ -155,7 +155,7 @@ async def get_brist_for_sektor(sektor: str) -> list[dict]:
         for o, antal in zip(yrken, antal_list)
     ]
     rows.sort(key=lambda r: r["antal_annonser"], reverse=True)
-    log.info("kompetensradet.brist", sektor=sektor, yrken=len(rows))
+    log.info("kompetensgrafen.brist", sektor=sektor, yrken=len(rows))
     return rows
 
 

@@ -45,8 +45,8 @@ const LAYERS = [
 
 export default function StartPage() {
   const regionUrl =
-    process.env.NEXT_PUBLIC_KOMPETENSRADET_URL ??
-    "https://kompetensradet.crosstrees.se";
+    process.env.NEXT_PUBLIC_KOMPETENSGRAFEN_URL ??
+    "https://kompetensgrafen.crosstrees.se";
 
   return (
     <main>

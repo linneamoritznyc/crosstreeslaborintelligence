@@ -7,7 +7,7 @@ AI-drivet infrastrukturlager för den svenska arbetsmarknaden.
 | Produkt | URL | Målgrupp |
 |---|---|---|
 | TalentFlow | talentflow.crosstrees.se | Svenska medborgare |
-| Kompetensrådet | kompetensradet.crosstrees.se | Kompetensrådet i Jönköpings län |
+| Kompetensgrafen | kompetensgrafen.crosstrees.se | Kompetensgrafen i Jönköpings län |
 
 ## Arkitektur
 
@@ -79,8 +79,8 @@ QDRANT_API_KEY=<qdrant-nyckel>
 
 Skapa två separata Vercel-projekt från samma repo:
 
-**Kompetensrådet:**
-- Root Directory: `apps/kompetensradet`
+**Kompetensgrafen:**
+- Root Directory: `apps/kompetensgrafen`
 - Vercel auto-detekterar Next.js
 - Env: `NEXT_PUBLIC_API_URL=https://<railway-url>`
 
@@ -99,7 +99,7 @@ Seed-data laddas via Cypher i Neo4j Browser (engångskörning) eller via
 ```
 curl https://<railway-url>/health
 curl https://<railway-url>/demo/neo4j-check
-curl https://<railway-url>/kompetensradet/sektorer
+curl https://<railway-url>/kompetensgrafen/sektorer
 ```
 
 ## Kontakt

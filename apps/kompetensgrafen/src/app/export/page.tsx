@@ -30,7 +30,7 @@ export default async function ExportPage({ searchParams }: Props) {
         antagandestabell och datakällor.
       </p>
       <form
-        action={`${process.env.NEXT_PUBLIC_API_URL ?? ""}/kompetensradet/export/pdf`}
+        action={`${process.env.NEXT_PUBLIC_API_URL ?? ""}/kompetensgrafen/export/pdf`}
         method="GET"
       >
         <label htmlFor="sektor">Sektor</label>

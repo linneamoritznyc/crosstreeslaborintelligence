@@ -1,7 +1,7 @@
-"""AI-chatt för Kompetensrådet — kontextinjektion + obligatoriska AI Act-fraser.
+"""AI-chatt för Kompetensgrafen — kontextinjektion + obligatoriska AI Act-fraser.
 
 Obligatoriska inlednings- och avslutningsfraser läggs på varje svar (AI Act
-Artikel 50 + interna riktlinjer för Kompetensrådet).
+Artikel 50 + interna riktlinjer för Kompetensgrafen).
 """
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ import anthropic
 _MODEL = os.environ.get("CLAUDE_MODEL", "claude-sonnet-4-6")
 
 _SYSTEM = (
-    "Du är Crosstrees kompetensanalysverktyg för Kompetensrådet i Jönköpings län. "
+    "Du är Crosstrees kompetensanalysverktyg för Kompetensgrafen i Jönköpings län. "
     "Du svarar alltid på svenska. "
     "Du svarar enbart baserat på data du har i kontexten. "
     "Om du saknar data för en fråga, säg exakt det. "
@@ -22,7 +22,7 @@ _SYSTEM = (
 
 _OBLIGATORISK_INLEDNING = "Som AI-system analyserar jag följande data: AF Platsbanken, AF Substitutabilitetsdata, SCB-statistik."
 _OBLIGATORISK_AVSLUTNING = (
-    "Detta är en AI-genererad analys. Beslut fattas av ansvarig handläggare vid Kompetensrådet."
+    "Detta är en AI-genererad analys. Beslut fattas av ansvarig handläggare vid Kompetensgrafen."
 )
 
 

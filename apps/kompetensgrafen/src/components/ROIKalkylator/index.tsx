@@ -51,7 +51,7 @@ export default function ROIKalkylator() {
     });
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/kompetensradet/roi?${params}`
+        `${process.env.NEXT_PUBLIC_API_URL}/kompetensgrafen/roi?${params}`
       );
       if (!res.ok) throw new Error(`Beräkning misslyckades (${res.status})`);
       setResultat(await res.json());

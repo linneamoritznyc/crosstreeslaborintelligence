@@ -1,4 +1,4 @@
-"""ROI-kalkyl och PDF-rapport för Kompetensrådet.
+"""ROI-kalkyl och PDF-rapport för Kompetensgrafen.
 
 ROI använder bootstrap-resampling för 95% konfidensintervall.
 Källa: SCB Lönestrukturstatistik 2024, AF placeringsstatistik 2024.
@@ -94,7 +94,7 @@ async def calculate_roi(antal: int, kostnad_per_person_kr: float, sektor: str) -
     payback = int(total_kostnad / (arsintakt / 12)) if arsintakt > 0 else 0
 
     log.info(
-        "kompetensradet.roi",
+        "kompetensgrafen.roi",
         sektor=sektor,
         antal=antal,
         roi_procent=round(roi, 1),
@@ -121,7 +121,7 @@ async def calculate_roi(antal: int, kostnad_per_person_kr: float, sektor: str) -
 
 async def generate_pdf_report(sektor: str) -> bytes:
     """Genererar enkel svensk PDF-rapport. Faller tillbaka till plain text om reportlab saknas."""
-    from .kompetensradet_service import get_brist_for_sektor
+    from .kompetensgrafen_service import get_brist_for_sektor
 
     brist = await get_brist_for_sektor(sektor)
 
@@ -134,7 +134,7 @@ async def generate_pdf_report(sektor: str) -> bytes:
         doc = SimpleDocTemplate(buffer, pagesize=A4)
         styles = getSampleStyleSheet()
         story = [
-            Paragraph(f"Kompetensrådet i Jönköpings län — Sektor: {sektor}", styles["Title"]),
+            Paragraph(f"Kompetensgrafen i Jönköpings län — Sektor: {sektor}", styles["Title"]),
             Spacer(1, 12),
             Paragraph("Sammanfattning", styles["Heading2"]),
             Paragraph(
@@ -161,7 +161,7 @@ async def generate_pdf_report(sektor: str) -> bytes:
             Spacer(1, 12),
             Paragraph(
                 "Detta är en AI-genererad analys. Beslut fattas av ansvarig handläggare "
-                "vid Kompetensrådet.",
+                "vid Kompetensgrafen.",
                 styles["Italic"],
             ),
         ]
@@ -169,7 +169,7 @@ async def generate_pdf_report(sektor: str) -> bytes:
         return buffer.getvalue()
     except ImportError:
         lines = [
-            f"Kompetensrådet i Jönköpings län — Rapport: {sektor}",
+            f"Kompetensgrafen i Jönköpings län — Rapport: {sektor}",
             "",
             f"Antal yrken: {len(brist)}",
             "",

@@ -27,7 +27,7 @@ export default function LanskartaD3({ sektor }: Props) {
     async function hamta() {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/kompetensradet/karta?sektor=${sektor}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/kompetensgrafen/karta?sektor=${sektor}`,
           { signal: controller.signal }
         );
         if (!res.ok) throw new Error(`Karta kunde inte laddas (${res.status})`);

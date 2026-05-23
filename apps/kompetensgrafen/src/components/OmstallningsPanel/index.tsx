@@ -24,8 +24,8 @@ export default async function OmstallningsPanel({ target }: Props) {
   let data: OmstallningsRespons;
   try {
     const path = target
-      ? `/kompetensradet/omstallning?target=${target}`
-      : "/kompetensradet/omstallning";
+      ? `/kompetensgrafen/omstallning?target=${target}`
+      : "/kompetensgrafen/omstallning";
     data = await apiClient<OmstallningsRespons>(path);
   } catch {
     return (

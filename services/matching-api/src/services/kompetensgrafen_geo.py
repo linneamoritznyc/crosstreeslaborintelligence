@@ -1,4 +1,4 @@
-"""Geo- och kartdata för Kompetensrådet.
+"""Geo- och kartdata för Kompetensgrafen.
 
 Jönköpings läns 13 kommuner med ungefärliga centroidkoordinater (WGS84).
 För produktion bör SCB Geodata RegSO 2025 (GeoJSON) användas — denna
@@ -84,7 +84,7 @@ async def get_karta_for_sektor(sektor: str) -> list[dict]:
         for kommun, antal in zip(JONKOPINGS_KOMMUNER, antal_list)
     ]
     log.info(
-        "kompetensradet.karta",
+        "kompetensgrafen.karta",
         sektor=sektor,
         kommuner=len(rows),
         total_annonser=sum(r["antal_annonser"] for r in rows),
