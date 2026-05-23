@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd ../.. && npx --yes pnpm@10.13.1 --filter=kompetensgrafen build",
-  "installCommand": "cd ../.. && npx --yes pnpm@10.13.1 install --no-frozen-lockfile",
+  "buildCommand": "cd ../.. && npx --yes --package=pnpm@10.13.1 pnpm --filter=kompetensgrafen run build",
+  "installCommand": "cd ../.. && npx --yes --package=pnpm@10.13.1 pnpm install --no-frozen-lockfile",
   "framework": "nextjs"
 }
