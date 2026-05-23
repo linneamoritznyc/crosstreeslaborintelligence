@@ -41,9 +41,7 @@ main {
 }
 
 .page {
-  padding: 2.5rem 2.25rem 4rem;
-  max-width: 1100px;
-  margin: 0 auto;
+  padding: 2.5rem 2.5rem 4rem;
 }
 
 a {
@@ -59,11 +57,13 @@ a:hover { text-decoration-thickness: 1px; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 36px;
+  padding: 16px 40px;
   border-bottom: 0.5px solid var(--chart-line-strong);
-  position: relative;
-  z-index: 10;
-  background: rgba(245, 240, 232, 0.92);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(245, 240, 232, 0.95);
+  backdrop-filter: blur(4px);
 }
 .mark {
   font-family: "Courier Prime", monospace;
@@ -130,7 +130,6 @@ a:hover { text-decoration-thickness: 1px; }
   line-height: 0.86;
   color: var(--ink);
   margin: 0 0 24px;
-  text-shadow: 1px 1px 0 rgba(245, 240, 232, 0.4);
 }
 .h1 .accent { color: var(--signal-rust); }
 .tagline {
@@ -161,7 +160,7 @@ a:hover { text-decoration-thickness: 1px; }
   border: 0.5px solid var(--signal-rust);
   padding: 14px 28px;
 }
-.btn-main:hover { background: var(--ink); border-color: var(--ink); color: var(--parchment); }
+.btn-main:hover { opacity: 0.88; }
 .btn-ghost {
   background: transparent;
   color: var(--ink);
@@ -179,7 +178,7 @@ a:hover { text-decoration-thickness: 1px; }
   border-bottom: 0.5px solid var(--chart-line-strong);
   background: rgba(237, 231, 216, 0.6);
 }
-.band-cell { padding: 22px 28px; border-right: 0.5px solid var(--chart-line-faint); }
+.band-cell { padding: 26px 32px; border-right: 0.5px solid var(--chart-line-faint); }
 .band-cell:last-child { border-right: none; }
 .band-label {
   font-family: "Courier Prime", monospace;
@@ -206,13 +205,13 @@ a:hover { text-decoration-thickness: 1px; }
 /* SPLIT SECTION ---------------------------------------------- */
 .split { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 0.5px solid var(--chart-line-strong); }
 .split-left {
-  padding: 48px 36px;
+  padding: 48px 40px;
   border-right: 0.5px solid var(--chart-line-strong);
   position: relative;
   overflow: hidden;
 }
 .split-right {
-  padding: 48px 36px;
+  padding: 48px 40px;
   position: relative;
   background: rgba(237, 231, 216, 0.35);
 }
@@ -266,7 +265,7 @@ a:hover { text-decoration-thickness: 1px; }
 }
 
 /* LAYERS SECTION (Hur Crosstrees fungerar) ------------------- */
-.layers-intro { padding: 56px 36px 28px; }
+.layers-intro { padding: 56px 40px 28px; }
 .layers-eyebrow {
   font-family: "Courier Prime", monospace;
   font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
@@ -292,9 +291,9 @@ a:hover { text-decoration-thickness: 1px; }
   border-bottom: 0.5px solid var(--chart-line-faint);
   min-height: 220px;
 }
-.layer-card.l1 { background: rgba(232, 220, 200, 0.4); }
-.layer-card.l2 { background: rgba(220, 228, 210, 0.35); }
-.layer-card.l3 { background: rgba(205, 215, 230, 0.35); }
+.layer-card.l1 { background: transparent; }
+.layer-card.l2 { background: rgba(237, 231, 216, 0.25); }
+.layer-card.l3 { background: transparent; }
 .layer-left {
   padding: 24px 22px;
   border-right: 0.5px solid var(--chart-line-faint);
@@ -336,7 +335,7 @@ a:hover { text-decoration-thickness: 1px; }
 /* FOOTER ----------------------------------------------------- */
 .foot {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 13px 36px;
+  padding: 13px 40px;
   background: rgba(237, 231, 216, 0.5);
   border-top: 0.5px solid var(--chart-line-faint);
 }
@@ -456,7 +455,7 @@ aside[role="note"] {
   font-size: 0.82rem;
   font-style: italic;
   color: var(--ink-soft);
-  border-left: 1.5px solid var(--signal-rust);
+  border-left: 0.5px solid var(--signal-rust);
   background: transparent;
   padding: 0.5rem 1rem;
   margin: 1rem 0;

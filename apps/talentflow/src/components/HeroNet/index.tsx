@@ -20,12 +20,12 @@ export default function HeroNet() {
     resize();
     window.addEventListener("resize", resize);
 
-    const DOTS = 90;
+    const DOTS = 110;
     const dots = Array.from({ length: DOTS }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: (Math.random() - 0.5) * 0.25,
+      vx: (Math.random() - 0.5) * 0.52,
+      vy: (Math.random() - 0.5) * 0.52,
       r: Math.random() * 1.8 + 0.5,
     }));
 
@@ -42,8 +42,8 @@ export default function HeroNet() {
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 130) {
-            const alpha = (1 - dist / 130) * 0.18;
+          if (dist < 140) {
+            const alpha = (1 - dist / 140) * 0.18;
             ctx.beginPath();
             ctx.strokeStyle = `rgba(26,26,24,${alpha})`;
             ctx.lineWidth = 0.5;

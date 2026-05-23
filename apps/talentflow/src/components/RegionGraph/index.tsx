@@ -24,15 +24,15 @@ export default function RegionGraph() {
     resize();
     window.addEventListener("resize", resize);
 
-    const NODES = 38;
+    const NODES = 44;
     const nodes = Array.from({ length: NODES }, () => ({
       x: 20 + Math.random() * (canvas.width - 40),
       y: 20 + Math.random() * (canvas.height - 40),
       vx: (Math.random() - 0.5) * 0.4,
       vy: (Math.random() - 0.5) * 0.4,
-      r: Math.random() * 4 + 2.5,
+      r: Math.random() * 4 + 2,
       label: Math.random() < 0.22 ? LABELS[Math.floor(Math.random() * LABELS.length)] : null,
-      rust: Math.random() < 0.18,
+      rust: Math.random() < 0.15,
     }));
 
     function tick() {
@@ -48,9 +48,9 @@ export default function RegionGraph() {
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 90) {
+          if (dist < 85) {
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(26,26,24,${(1 - dist / 90) * 0.22})`;
+            ctx.strokeStyle = `rgba(26,26,24,${(1 - dist / 85) * 0.22})`;
             ctx.lineWidth = 0.5;
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
