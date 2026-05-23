@@ -22,19 +22,26 @@ async def get_with_swr(
     serve_ttl: int,
     revalidate_after: int
 ) -> Any:
-    """Stale-while-revalidate caching."""
-    cached = await redis_client.get(key)
-    ttl = await redis_client.ttl(key)
-    age = serve_ttl - ttl
+    """Stale-while-revalidate caching. Tolerant mot saknad Redis."""
+    try:
+        cached = await redis_client.get(key)
+        ttl = await redis_client.ttl(key)
+    except Exception:
+        cached = None
+        ttl = 0
 
     if cached:
+        age = serve_ttl - ttl
         if age < revalidate_after:
             return json.loads(cached)
         asyncio.create_task(_revalidate(key, fetch_fn, serve_ttl))
         return json.loads(cached)
 
     data = await fetch_fn()
-    await redis_client.setex(key, serve_ttl, json.dumps(data))
+    try:
+        await redis_client.setex(key, serve_ttl, json.dumps(data))
+    except Exception:
+        pass
     return data
 
 async def _revalidate(key: str, fetch_fn: Callable, ttl: int) -> None:

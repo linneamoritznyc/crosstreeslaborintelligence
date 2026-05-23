@@ -21,10 +21,12 @@ app = FastAPI(
 
 app.state.limiter = limiter
 
+_cors_default = "http://localhost:3000,http://localhost:3001"
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.environ["CORS_ORIGINS"].split(","),
-    allow_methods=["GET", "POST"],
+    allow_origins=os.environ.get("CORS_ORIGINS", _cors_default).split(","),
+    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
