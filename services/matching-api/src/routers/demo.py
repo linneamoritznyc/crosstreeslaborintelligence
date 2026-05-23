@@ -67,3 +67,50 @@ async def skapa_demosession(profil: str = Query(default="maskinoperator")):
 @router.get("/profiler")
 async def lista_profiler():
     return [{"id": k, "skills": v} for k, v in _EXEMPELPROFILER.items()]
+
+
+@router.get("/neo4j-check")
+async def neo4j_check():
+    """Smoke-test: räknar noder och kanter i Neo4j för att verifiera anslutning."""
+    import os
+
+    from neo4j import AsyncGraphDatabase
+
+    uri = os.environ.get("NEO4J_URI")
+    if not uri:
+        return {"status": "ej_konfigurerad", "detalj": "NEO4J_URI saknas"}
+
+    driver = AsyncGraphDatabase.driver(
+        uri,
+        auth=(
+            os.environ.get("NEO4J_USERNAME", "neo4j"),
+            os.environ.get("NEO4J_PASSWORD", ""),
+        ),
+    )
+    try:
+        async with driver.session() as db:
+            result = await db.run(
+                "MATCH (o:Occupation) RETURN count(o) AS yrken"
+            )
+            yrken = (await result.single())["yrken"]
+            result = await db.run(
+                "MATCH (s:Skill) RETURN count(s) AS kompetenser"
+            )
+            kompetenser = (await result.single())["kompetenser"]
+            result = await db.run(
+                "MATCH ()-[r:SUBSTITUTABLE_WITH]->() RETURN count(r) AS kanter"
+            )
+            kanter = (await result.single())["kanter"]
+        await driver.close()
+        return {
+            "status": "ok",
+            "yrken": yrken,
+            "kompetenser": kompetenser,
+            "substitutability_kanter": kanter,
+        }
+    except Exception as exc:
+        try:
+            await driver.close()
+        except Exception:
+            pass
+        return {"status": "error", "detalj": str(exc)[:200]}

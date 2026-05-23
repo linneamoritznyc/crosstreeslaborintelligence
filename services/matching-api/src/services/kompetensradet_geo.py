@@ -66,20 +66,23 @@ _SEKTOR_SOKORD: dict[str, str] = {
 
 async def get_karta_for_sektor(sektor: str) -> list[dict]:
     """Returnerar en lista över Jönköpings kommuner med annonsräkning som brist_index."""
+    import asyncio
+
     sokord = _SEKTOR_SOKORD.get(sektor)
-    rows: list[dict] = []
-    for kommun in JONKOPINGS_KOMMUNER:
-        antal = await _count_jobs_in_kommun(kommun["kod"], sokord)
-        rows.append(
-            {
-                "kommun_kod": kommun["kod"],
-                "namn": kommun["namn"],
-                "lon": kommun["lon"],
-                "lat": kommun["lat"],
-                "brist_index": float(antal),
-                "antal_annonser": antal,
-            }
-        )
+    antal_list = await asyncio.gather(
+        *[_count_jobs_in_kommun(k["kod"], sokord) for k in JONKOPINGS_KOMMUNER]
+    )
+    rows = [
+        {
+            "kommun_kod": kommun["kod"],
+            "namn": kommun["namn"],
+            "lon": kommun["lon"],
+            "lat": kommun["lat"],
+            "brist_index": float(antal),
+            "antal_annonser": antal,
+        }
+        for kommun, antal in zip(JONKOPINGS_KOMMUNER, antal_list)
+    ]
     log.info(
         "kompetensradet.karta",
         sektor=sektor,

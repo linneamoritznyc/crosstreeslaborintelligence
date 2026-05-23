@@ -137,20 +137,23 @@ async def _count_jobs(occupation_id: str) -> int:
 
 async def get_brist_for_sektor(sektor: str) -> list[dict]:
     """Returnerar yrken i sektorn med live AF-annonsräkning som bristindikator."""
+    import asyncio
+
     yrken = await list_occupations_for_sektor(sektor)
-    rows: list[dict] = []
-    for o in yrken:
-        antal = await _count_jobs(o["id"])
-        rows.append(
-            {
-                "occupation_id": o["id"],
-                "occupation_name": o["name"],
-                "brist_index": float(antal),
-                "antal_annonser": antal,
-                "prognos": "stabil",
-                "ssyk_code": o["ssyk_code"],
-            }
-        )
+    if not yrken:
+        return []
+    antal_list = await asyncio.gather(*[_count_jobs(o["id"]) for o in yrken])
+    rows = [
+        {
+            "occupation_id": o["id"],
+            "occupation_name": o["name"],
+            "brist_index": float(antal),
+            "antal_annonser": antal,
+            "prognos": "stabil",
+            "ssyk_code": o["ssyk_code"],
+        }
+        for o, antal in zip(yrken, antal_list)
+    ]
     rows.sort(key=lambda r: r["antal_annonser"], reverse=True)
     log.info("kompetensradet.brist", sektor=sektor, yrken=len(rows))
     return rows
