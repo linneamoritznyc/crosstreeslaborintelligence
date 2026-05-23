@@ -4,7 +4,7 @@ import AIActDisclaimer from "@/components/AIActDisclaimer";
 
 export default function ChattPage() {
   return (
-    <main>
+    <main className="page">
       <nav style={{ paddingTop: "0.5rem", marginBottom: "1rem" }}>
         <small className="data">
           <Link href="/">← TILLBAKA</Link>

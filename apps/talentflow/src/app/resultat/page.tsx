@@ -12,7 +12,7 @@ export default async function ResultatPage({ searchParams }: Props) {
 
   if (!session) {
     return (
-      <main>
+      <main className="page">
         <h1>Dina matchningar</h1>
         <p>
           Ingen CV-session angiven.{" "}
@@ -23,7 +23,7 @@ export default async function ResultatPage({ searchParams }: Props) {
   }
 
   return (
-    <main>
+    <main className="page">
       <h1>Dina matchningar</h1>
       <p>Live från Arbetsförmedlingens Platsbanken, rankade på kompetensöverlapp.</p>
       <nav style={{ paddingTop: "0.75rem", marginBottom: "1.5rem" }}>

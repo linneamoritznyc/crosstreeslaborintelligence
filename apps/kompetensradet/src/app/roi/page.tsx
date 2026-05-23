@@ -3,7 +3,7 @@ import ROIKalkylator from "@/components/ROIKalkylator";
 
 export default function ROIPage() {
   return (
-    <main>
+    <main className="page">
       <nav style={{ paddingTop: "0.5rem", marginBottom: "1rem" }}>
         <small className="data">
           <Link href="/">← TILLBAKA</Link>

@@ -13,7 +13,7 @@ const SEKTORER = [
 
 export default function StartPage() {
   return (
-    <main>
+    <main className="page">
       <h1>Underlag för regional kompetensförsörjning</h1>
       <p>
         Från frågeställning till exporterad PDF-rapport på under tre minuter.

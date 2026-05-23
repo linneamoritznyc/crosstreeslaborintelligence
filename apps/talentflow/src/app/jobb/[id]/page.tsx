@@ -38,7 +38,7 @@ export default async function JobbDetaljPage({ params }: Props) {
     jobb = await apiClient<AFJob>(`/jobs/${id}`);
   } catch {
     return (
-      <main>
+      <main className="page">
         <h1>Annonsen kunde inte hämtas</h1>
         <p>
           Försök igen om en stund. <Link href="/">Tillbaka till start.</Link>
@@ -48,7 +48,7 @@ export default async function JobbDetaljPage({ params }: Props) {
   }
 
   return (
-    <main>
+    <main className="page">
       <h1>{readTitle(jobb)}</h1>
       <p className="coord">
         {readEmployer(jobb)}

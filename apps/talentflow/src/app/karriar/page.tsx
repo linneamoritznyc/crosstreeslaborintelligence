@@ -12,7 +12,7 @@ export default async function KarriarPage({ searchParams }: Props) {
 
   if (!session) {
     return (
-      <main>
+      <main className="page">
         <h1>Din karriärväg</h1>
         <p>
           Ingen CV-session angiven.{" "}
@@ -23,7 +23,7 @@ export default async function KarriarPage({ searchParams }: Props) {
   }
 
   return (
-    <main>
+    <main className="page">
       <h1>Din karriärväg</h1>
       <p>
         Beräknad via Personalized PageRank på Arbetsförmedlingens

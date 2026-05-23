@@ -9,7 +9,7 @@ interface Props {
 export default async function OmstallningPage({ searchParams }: Props) {
   const { target } = await searchParams;
   return (
-    <main>
+    <main className="page">
       <nav style={{ paddingTop: "0.5rem", marginBottom: "1rem" }}>
         <small className="data">
           <Link href="/">← TILLBAKA</Link>

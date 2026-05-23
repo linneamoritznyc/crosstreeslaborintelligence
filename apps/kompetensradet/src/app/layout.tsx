@@ -12,13 +12,21 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="sv">
       <body>
-        <header className="masthead">
-          <Link href="/" className="wordmark" style={{ textDecoration: "none" }}>
-            CROSSTREES · KOMPETENSRÅDET
-          </Link>
-          <span className="coord">57°24&prime;N · 15°04&prime;E — Jönköpings län</span>
-        </header>
+        <div className="bar">
+          <Link href="/" className="mark">Crosstrees · Kompetensrådet</Link>
+          <nav className="nav">
+            <Link href="/">Översikt</Link>
+            <Link href="/omstallning">Omställning</Link>
+            <Link href="/roi">ROI</Link>
+            <Link href="/chatt">Chatt</Link>
+          </nav>
+        </div>
         {children}
+        <footer className="foot">
+          <span className="foot-t">Crosstrees Labor Intelligence · Vetlanda, Sverige</span>
+          <span className="foot-mark">Crosstrees</span>
+          <span className="foot-t">crosstrees.se · © 2026</span>
+        </footer>
       </body>
     </html>
   );
