@@ -1,0 +1,9 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "apps/talentflow/Dockerfile"
+watchPatterns = ["apps/talentflow/**", "libs/**", "pnpm-workspace.yaml", "package.json"]
+
+[deploy]
+startCommand = "node apps/talentflow/server.js"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
