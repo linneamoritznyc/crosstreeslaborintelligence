@@ -17,5 +17,6 @@ WORKDIR /app
 ENV NODE_ENV=production HOSTNAME=0.0.0.0
 COPY --from=builder /repo/apps/talentflow/.next/standalone ./
 COPY --from=builder /repo/apps/talentflow/.next/static ./apps/talentflow/.next/static
-EXPOSE 3000
-CMD ["node", "apps/talentflow/server.js"]
+EXPOSE 8080
+# sh -c wrapper ensures stdout is line-buffered so startup logs surface in Railway.
+CMD ["sh", "-c", "node apps/talentflow/server.js"]
