@@ -14,7 +14,8 @@ EMBEDDING_TTL = 604_800            # 7 dagar — statiska mellan pipeline-körni
 CV_PARSE_TTL = 3_600               # 1 h — temporär sessionsdata
 AI_ACT_LOG_RETENTION = 15_552_000  # 6 månader — Artikel 12 AI Act
 
-redis_client = aioredis.from_url(os.environ.get("REDIS_URL", "redis://localhost:6379"))
+_redis_url = os.environ.get("REDIS_URL", "")
+redis_client = aioredis.from_url(_redis_url) if _redis_url else None
 
 async def get_with_swr(
     key: str,
