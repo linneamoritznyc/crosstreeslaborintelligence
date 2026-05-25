@@ -11,7 +11,7 @@ from ..middleware.logging import get_logger
 
 log = get_logger(__name__)
 
-_SEED_DIR = Path(__file__).parent.parent.parent.parent / "seed"
+_SEED_DIR = Path(__file__).parent.parent.parent / "seed"
 
 _CHUNK = 500
 
