@@ -17,6 +17,9 @@ interface Props {
   sektor: string;
 }
 
+const W = 600;
+const H = 460;
+
 export default function LanskartaD3({ sektor }: Props) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [data, setData] = useState<KommunData[] | null>(null);
@@ -30,12 +33,12 @@ export default function LanskartaD3({ sektor }: Props) {
           `${process.env.NEXT_PUBLIC_API_URL}/kompetensgrafen/karta?sektor=${sektor}`,
           { signal: controller.signal }
         );
-        if (!res.ok) throw new Error(`Karta kunde inte laddas (${res.status})`);
+        if (!res.ok) throw new Error(`${res.status}`);
         const rows: KommunData[] = await res.json();
         setData(rows);
       } catch (err) {
         if ((err as Error).name === "AbortError") return;
-        setFel("Grafdata under validering — försök igen om en stund.");
+        setFel("Kartdata under validering — försök igen om en stund.");
       }
     }
     hamta();
@@ -47,97 +50,161 @@ export default function LanskartaD3({ sektor }: Props) {
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    const width = 600;
-    const height = 480;
     const projection = d3
       .geoMercator()
-      .center([14.5, 57.65])
-      .scale(14000)
-      .translate([width / 2, height / 2]);
+      .center([14.4, 57.62])
+      .scale(13800)
+      .translate([W / 2, H / 2]);
 
-    // Chart grid background — latitude/longitude graticule
-    const graticuleColor = "#d8cfb8";
-    for (let lat = 57.0; lat <= 58.5; lat += 0.25) {
-      const y = projection([14.5, lat])?.[1];
-      if (y !== undefined) {
-        svg
-          .append("line")
-          .attr("x1", 0).attr("x2", width)
-          .attr("y1", y).attr("y2", y)
-          .attr("stroke", graticuleColor)
-          .attr("stroke-width", 0.5);
-      }
+    // Nautical graticule — latitude lines with depth marks
+    for (let lat = 57.0; lat <= 58.4; lat += 0.2) {
+      const pt = projection([14.4, lat]);
+      if (!pt) continue;
+      const [, y] = pt;
+      if (y < 0 || y > H) continue;
+      svg.append("line")
+        .attr("x1", 0).attr("x2", W).attr("y1", y).attr("y2", y)
+        .attr("stroke", "#c4bfb4").attr("stroke-width", 0.4)
+        .attr("stroke-dasharray", "3,5");
+      svg.append("text")
+        .attr("x", 5).attr("y", y - 3)
+        .attr("font-family", "Courier Prime, monospace")
+        .attr("font-size", "7.5").attr("fill", "rgba(26,26,24,0.35)")
+        .text(`${lat.toFixed(1)}°N`);
     }
-    for (let lon = 13.0; lon <= 16.0; lon += 0.5) {
-      const x = projection([lon, 57.65])?.[0];
-      if (x !== undefined) {
-        svg
-          .append("line")
-          .attr("y1", 0).attr("y2", height)
-          .attr("x1", x).attr("x2", x)
-          .attr("stroke", graticuleColor)
-          .attr("stroke-width", 0.5);
-      }
+    for (let lon = 13.2; lon <= 15.8; lon += 0.4) {
+      const pt = projection([lon, 57.62]);
+      if (!pt) continue;
+      const [x] = pt;
+      if (x < 0 || x > W) continue;
+      svg.append("line")
+        .attr("x1", x).attr("x2", x).attr("y1", 0).attr("y2", H)
+        .attr("stroke", "#c4bfb4").attr("stroke-width", 0.4)
+        .attr("stroke-dasharray", "3,5");
     }
 
-    const maxBrist = d3.max(data, (d) => d.brist_index) ?? 1;
-    const colorScale = d3
-      .scaleSequential((t) => d3.interpolateRgb("#f5f0e8", "#7a2e1a")(t))
+    // Project centroids to pixel space
+    const pts = data.map(d => {
+      const proj = projection([d.lon, d.lat]);
+      return { ...d, px: proj?.[0] ?? 0, py: proj?.[1] ?? 0 };
+    });
+
+    // Voronoi (Thiessen) regionalization — fills the full map area
+    const delaunay = d3.Delaunay.from(pts, d => d.px, d => d.py);
+    const voronoi = delaunay.voronoi([0, 0, W, H]);
+
+    const maxBrist = d3.max(data, d => d.brist_index) ?? 1;
+    const fill = d3
+      .scaleSequential(t => d3.interpolateRgb("#ede7d8", "#7a2e1a")(t))
       .domain([0, Math.max(maxBrist, 1)]);
 
-    const g = svg.append("g");
+    // Choropleth cells
+    pts.forEach((d, i) => {
+      const cell = voronoi.renderCell(i);
+      const g = svg.append("g");
+      g.append("path")
+        .attr("d", cell)
+        .attr("fill", d.brist_index > 0 ? fill(d.brist_index) : "#f5f0e8")
+        .attr("stroke", "#1a1a18")
+        .attr("stroke-width", 0.6)
+        .attr("opacity", 0.88);
+      g.append("title")
+        .text(`${d.namn}: ${d.antal_annonser} annonser`);
+    });
 
-    g.selectAll("circle")
-      .data(data)
-      .join("circle")
-      .attr("cx", (d) => projection([d.lon, d.lat])?.[0] ?? 0)
-      .attr("cy", (d) => projection([d.lon, d.lat])?.[1] ?? 0)
-      .attr("r", (d) => 10 + Math.sqrt(d.brist_index) * 2.5)
-      .attr("fill", (d) => colorScale(d.brist_index))
-      .attr("stroke", "#1a1a18")
-      .attr("stroke-width", 1)
-      .attr("opacity", 0.85)
-      .append("title")
-      .text((d) => `${d.namn}: ${d.antal_annonser} annonser`);
+    // Centroid dots, labels and depth marks (à la nautical chart)
+    pts.forEach(d => {
+      svg.append("circle")
+        .attr("cx", d.px).attr("cy", d.py).attr("r", 3)
+        .attr("fill", "#1a1a18").attr("opacity", 0.55);
 
-    g.selectAll("text.kommun")
-      .data(data)
-      .join("text")
-      .attr("class", "kommun")
-      .attr("x", (d) => (projection([d.lon, d.lat])?.[0] ?? 0) + 14)
-      .attr("y", (d) => (projection([d.lon, d.lat])?.[1] ?? 0) + 4)
-      .attr("font-family", "Courier Prime, monospace")
-      .attr("font-size", "10px")
-      .attr("fill", "#1a1a18")
-      .text((d) => d.namn.toUpperCase());
+      svg.append("text")
+        .attr("x", d.px + 6).attr("y", d.py - 4)
+        .attr("font-family", "Courier Prime, monospace")
+        .attr("font-size", "8.5").attr("font-weight", "700")
+        .attr("fill", "rgba(26,26,24,0.85)")
+        .text(d.namn.toUpperCase());
+
+      if (d.antal_annonser > 0) {
+        svg.append("text")
+          .attr("x", d.px + 6).attr("y", d.py + 9)
+          .attr("font-family", "Courier Prime, monospace")
+          .attr("font-size", "7.5")
+          .attr("fill", "rgba(122,46,26,0.85)")
+          .text(`— ${d.antal_annonser}`);
+      }
+    });
+
+    // Gradient legend (parchment → rust)
+    const lx = W - 136, ly = 14, lw = 122, lh = 10;
+    const defs = svg.append("defs");
+    const grad = defs.append("linearGradient").attr("id", "lg-brist");
+    grad.append("stop").attr("offset", "0%").attr("stop-color", "#ede7d8");
+    grad.append("stop").attr("offset", "100%").attr("stop-color", "#7a2e1a");
+    svg.append("rect")
+      .attr("x", lx).attr("y", ly).attr("width", lw).attr("height", lh)
+      .attr("fill", "url(#lg-brist)")
+      .attr("stroke", "rgba(26,26,24,0.35)").attr("stroke-width", 0.5);
+    svg.append("text")
+      .attr("x", lx).attr("y", ly + lh + 10)
+      .attr("font-family", "Courier Prime, monospace").attr("font-size", "7.5")
+      .attr("fill", "rgba(26,26,24,0.45)").text("LÅGT BRIST");
+    svg.append("text")
+      .attr("x", lx + lw).attr("y", ly + lh + 10)
+      .attr("font-family", "Courier Prime, monospace").attr("font-size", "7.5")
+      .attr("fill", "rgba(122,46,26,0.75)").attr("text-anchor", "end")
+      .text("HÖGT BRIST");
+
+    // Minimal compass rose
+    const cpx = 36, cpy = H - 38;
+    ([
+      [0, -13, "N"], [13, 0, "Ö"], [0, 13, "S"], [-13, 0, "V"],
+    ] as [number, number, string][]).forEach(([dx, dy, lbl]) => {
+      svg.append("line")
+        .attr("x1", cpx).attr("y1", cpy)
+        .attr("x2", cpx + dx).attr("y2", cpy + dy)
+        .attr("stroke", "rgba(26,26,24,0.38)").attr("stroke-width", 0.7);
+      svg.append("text")
+        .attr("x", cpx + dx * 1.8).attr("y", cpy + dy * 1.8 + 3)
+        .attr("font-family", "Courier Prime, monospace").attr("font-size", "7")
+        .attr("fill", "rgba(26,26,24,0.4)").attr("text-anchor", "middle")
+        .text(lbl);
+    });
+    svg.append("circle")
+      .attr("cx", cpx).attr("cy", cpy).attr("r", 2.5)
+      .attr("fill", "rgba(26,26,24,0.4)");
+
   }, [data]);
 
   return (
     <section aria-label="Länkarta">
       <h2>Bristkarta — Jönköpings län</h2>
-      <p className="coord">57°24&prime;N · 15°04&prime;E — projektion EPSG:3857</p>
-      {fel && <p role="alert">{fel}</p>}
-      {!fel && !data && <p>Laddar kartdata…</p>}
-      {data && data.every((d) => d.antal_annonser === 0) && (
-        <p>
-          <em>Inga aktuella annonser hittades för denna sektor i Jönköpings län.</em>
+      <p className="coord">57°37′N · 14°10′E · Mercator EPSG:3857 · Thiessen-regionalisering</p>
+      {fel && (
+        <p role="alert" className="body-t" style={{ fontStyle: "italic", marginTop: "0.5rem" }}>
+          {fel}
         </p>
+      )}
+      {!fel && !data && (
+        <p className="coord" style={{ marginTop: "1rem" }}>Laddar kartdata…</p>
       )}
       <svg
         ref={svgRef}
-        width={600}
-        height={480}
+        viewBox={`0 0 ${W} ${H}`}
         role="img"
         aria-label="Bristkarta per kommun i Jönköpings län"
         style={{
-          background: "var(--parchment)",
-          border: "1px solid var(--ink)",
-          maxWidth: "100%",
+          width: "100%",
+          maxWidth: `${W}px`,
           height: "auto",
+          display: "block",
+          marginTop: "0.75rem",
+          background: "var(--parchment)",
+          border: "0.5px solid rgba(26,26,24,0.4)",
         }}
       />
       <DataLabel
-        source="SCB Geodata RegSO 2025 + AF Platsbanken"
+        source="AF Platsbanken · SCB kommuncentroider 2025 · Thiessen-polygoner"
         date={new Date().toLocaleDateString("sv-SE")}
       />
     </section>

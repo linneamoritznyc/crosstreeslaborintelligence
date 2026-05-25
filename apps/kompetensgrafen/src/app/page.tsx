@@ -1,5 +1,6 @@
 import Link from "next/link";
 import AIActDisclaimer from "@/components/AIActDisclaimer";
+import RegionCanvas from "@/components/RegionCanvas";
 
 const SEKTORER = [
   { id: "industri", namn: "Tillverkning & industri", beskrivning: "Maskinoperatörer · svetsare · automationstekniker · vindkrafttekniker" },
@@ -24,15 +25,17 @@ export default function StartPage() {
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
         >
-          <path d="M-40 100 Q 200 70 400 120 T 720 90" fill="none" stroke="#1A1A18" strokeWidth="0.8" />
-          <path d="M-40 160 Q 180 130 380 180 T 720 150" fill="none" stroke="#1A1A18" strokeWidth="0.8" />
-          <path d="M-40 220 Q 220 190 420 240 T 720 210" fill="none" stroke="#1A1A18" strokeWidth="0.8" />
-          <path d="M-40 280 Q 200 250 400 300 T 720 270" fill="none" stroke="#1A1A18" strokeWidth="0.8" />
-          <path d="M-40 340 Q 240 310 440 360 T 720 330" fill="none" stroke="#1A1A18" strokeWidth="0.8" />
-          <text x="430" y="115" fontFamily="Courier Prime, monospace" fontSize="8" fill="#1A1A18" opacity="0.5" letterSpacing="0.1em">— 51 m</text>
-          <text x="430" y="175" fontFamily="Courier Prime, monospace" fontSize="8" fill="#1A1A18" opacity="0.5" letterSpacing="0.1em">— 42 m</text>
-          <text x="430" y="235" fontFamily="Courier Prime, monospace" fontSize="8" fill="#1A1A18" opacity="0.5" letterSpacing="0.1em">— 33 m</text>
-          <text x="430" y="295" fontFamily="Courier Prime, monospace" fontSize="8" fill="#1A1A18" opacity="0.5" letterSpacing="0.1em">— 24 m</text>
+          <path d="M-40 80 Q 180 55 400 100 T 720 75" fill="none" stroke="#1A1A18" strokeWidth="0.8" />
+          <path d="M-40 140 Q 160 115 380 160 T 720 135" fill="none" stroke="#1A1A18" strokeWidth="0.8" />
+          <path d="M-40 200 Q 200 175 420 220 T 720 195" fill="none" stroke="#1A1A18" strokeWidth="0.8" />
+          <path d="M-40 260 Q 180 235 400 280 T 720 255" fill="none" stroke="#1A1A18" strokeWidth="0.8" />
+          <path d="M-40 320 Q 220 295 440 340 T 720 315" fill="none" stroke="#1A1A18" strokeWidth="0.8" />
+          <path d="M-40 380 Q 200 355 400 400 T 720 375" fill="none" stroke="#1A1A18" strokeWidth="0.8" />
+          <text x="440" y="95" fontFamily="Courier Prime, monospace" fontSize="8" fill="#1A1A18" opacity="0.45" letterSpacing="0.1em">— 51 m</text>
+          <text x="440" y="155" fontFamily="Courier Prime, monospace" fontSize="8" fill="#1A1A18" opacity="0.45" letterSpacing="0.1em">— 42 m</text>
+          <text x="440" y="215" fontFamily="Courier Prime, monospace" fontSize="8" fill="#1A1A18" opacity="0.45" letterSpacing="0.1em">— 33 m</text>
+          <text x="440" y="275" fontFamily="Courier Prime, monospace" fontSize="8" fill="#1A1A18" opacity="0.45" letterSpacing="0.1em">— 24 m</text>
+          <text x="440" y="335" fontFamily="Courier Prime, monospace" fontSize="8" fill="#1A1A18" opacity="0.45" letterSpacing="0.1em">— 15 m</text>
         </svg>
         <div className="hero-content">
           <div className="hero-eyebrow">
@@ -102,13 +105,14 @@ export default function StartPage() {
           </ul>
         </div>
         <div className="split-right">
-          <div className="sec-tag">Steg 2 · Djupanalys</div>
-          <h2 className="sec-head">Omställning, ROI och AI-rådgivare.</h2>
+          <div className="sec-tag">Transferabilitetsgrafen · Jönköpings län</div>
+          <h2 className="sec-head">13 kommuner — levande kompetensdata.</h2>
           <p className="body-t">
-            Kompetensöverlapp mellan yrken, bootstrap-konfidensintervall för
-            utbildningsinsatser, och fritextfrågor om regionens arbetsmarknad.
+            Noder representerar kommuner. Kanter visar kompetensöverlapp
+            via Arbetsförmedlingens substitutabilitetsdata.
           </p>
-          <ul className="matches">
+          <RegionCanvas />
+          <ul className="matches" style={{ marginTop: "1.5rem" }}>
             <li className="m-row">
               <span className="m-name">
                 <Link href="/omstallning" style={{ color: "inherit" }}>Omställningsanalys</Link>
@@ -134,7 +138,7 @@ export default function StartPage() {
               <span className="m-pct" style={{ fontSize: "11px" }}>Beslutsunderlag</span>
             </li>
           </ul>
-          <div style={{ marginTop: "2rem" }}>
+          <div style={{ marginTop: "1.5rem" }}>
             <AIActDisclaimer variant="chat" />
           </div>
         </div>
