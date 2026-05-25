@@ -1,0 +1,58 @@
+[
+  { "source_id": "35a28d4b-5a50-4ab9-9ac8-6a5f5c43d5b6", "target_id": "7a24c02f-b1d0-4e5a-bfc3-ef209f3a1d88", "score": 75, "direction": "can_become" },
+  { "source_id": "7a24c02f-b1d0-4e5a-bfc3-ef209f3a1d88", "target_id": "35a28d4b-5a50-4ab9-9ac8-6a5f5c43d5b6", "score": 75, "direction": "can_replace" },
+
+  { "source_id": "35a28d4b-5a50-4ab9-9ac8-6a5f5c43d5b6", "target_id": "c3e67890-d4f7-11ee-a506-0242ac120002", "score": 75, "direction": "can_become" },
+  { "source_id": "c3e67890-d4f7-11ee-a506-0242ac120002", "target_id": "35a28d4b-5a50-4ab9-9ac8-6a5f5c43d5b6", "score": 75, "direction": "can_replace" },
+
+  { "source_id": "35a28d4b-5a50-4ab9-9ac8-6a5f5c43d5b6", "target_id": "e1f23456-d4f7-11ee-a506-0242ac120002", "score": 50, "direction": "can_become" },
+  { "source_id": "e1f23456-d4f7-11ee-a506-0242ac120002", "target_id": "35a28d4b-5a50-4ab9-9ac8-6a5f5c43d5b6", "score": 50, "direction": "can_replace" },
+
+  { "source_id": "7a24c02f-b1d0-4e5a-bfc3-ef209f3a1d88", "target_id": "c3e67890-d4f7-11ee-a506-0242ac120002", "score": 50, "direction": "can_become" },
+  { "source_id": "c3e67890-d4f7-11ee-a506-0242ac120002", "target_id": "7a24c02f-b1d0-4e5a-bfc3-ef209f3a1d88", "score": 50, "direction": "can_replace" },
+
+  { "source_id": "c3e89102-d4f7-11ee-a506-0242ac120002", "target_id": "f5b12347-d4f7-11ee-a506-0242ac120002", "score": 50, "direction": "can_become" },
+  { "source_id": "f5b12347-d4f7-11ee-a506-0242ac120002", "target_id": "c3e89102-d4f7-11ee-a506-0242ac120002", "score": 50, "direction": "can_replace" },
+
+  { "source_id": "c3e89102-d4f7-11ee-a506-0242ac120002", "target_id": "a8b91234-d4f7-11ee-a506-0242ac120002", "score": 75, "direction": "can_become" },
+  { "source_id": "a8b91234-d4f7-11ee-a506-0242ac120002", "target_id": "c3e89102-d4f7-11ee-a506-0242ac120002", "score": 75, "direction": "can_replace" },
+
+  { "source_id": "a8b91234-d4f7-11ee-a506-0242ac120002", "target_id": "f5b12347-d4f7-11ee-a506-0242ac120002", "score": 25, "direction": "can_become" },
+  { "source_id": "f5b12347-d4f7-11ee-a506-0242ac120002", "target_id": "a8b91234-d4f7-11ee-a506-0242ac120002", "score": 25, "direction": "can_replace" },
+
+  { "source_id": "a1c45678-d4f7-11ee-a506-0242ac120002", "target_id": "b3d57891-d4f7-11ee-a506-0242ac120002", "score": 50, "direction": "can_become" },
+  { "source_id": "b3d57891-d4f7-11ee-a506-0242ac120002", "target_id": "a1c45678-d4f7-11ee-a506-0242ac120002", "score": 50, "direction": "can_replace" },
+
+  { "source_id": "b2d56789-d4f7-11ee-a506-0242ac120002", "target_id": "c5e78901-d4f7-11ee-a506-0242ac120002", "score": 50, "direction": "can_become" },
+  { "source_id": "c5e78901-d4f7-11ee-a506-0242ac120002", "target_id": "b2d56789-d4f7-11ee-a506-0242ac120002", "score": 50, "direction": "can_replace" },
+
+  { "source_id": "c5e78901-d4f7-11ee-a506-0242ac120002", "target_id": "d6f89012-d4f7-11ee-a506-0242ac120002", "score": 25, "direction": "can_become" },
+  { "source_id": "d6f89012-d4f7-11ee-a506-0242ac120002", "target_id": "c5e78901-d4f7-11ee-a506-0242ac120002", "score": 25, "direction": "can_replace" },
+
+  { "source_id": "b2d56789-d4f7-11ee-a506-0242ac120002", "target_id": "e7a90123-d4f7-11ee-a506-0242ac120002", "score": 50, "direction": "can_become" },
+  { "source_id": "e7a90123-d4f7-11ee-a506-0242ac120002", "target_id": "b2d56789-d4f7-11ee-a506-0242ac120002", "score": 50, "direction": "can_replace" },
+
+  { "source_id": "e7a90123-d4f7-11ee-a506-0242ac120002", "target_id": "f8b01234-d4f7-11ee-a506-0242ac120002", "score": 75, "direction": "can_become" },
+  { "source_id": "f8b01234-d4f7-11ee-a506-0242ac120002", "target_id": "e7a90123-d4f7-11ee-a506-0242ac120002", "score": 75, "direction": "can_replace" },
+
+  { "source_id": "f8b01234-d4f7-11ee-a506-0242ac120002", "target_id": "a5c78901-d4f7-11ee-a506-0242ac120002", "score": 25, "direction": "can_become" },
+  { "source_id": "a5c78901-d4f7-11ee-a506-0242ac120002", "target_id": "f8b01234-d4f7-11ee-a506-0242ac120002", "score": 25, "direction": "can_replace" },
+
+  { "source_id": "a9c12345-d4f7-11ee-a506-0242ac120002", "target_id": "b0d23456-d4f7-11ee-a506-0242ac120002", "score": 75, "direction": "can_become" },
+  { "source_id": "b0d23456-d4f7-11ee-a506-0242ac120002", "target_id": "a9c12345-d4f7-11ee-a506-0242ac120002", "score": 75, "direction": "can_replace" },
+
+  { "source_id": "b0d23456-d4f7-11ee-a506-0242ac120002", "target_id": "c1e34567-d4f7-11ee-a506-0242ac120002", "score": 50, "direction": "can_become" },
+  { "source_id": "c1e34567-d4f7-11ee-a506-0242ac120002", "target_id": "b0d23456-d4f7-11ee-a506-0242ac120002", "score": 50, "direction": "can_replace" },
+
+  { "source_id": "a9c12345-d4f7-11ee-a506-0242ac120002", "target_id": "d4f78901-d4f7-11ee-a506-0242ac120002", "score": 25, "direction": "can_become" },
+  { "source_id": "d4f78901-d4f7-11ee-a506-0242ac120002", "target_id": "a9c12345-d4f7-11ee-a506-0242ac120002", "score": 25, "direction": "can_replace" },
+
+  { "source_id": "d2f45678-d4f7-11ee-a506-0242ac120002", "target_id": "e3a56789-d4f7-11ee-a506-0242ac120002", "score": 50, "direction": "can_become" },
+  { "source_id": "e3a56789-d4f7-11ee-a506-0242ac120002", "target_id": "d2f45678-d4f7-11ee-a506-0242ac120002", "score": 50, "direction": "can_replace" },
+
+  { "source_id": "f4b67890-d4f7-11ee-a506-0242ac120002", "target_id": "e3a56789-d4f7-11ee-a506-0242ac120002", "score": 50, "direction": "can_become" },
+  { "source_id": "e3a56789-d4f7-11ee-a506-0242ac120002", "target_id": "f4b67890-d4f7-11ee-a506-0242ac120002", "score": 50, "direction": "can_replace" },
+
+  { "source_id": "a5c78901-d4f7-11ee-a506-0242ac120002", "target_id": "d6f89012-d4f7-11ee-a506-0242ac120002", "score": 25, "direction": "can_become" },
+  { "source_id": "d6f89012-d4f7-11ee-a506-0242ac120002", "target_id": "a5c78901-d4f7-11ee-a506-0242ac120002", "score": 25, "direction": "can_replace" }
+]

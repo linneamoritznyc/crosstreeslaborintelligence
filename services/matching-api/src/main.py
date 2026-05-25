@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter
@@ -10,13 +12,22 @@ from .routers import (
 )
 from .middleware.logging import setup_logging
 from .middleware.rate_limit import limiter
+from .services.seeder import seed_if_empty
 
 setup_logging()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await seed_if_empty()
+    yield
+
 
 app = FastAPI(
     title="Crosstrees Labor Intelligence API",
     version="1.0.0",
-    description="AI-driven arbetsmarknadsmatchning för Sverige"
+    description="AI-driven arbetsmarknadsmatchning för Sverige",
+    lifespan=lifespan,
 )
 
 app.state.limiter = limiter

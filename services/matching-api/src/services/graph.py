@@ -27,17 +27,21 @@ _driver = AsyncGraphDatabase.driver(
 async def get_career_graph(session_id: str) -> dict:
     """Returnerar noder och kanter för kariärovergångsgraf, cachad per session."""
     cache_key = f"graph:career:{session_id}"
-    cached = await redis_client.get(cache_key)
-    if cached:
-        return json.loads(cached)
+    if redis_client is not None:
+        try:
+            cached = await redis_client.get(cache_key)
+            if cached:
+                return json.loads(cached)
+        except Exception:
+            pass
 
     async with _driver.session() as db:
         result = await db.run(
             """
-            MATCH (o:Occupation)-[r:SUBSTITUTABLE_WITH]->(target:Occupation)
+            MATCH (o:Occupation)-[r:SUBSTITUTABLE_BY]->(target:Occupation)
             RETURN o.id AS from_id, o.name AS from_name,
                    target.id AS to_id, target.name AS to_name,
-                   r.score AS score, null AS direction
+                   r.score AS score, r.direction AS direction
             LIMIT 50
             """
         )
@@ -66,7 +70,11 @@ async def get_career_graph(session_id: str) -> dict:
         )
 
     graph = {"nodes": list(nodes.values()), "edges": edges}
-    await redis_client.setex(cache_key, OCCUPATION_OVERVIEW_TTL, json.dumps(graph))
+    if redis_client is not None:
+        try:
+            await redis_client.setex(cache_key, OCCUPATION_OVERVIEW_TTL, json.dumps(graph))
+        except Exception:
+            pass
     log.info(
         "graph.career", session_id=session_id, nodes=len(nodes), edges=len(edges)
     )

@@ -68,7 +68,7 @@ async def get_omstallning(target_occupation_id: str | None = None) -> dict:
         if target_occupation_id:
             result = await db.run(
                 """
-                MATCH (källa:Occupation)-[r:SUBSTITUTABLE_WITH]->(mål:Occupation {id: $id})
+                MATCH (källa:Occupation)-[r:SUBSTITUTABLE_BY]->(mål:Occupation {id: $id})
                 RETURN källa.id AS id, källa.name AS name, källa.ssyk_code AS ssyk,
                        r.score AS score, mål.name AS target_name
                 ORDER BY r.score DESC
@@ -94,7 +94,7 @@ async def get_omstallning(target_occupation_id: str | None = None) -> dict:
             }
         result = await db.run(
             """
-            MATCH (a:Occupation)-[r:SUBSTITUTABLE_WITH]->(b:Occupation)
+            MATCH (a:Occupation)-[r:SUBSTITUTABLE_BY]->(b:Occupation)
             RETURN a.id AS id, a.name AS name, b.name AS target,
                    r.score AS score
             ORDER BY r.score DESC, a.name

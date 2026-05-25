@@ -98,7 +98,7 @@ async def neo4j_check():
             )
             kompetenser = (await result.single())["kompetenser"]
             result = await db.run(
-                "MATCH ()-[r:SUBSTITUTABLE_WITH]->() RETURN count(r) AS kanter"
+                "MATCH ()-[r:SUBSTITUTABLE_BY]->() RETURN count(r) AS kanter"
             )
             kanter = (await result.single())["kanter"]
         await driver.close()
