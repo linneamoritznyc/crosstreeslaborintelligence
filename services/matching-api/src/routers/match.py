@@ -8,7 +8,7 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException, Query
 
 from ..middleware.logging import get_logger
-from ..services.af_jobsearch import get_job_idf, get_job_skill_ids
+from ..services.af_jobsearch import get_job_idf, get_job_skill_ids, search_jobs
 from ..services.embeddings import get_session_skill_ids
 from ..services.fit_score import calculate_fit_score
 
@@ -18,13 +18,23 @@ router = APIRouter()
 
 @router.get("/jobs")
 async def matched_jobs(session: str = Query(..., min_length=1)):
-    """Returnerar jobbannonser rankade mot CV-sessionens kompetenser."""
+    """Returnerar jobbannonser rankade mot CV-sessionens kompetenser.
+
+    Försöker först med ESCO concept_id-filter. Om det ger 0 träffar faller
+    det tillbaka på fritextsökning med det första kompetensnamnet — detta
+    händer för demo-sessioner som lagrar klartext istället för concept-ID:n.
+    """
     skill_ids = await get_session_skill_ids(session)
     if not skill_ids:
         log.info("match.jobs.empty_session", session=session)
         return []
     hits = await get_job_skill_ids(skill_ids)
-    log.info("match.jobs", session=session, skills=len(skill_ids), hits=len(hits))
+    if not hits:
+        query = " ".join(skill_ids[:3])
+        hits = await search_jobs(query)
+        log.info("match.jobs.keyword_fallback", session=session, q=query[:60], hits=len(hits))
+    else:
+        log.info("match.jobs", session=session, skills=len(skill_ids), hits=len(hits))
     return hits
 
 
