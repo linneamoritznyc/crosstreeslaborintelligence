@@ -16,10 +16,11 @@ OCCUPATION_OVERVIEW_TTL = 14_400  # 4 h
 TAXONOMY_TTL = 604_800           # 7 dagar — pipeline-styrt schema
 FRESHNESS_TTL = 604_800          # 7 dagar — överlever en missad körning
 
-redis_client = aioredis.from_url(
-    os.environ.get("REDIS_URL", "redis://localhost:6379"),
-    decode_responses=False,
-)
+_redis_url = os.environ.get("REDIS_URL")
+if not _redis_url:
+    raise RuntimeError("REDIS_URL saknas — sätt miljövariabeln innan pipeline körs")
+
+redis_client = aioredis.from_url(_redis_url, decode_responses=False)
 
 
 async def cache_json(key: str, value: Any, ttl_seconds: int) -> None:

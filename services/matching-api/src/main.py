@@ -32,11 +32,12 @@ app = FastAPI(
 
 app.state.limiter = limiter
 
-_cors_default = "http://localhost:3000,http://localhost:3001"
+_cors_origins_raw = os.environ.get("CORS_ORIGINS", "")
+_cors_origins = [o.strip() for o in _cors_origins_raw.split(",") if o.strip()] if _cors_origins_raw else []
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.environ.get("CORS_ORIGINS", _cors_default).split(","),
-    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_origins=_cors_origins,
+    allow_origin_regex=r"https://.*\.railway\.app|https://.*\.vercel\.app",
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )

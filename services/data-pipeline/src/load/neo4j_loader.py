@@ -14,8 +14,12 @@ from .._shared.logging import get_logger
 
 log = get_logger(__name__)
 
+_neo4j_uri = os.environ.get("NEO4J_URI")
+if not _neo4j_uri:
+    raise RuntimeError("NEO4J_URI saknas — sätt miljövariabeln innan pipeline körs")
+
 _driver = AsyncGraphDatabase.driver(
-    os.environ.get("NEO4J_URI", "bolt://localhost:7687"),
+    _neo4j_uri,
     auth=(
         os.environ.get("NEO4J_USERNAME", "neo4j"),
         os.environ.get("NEO4J_PASSWORD", ""),
