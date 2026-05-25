@@ -2,21 +2,13 @@ import Link from "next/link";
 import { apiClient } from "@/lib/api-client";
 import DataLabel from "@/components/DataLabel";
 
-interface AFEmployer {
-  name?: string;
-}
-interface AFMunicipality {
-  label?: string;
-}
-
 interface AFJobHit {
   id: string;
   headline?: string;
   title?: string;
-  employer?: AFEmployer | string;
+  employer?: { name?: string } | string;
   workplace_address?: { municipality?: string };
   publication_date?: string;
-  description?: { text?: string };
 }
 
 interface Props {
@@ -38,10 +30,10 @@ export default async function JobbLista({ sessionId }: Props) {
     jobs = await apiClient<AFJobHit[]>(`/match/jobs?session=${sessionId}`);
   } catch {
     return (
-      <section aria-label="Matchande jobb">
+      <section aria-label="Matchande jobb" style={{ marginTop: "1.5rem" }}>
         <h2>Matchande jobb</h2>
-        <p>
-          <em>Kunde inte nå Platsbanken just nu. Försök igen om en stund.</em>
+        <p className="body-t" style={{ fontStyle: "italic" }}>
+          Kunde inte nå Platsbanken just nu. Försök igen om en stund.
         </p>
       </section>
     );
@@ -49,36 +41,39 @@ export default async function JobbLista({ sessionId }: Props) {
 
   if (!jobs || jobs.length === 0) {
     return (
-      <section aria-label="Matchande jobb">
+      <section aria-label="Matchande jobb" style={{ marginTop: "1.5rem" }}>
         <h2>Matchande jobb</h2>
-        <p>
-          <em>
-            Inga matchande jobb hittades för dina kompetenser i Jönköpings län just
-            nu.
-          </em>
+        <p className="body-t" style={{ fontStyle: "italic" }}>
+          Inga matchande jobb hittades för dina kompetenser i Jönköpings län just nu.
         </p>
       </section>
     );
   }
 
   return (
-    <section aria-label="Matchande jobb">
+    <section aria-label="Matchande jobb" style={{ marginTop: "1.5rem" }}>
       <h2>Bäst matchande jobb just nu</h2>
-      <ul>
+      <ul className="matches">
         {jobs.map((job) => (
-          <li key={job.id}>
-            <Link href={`/jobb/${job.id}`}>
-              <strong>{jobTitle(job)}</strong>
+          <li className="m-row" key={job.id}>
+            <span className="m-name">
+              <Link href={`/jobb/${job.id}`} style={{ color: "inherit" }}>
+                {jobTitle(job)}
+              </Link>
+              <span className="coord" style={{ display: "block", marginTop: "2px" }}>
+                {employerName(job)}
+                {job.workplace_address?.municipality && ` · ${job.workplace_address.municipality}`}
+              </span>
+            </span>
+            <Link href={`/jobb/${job.id}`} className="m-pct" style={{ textDecoration: "none", fontSize: "11px" }}>
+              →
             </Link>
-            <br />
-            <small>{employerName(job)}</small>
           </li>
         ))}
       </ul>
-      <DataLabel
-        source="AF Platsbanken"
-        date={new Date().toLocaleDateString("sv-SE")}
-      />
+      <div style={{ marginTop: "1rem" }}>
+        <DataLabel source="AF Platsbanken" date={new Date().toLocaleDateString("sv-SE")} />
+      </div>
     </section>
   );
 }

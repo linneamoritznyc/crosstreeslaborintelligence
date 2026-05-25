@@ -31,10 +31,10 @@ export default async function KarriarGraf({ sessionId }: Props) {
     );
   } catch {
     return (
-      <section aria-label="Karriärkarta">
+      <section aria-label="Karriärkarta" style={{ marginTop: "1.5rem" }}>
         <h2>Möjliga karriärvägar</h2>
-        <p>
-          <em>Grafdata under validering — försök igen om en stund.</em>
+        <p className="body-t" style={{ fontStyle: "italic" }}>
+          Grafdata under validering — försök igen om en stund.
         </p>
       </section>
     );
@@ -42,52 +42,34 @@ export default async function KarriarGraf({ sessionId }: Props) {
 
   if (graph.nodes.length === 0) {
     return (
-      <section aria-label="Karriärkarta">
+      <section aria-label="Karriärkarta" style={{ marginTop: "1.5rem" }}>
         <h2>Möjliga karriärvägar</h2>
-        <p>
-          <em>Inga karriärvägar hittades. Kontrollera att grafdata är seedad.</em>
+        <p className="body-t" style={{ fontStyle: "italic" }}>
+          Inga karriärvägar hittades. Kontrollera att grafdata är seedad.
         </p>
       </section>
     );
   }
 
-  const adjacents = graph.nodes.filter((n) => n.type !== "current");
-
   return (
-    <section aria-label="Karriärkarta">
+    <section aria-label="Karriärkarta" style={{ marginTop: "1.5rem" }}>
       <h2>Möjliga karriärvägar</h2>
-      <p>Baserat på Arbetsförmedlingens substitutabilitetsdata.</p>
-      <table>
-        <thead>
-          <tr>
-            <th>Från</th>
-            <th>Till</th>
-            <th>Substituerbarhet</th>
-          </tr>
-        </thead>
-        <tbody>
-          {graph.edges.slice(0, 30).map((edge) => {
-            const from = graph.nodes.find((n) => n.id === edge.from)?.label ?? edge.from;
-            const to = graph.nodes.find((n) => n.id === edge.to)?.label ?? edge.to;
-            return (
-              <tr key={`${edge.from}-${edge.to}`}>
-                <td>{from}</td>
-                <td>{to}</td>
-                <td>{edge.score !== null ? `${edge.score}%` : "—"}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <details>
-        <summary>{adjacents.length} möjliga målyrken</summary>
-        <ul>
-          {adjacents.map((node) => (
-            <li key={node.id}>{node.label}</li>
-          ))}
-        </ul>
-      </details>
-      <DataLabel source="AF Substitutabilitetsdata + Neo4j substitutabilitetsgraf" />
+      <p className="body-t">Baserat på Arbetsförmedlingens substitutabilitetsdata.</p>
+      <ul className="matches" style={{ marginTop: "1rem" }}>
+        {graph.edges.slice(0, 20).map((edge) => {
+          const from = graph.nodes.find((n) => n.id === edge.from)?.label ?? edge.from;
+          const to = graph.nodes.find((n) => n.id === edge.to)?.label ?? edge.to;
+          return (
+            <li className="m-row" key={`${edge.from}-${edge.to}`}>
+              <span className="m-name">{from} → {to}</span>
+              <span className="m-pct">
+                {edge.score !== null ? `${edge.score}%` : "—"}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+      <DataLabel source="AF Substitutabilitetsdata · Neo4j" />
     </section>
   );
 }
