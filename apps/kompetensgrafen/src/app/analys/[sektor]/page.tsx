@@ -2,7 +2,16 @@ import Link from "next/link";
 import BristTabell from "@/components/BristTabell";
 import LanskartaD3 from "@/components/LanskartaD3";
 import AIActDisclaimer from "@/components/AIActDisclaimer";
-import { apiClient } from "@/lib/api-client";
+
+const SEKTOR_NAMN: Record<string, string> = {
+  industri: "Tillverkning & industri",
+  vard: "Vård & omsorg",
+  it: "IT & digitalisering",
+  bygg: "Bygg & anläggning",
+  logistik: "Logistik & transport",
+  service: "Service & handel",
+  utbildning: "Utbildning",
+};
 
 interface Props {
   params: Promise<{ sektor: string }>;
@@ -10,45 +19,48 @@ interface Props {
 
 export default async function AnalysPage({ params }: Props) {
   const { sektor } = await params;
-
-  let sektorNamn = sektor;
-  try {
-    const sektorData = await apiClient<{ namn: string }>(
-      `/kompetensgrafen/sektorer/${sektor}`
-    );
-    sektorNamn = sektorData.namn;
-  } catch {
-    // fortsätt med slug
-  }
+  const sektorNamn = SEKTOR_NAMN[sektor] ?? sektor;
 
   return (
     <main className="page">
-      <nav style={{ paddingTop: "0.5rem", marginBottom: "1rem" }}>
-        <small className="data">
-          <Link href="/">← TILLBAKA TILL SEKTORVALET</Link>
-        </small>
-      </nav>
-      <h1>Analys — {sektorNamn}</h1>
-      <p>
-        Steg 1 av 5 — välj kommun eller yrke nedan för att fortsätta till
-        omställningsanalys, utbildningsgap och ROI.
-      </p>
+      <div className="hero-eyebrow" style={{ marginBottom: "1.5rem" }}>
+        <div className="eyebrow-line" />
+        <span className="eyebrow-text">
+          <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>← SEKTORVAL</Link>
+          {" · "}{sektorNamn.toUpperCase()}
+        </span>
+      </div>
+      <h1>{sektorNamn}</h1>
+      <p className="coord">Bristkarta · Jönköpings läns 13 kommuner · AF Platsbanken live</p>
 
-      <LanskartaD3 sektor={sektor} />
+      <div style={{ marginTop: "1.5rem" }}>
+        <LanskartaD3 sektor={sektor} />
+      </div>
       <BristTabell sektor={sektor} />
 
-      <h2>Nästa steg</h2>
-      <ul>
-        <li>
-          <Link href="/omstallning">→ Omställningsanalys per yrke</Link>
-        </li>
-        <li>
-          <Link href={`/roi?sektor=${sektor}`}>→ ROI-kalkyl för sektorn</Link>
-        </li>
-        <li>
-          <Link href={`/export?sektor=${sektor}`}>→ Exportera PDF-rapport</Link>
-        </li>
-      </ul>
+      <div style={{ marginTop: "2.5rem", paddingTop: "1.5rem", borderTop: "0.5px solid var(--border-faint)" }}>
+        <p className="sec-tag">Nästa steg</p>
+        <ul className="matches" style={{ maxWidth: "500px" }}>
+          <li className="m-row">
+            <span className="m-name">
+              <Link href="/omstallning" style={{ color: "inherit" }}>Omställningsanalys per yrke</Link>
+            </span>
+            <span className="m-pct">→</span>
+          </li>
+          <li className="m-row">
+            <span className="m-name">
+              <Link href={`/roi?sektor=${sektor}`} style={{ color: "inherit" }}>ROI-kalkyl för sektorn</Link>
+            </span>
+            <span className="m-pct">→</span>
+          </li>
+          <li className="m-row">
+            <span className="m-name">
+              <Link href={`/export?sektor=${sektor}`} style={{ color: "inherit" }}>Exportera PDF-rapport</Link>
+            </span>
+            <span className="m-pct">→</span>
+          </li>
+        </ul>
+      </div>
 
       <AIActDisclaimer variant="graph" />
     </main>

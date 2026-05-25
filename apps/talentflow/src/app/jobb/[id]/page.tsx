@@ -39,31 +39,49 @@ export default async function JobbDetaljPage({ params }: Props) {
   } catch {
     return (
       <main className="page">
+        <div className="hero-eyebrow" style={{ marginBottom: "1.5rem" }}>
+          <div className="eyebrow-line" />
+          <span className="eyebrow-text">← <Link href="/resultat" style={{ color: "inherit", textDecoration: "none" }}>MATCHNINGAR</Link></span>
+        </div>
         <h1>Annonsen kunde inte hämtas</h1>
-        <p>
-          Försök igen om en stund. <Link href="/">Tillbaka till start.</Link>
-        </p>
+        <p className="body-t">Annonsen kan ha tagits bort från Platsbanken. Försök igen om en stund.</p>
+        <div style={{ marginTop: "1.5rem" }}>
+          <Link href="/" className="btn-ghost" style={{ display: "inline-flex", borderLeft: "0.5px solid var(--ink)" }}>
+            Tillbaka till start
+          </Link>
+        </div>
       </main>
     );
   }
 
   return (
     <main className="page">
+      <div className="hero-eyebrow" style={{ marginBottom: "1.5rem" }}>
+        <div className="eyebrow-line" />
+        <span className="eyebrow-text">
+          <Link href="/resultat" style={{ color: "inherit", textDecoration: "none" }}>← MATCHNINGAR</Link>
+          {" · ANNONS"}
+        </span>
+      </div>
       <h1>{readTitle(jobb)}</h1>
       <p className="coord">
         {readEmployer(jobb)}
         {jobb.workplace_address?.municipality && ` · ${jobb.workplace_address.municipality}`}
       </p>
       <h2>Beskrivning</h2>
-      <p style={{ whiteSpace: "pre-wrap", maxWidth: "70ch" }}>{readDescription(jobb)}</p>
+      <p style={{ whiteSpace: "pre-wrap", maxWidth: "70ch", fontSize: "13px", lineHeight: "1.78" }}>
+        {readDescription(jobb)}
+      </p>
       {jobb.application_details?.url && (
-        <p>
-          <a href={jobb.application_details.url} target="_blank" rel="noopener noreferrer">
-            ANSÖK PÅ ARBETSGIVARENS SIDA →
+        <div style={{ marginTop: "1.5rem" }}>
+          <a href={jobb.application_details.url} target="_blank" rel="noopener noreferrer" className="btn-main" style={{ display: "inline-flex" }}>
+            Ansök på arbetsgivarens sida →
           </a>
-        </p>
+        </div>
       )}
-      <DataLabel source="AF Platsbanken" />
+      <div style={{ marginTop: "2rem" }}>
+        <DataLabel source="AF Platsbanken" />
+      </div>
     </main>
   );
 }

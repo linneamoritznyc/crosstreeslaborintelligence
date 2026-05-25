@@ -13,25 +13,35 @@ export default async function ResultatPage({ searchParams }: Props) {
   if (!session) {
     return (
       <main className="page">
+        <div className="hero-eyebrow" style={{ marginBottom: "1.5rem" }}>
+          <div className="eyebrow-line" />
+          <span className="eyebrow-text">MATCHADE JOBB</span>
+        </div>
         <h1>Dina matchningar</h1>
-        <p>
-          Ingen CV-session angiven.{" "}
-          <Link href="/">Tillbaka till start.</Link>
-        </p>
+        <p className="body-t">Ingen CV-session hittades. Starta en analys för att se dina matchningar.</p>
+        <div style={{ marginTop: "1.5rem" }}>
+          <Link href="/karriar" className="btn-main" style={{ display: "inline-flex" }}>
+            Analysera min kompetens →
+          </Link>
+        </div>
       </main>
     );
   }
 
   return (
     <main className="page">
+      <div className="hero-eyebrow" style={{ marginBottom: "1.5rem" }}>
+        <div className="eyebrow-line" />
+        <span className="eyebrow-text">
+          <Link href={`/karriar?session=${session}`} style={{ color: "inherit", textDecoration: "none" }}>← KARRIÄRPOTENTIAL</Link>
+          {" · MATCHADE JOBB"}
+        </span>
+      </div>
       <h1>Dina matchningar</h1>
-      <p>Live från Arbetsförmedlingens Platsbanken, rankade på kompetensöverlapp.</p>
-      <nav style={{ paddingTop: "0.75rem", marginBottom: "1.5rem" }}>
-        <small className="data">
-          <Link href={`/karriar?session=${session}`}>→ KARRIÄRPOTENTIAL</Link>
-        </small>
-      </nav>
-      <Suspense fallback={<p>Laddar matchningar…</p>}>
+      <p className="coord">
+        Live från AF Platsbanken · rankade på kompetensöverlapp · session {session.slice(0, 8)}…
+      </p>
+      <Suspense fallback={<p className="body-t" style={{ marginTop: "2rem" }}>Laddar matchningar…</p>}>
         <JobbLista sessionId={session} />
       </Suspense>
       <AIActDisclaimer variant="score" />

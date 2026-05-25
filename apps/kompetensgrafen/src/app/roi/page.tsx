@@ -4,17 +4,24 @@ import ROIKalkylator from "@/components/ROIKalkylator";
 export default function ROIPage() {
   return (
     <main className="page">
-      <nav style={{ paddingTop: "0.5rem", marginBottom: "1rem" }}>
-        <small className="data">
-          <Link href="/">← TILLBAKA</Link>
-        </small>
-      </nav>
-      <h1>ROI-kalkylator</h1>
-      <p>
-        Beräkna avkastning på utbildningsinsats med 95% konfidensintervall via
-        bootstrap-resampling. Alla antaganden visas explicit.
+      <div className="hero-eyebrow" style={{ marginBottom: "1.5rem" }}>
+        <div className="eyebrow-line" />
+        <span className="eyebrow-text">
+          <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>← ÖVERSIKT</Link>
+          {" · ROI-KALKYLATOR"}
+        </span>
+      </div>
+      <h1>ROI-kalkyl</h1>
+      <p className="tagline" style={{ fontSize: "15px", marginBottom: "0.75rem" }}>
+        Avkastning på utbildningsinsats — 95% konfidensintervall via bootstrap-resampling.
       </p>
-      <ROIKalkylator />
+      <p className="body-t">
+        Alla antaganden visas explicit. Modellen beräknar förväntad löneutveckling
+        och matchningssannolikhet baserat på AF:s efterfrågedata.
+      </p>
+      <div style={{ marginTop: "1.5rem" }}>
+        <ROIKalkylator />
+      </div>
     </main>
   );
 }

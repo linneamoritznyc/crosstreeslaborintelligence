@@ -1,10 +1,6 @@
 import Link from "next/link";
 import AIActDisclaimer from "@/components/AIActDisclaimer";
 
-interface Props {
-  searchParams: Promise<{ sektor?: string }>;
-}
-
 const SEKTORER = [
   { id: "industri", namn: "Tillverkning & industri" },
   { id: "vard", namn: "Vård & omsorg" },
@@ -15,37 +11,46 @@ const SEKTORER = [
   { id: "utbildning", namn: "Utbildning" },
 ];
 
+interface Props {
+  searchParams: Promise<{ sektor?: string }>;
+}
+
 export default async function ExportPage({ searchParams }: Props) {
   const { sektor } = await searchParams;
   return (
     <main className="page">
-      <nav style={{ paddingTop: "0.5rem", marginBottom: "1rem" }}>
-        <small className="data">
-          <Link href="/">← TILLBAKA</Link>
-        </small>
-      </nav>
+      <div className="hero-eyebrow" style={{ marginBottom: "1.5rem" }}>
+        <div className="eyebrow-line" />
+        <span className="eyebrow-text">
+          <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>← ÖVERSIKT</Link>
+          {" · PDF-RAPPORT"}
+        </span>
+      </div>
       <h1>Exportera rapport</h1>
-      <p>
-        Genererar en svensk PDF-rapport för mötesunderlag — bristyrken,
-        antagandestabell och datakällor.
+      <p className="tagline" style={{ fontSize: "15px", marginBottom: "0.75rem" }}>
+        Beslutsunderlag på svenska — bristyrken, antagandestabell och datakällor.
+      </p>
+      <p className="body-t">
+        Rapporten genereras direkt från live-data och kan delas med Kompetensrådet
+        eller laddas upp i ärendesystemet.
       </p>
       <form
         action={`${process.env.NEXT_PUBLIC_API_URL ?? ""}/kompetensgrafen/export/pdf`}
         method="GET"
+        style={{ marginTop: "1.5rem" }}
       >
-        <label htmlFor="sektor">Sektor</label>
+        <label htmlFor="sektor">Välj sektor</label>
         <select id="sektor" name="sektor" required defaultValue={sektor ?? ""}>
-          <option value="">— välj —</option>
+          <option value="">— välj sektor —</option>
           {SEKTORER.map((s) => (
             <option key={s.id} value={s.id}>
               {s.namn}
             </option>
           ))}
         </select>
-        <br />
-        <button type="submit" style={{ marginTop: "1.5rem" }}>
-          Ladda ner PDF
-        </button>
+        <div style={{ marginTop: "1.5rem" }}>
+          <button type="submit">Ladda ner PDF →</button>
+        </div>
       </form>
       <AIActDisclaimer variant="graph" />
     </main>

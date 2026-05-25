@@ -10,19 +10,26 @@ export default async function OmstallningPage({ searchParams }: Props) {
   const { target } = await searchParams;
   return (
     <main className="page">
-      <nav style={{ paddingTop: "0.5rem", marginBottom: "1rem" }}>
-        <small className="data">
-          <Link href="/">← TILLBAKA</Link>
-        </small>
-      </nav>
-      <h1>Omställningsanalys</h1>
-      <p>
-        Vilka yrken har störst kompetensöverlapp med ett målyrke? Underlag från
-        Arbetsförmedlingens substitutabilitetsdata och Neo4j-grafen.
+      <div className="hero-eyebrow" style={{ marginBottom: "1.5rem" }}>
+        <div className="eyebrow-line" />
+        <span className="eyebrow-text">
+          <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>← ÖVERSIKT</Link>
+          {" · OMSTÄLLNINGSANALYS"}
+        </span>
+      </div>
+      <h1>Omställning</h1>
+      <p className="tagline" style={{ fontSize: "15px", marginBottom: "0.75rem" }}>
+        Vilka yrken har störst kompetensöverlapp med ett målyrke?
       </p>
-      <Suspense fallback={<p>Laddar omställningsdata…</p>}>
-        <OmstallningsPanel target={target} />
-      </Suspense>
+      <p className="body-t">
+        Underlag från Arbetsförmedlingens substitutabilitetsdata och Neo4j-grafen.
+        Substitutabilitetsvärde 75 = nästan identiska yrken, 25 = ganska olika.
+      </p>
+      <div style={{ marginTop: "1.5rem" }}>
+        <Suspense fallback={<p className="coord" style={{ marginTop: "2rem" }}>Laddar omställningsdata…</p>}>
+          <OmstallningsPanel target={target} />
+        </Suspense>
+      </div>
     </main>
   );
 }
