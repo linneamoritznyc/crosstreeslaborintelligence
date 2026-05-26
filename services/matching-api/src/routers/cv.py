@@ -12,7 +12,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 from ..middleware.logging import get_logger
 from ..services.cache import redis_client, CV_PARSE_TTL, AI_ACT_LOG_RETENTION
 from ..services.cv_parser import parse_cv
-from ..services.embeddings import store_session_skills
+from ..services.embeddings import store_session_skills, get_session_skill_ids
 
 log = get_logger(__name__)
 router = APIRouter()
@@ -43,3 +43,21 @@ async def upload_cv(file: UploadFile = File(...)):
     )
 
     return {"session_id": session_id, "skill_count": len(skill_ids)}
+
+
+@router.get("/session/{session_id}")
+async def get_session(session_id: str):
+    """Returnerar de extraherade kompetenserna för en CV-session.
+
+    Används av medborgar-UI:t för att låta användaren verifiera vad systemet
+    läste från CV:t innan matchning körs. Returnerar 404 om sessionen
+    inte finns (24 h-TTL har gått ut) eller om Redis-fallbacken tappat den
+    vid container-restart.
+    """
+    skills = await get_session_skill_ids(session_id)
+    if not skills:
+        raise HTTPException(
+            status_code=404,
+            detail="Session saknas eller har gått ut (24 h-TTL)",
+        )
+    return {"session_id": session_id, "skills": skills, "skill_count": len(skills)}
