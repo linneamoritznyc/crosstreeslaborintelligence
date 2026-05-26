@@ -557,8 +557,8 @@ aside[role="note"] strong {
 .step-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 0 24px;
+  gap: 10px;
+  padding: 0 16px;
 }
 .step-num {
   font-family: "Alumni Sans Condensed", Impact, sans-serif;
@@ -785,7 +785,8 @@ aside[role="note"] strong {
   opacity: 0.55;
 }
 
-.analys-section { padding: 64px 40px; position: relative; }
+.analys-section { padding: 64px 40px; position: relative; scroll-margin-top: 56px; }
+#sektorer { scroll-margin-top: 56px; }
 
 .analys-h2 {
   font-family: "Alumni Sans Condensed", Impact, sans-serif;

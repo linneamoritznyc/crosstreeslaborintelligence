@@ -63,7 +63,7 @@ export default function StartPage() {
         </div>
       </section>
 
-      {/* ── HOW IT WORKS — 3 steps ────────────────────────────── */}
+      {/* ── HOW IT WORKS — 4 steps ────────────────────────────── */}
       <div className="steps-band">
         <div className="step-item">
           <span className="step-num">1</span>
@@ -72,11 +72,16 @@ export default function StartPage() {
         <div className="step-arrow">→</div>
         <div className="step-item">
           <span className="step-num">2</span>
-          <span className="step-label">Se bristkartan</span>
+          <span className="step-label">Se karriärövergångarna</span>
         </div>
         <div className="step-arrow">→</div>
         <div className="step-item">
           <span className="step-num">3</span>
+          <span className="step-label">Beräkna ROI</span>
+        </div>
+        <div className="step-arrow">→</div>
+        <div className="step-item">
+          <span className="step-num">4</span>
           <span className="step-label">Exportera rapport</span>
         </div>
       </div>

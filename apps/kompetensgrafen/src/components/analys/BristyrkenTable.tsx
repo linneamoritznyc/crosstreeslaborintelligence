@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { apiClient } from "@/lib/api-client";
 
 interface TopOccupation {
@@ -15,12 +14,6 @@ function pad(n: number) {
   return String(n).padStart(2, "0");
 }
 
-function toSlug(name: string) {
-  return name.toLowerCase()
-    .replace(/å/g, "a").replace(/ä/g, "a").replace(/ö/g, "o")
-    .replace(/,?\s+/g, "-").replace(/-+/g, "-");
-}
-
 export default async function BristyrkenTable({ sektor }: Props) {
   let rows: TopOccupation[];
   try {
@@ -34,7 +27,7 @@ export default async function BristyrkenTable({ sektor }: Props) {
       <p className="rust-eyebrow">TOPP 10 BRISTYRKEN I SEKTORN</p>
       <h2 className="analys-h2">BRISTYRKEN</h2>
       <p className="analys-subhead" style={{ marginBottom: 32 }}>
-        De yrken inom sektorn där regionen har störst kompetensbrist. Klicka för omställningsanalys.
+        De yrken inom sektorn där regionen har störst kompetensbrist.
       </p>
 
       {rows.length === 0 ? (
@@ -44,9 +37,9 @@ export default async function BristyrkenTable({ sektor }: Props) {
       ) : (
         <div style={{ borderTop: "0.5px solid var(--border-faint)" }}>
           {rows.map(row => (
-            <Link
+            <a
               key={row.rank}
-              href={`/analys/${sektor}/yrke/${toSlug(row.name)}`}
+              href={`/omstallning?target=${encodeURIComponent(row.ssyk_code)}`}
               style={{ textDecoration: "none", display: "block" }}
             >
               <div className="brist-row">
@@ -67,7 +60,7 @@ export default async function BristyrkenTable({ sektor }: Props) {
                   {row.shortage_pct}%
                 </span>
               </div>
-            </Link>
+            </a>
           ))}
         </div>
       )}

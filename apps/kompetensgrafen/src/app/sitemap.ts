@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/roi`,           lastModified: NOW, changeFrequency: "weekly", priority: 0.7 },
     { url: `${base}/chatt`,         lastModified: NOW, changeFrequency: "weekly", priority: 0.6 },
     { url: `${base}/export`,        lastModified: NOW, changeFrequency: "weekly", priority: 0.5 },
+    { url: `${base}/kontakt`,       lastModified: NOW, changeFrequency: "monthly", priority: 0.4 },
     ...SEKTORER.map(s => ({
       url: `${base}/analys/${s}`,
       lastModified: NOW,

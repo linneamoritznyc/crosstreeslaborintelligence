@@ -4,10 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LINKS = [
-  { href: "/",           label: "Översikt" },
+  { href: "/",            label: "Översikt" },
   { href: "/omstallning", label: "Omställning" },
-  { href: "/roi",        label: "ROI" },
-  { href: "/chatt",      label: "Chatt" },
+  { href: "/roi",         label: "ROI" },
+  { href: "/chatt",       label: "Chatt" },
+  { href: "/kontakt",     label: "Kontakt" },
 ];
 
 export default function NavBar() {
