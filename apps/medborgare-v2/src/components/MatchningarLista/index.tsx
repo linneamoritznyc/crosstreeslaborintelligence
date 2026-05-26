@@ -150,13 +150,13 @@ export default function MatchningarLista({ sessionId, totalSkillCount }: Props) 
         </h2>
         <div className="context-strip">
           <div className="context-row">
-            <span className="k">Region</span>
-            <span className="v">Jönköpings län (06) · fast i v2</span>
+            <span className="k">Område</span>
+            <span className="v">Jönköpings län — den här versionen söker bara här</span>
           </div>
           <div className="context-row">
             <span className="k">Kompetenser</span>
             <span className="v">
-              {totalSkillCount - boundaries.mutedSkills.length} aktiva
+              {totalSkillCount - boundaries.mutedSkills.length} används
               {boundaries.mutedSkills.length > 0 && (
                 <>
                   {" "}
@@ -173,11 +173,11 @@ export default function MatchningarLista({ sessionId, totalSkillCount }: Props) 
           )}
           <div className="context-row">
             <span className="k">Källa</span>
-            <span className="v">AF Platsbanken · live · 20 senaste</span>
+            <span className="v">Platsbanken · senaste 20 annonserna</span>
           </div>
         </div>
         <p className="sheet-prose" style={{ marginTop: 8 }}>
-          <Link href={`/granska/${sessionId}`}>← Justera</Link>
+          <Link href={`/granska/${sessionId}`}>← Justera kompetenser eller gränser</Link>
         </p>
       </section>
 
@@ -191,16 +191,16 @@ export default function MatchningarLista({ sessionId, totalSkillCount }: Props) 
 
         {state.kind === "loading" && (
           <p className="sheet-prose">
-            <em>Söker mot Platsbanken och beräknar matchningspoäng…</em>
+            <em>Söker i Platsbanken och räknar ut hur väl du matchar varje annons…</em>
           </p>
         )}
 
         {state.kind === "unavailable" && (
           <div className="fail-note">
-            <span className="fail-note-head">Backenden svarar inte</span>
-            Matching-API:n på Railway gick inte att nå. Vi har inte
-            fabricerat några matchningar — listan är tom för att vi inte
-            kunde fråga, inte för att svaret var noll.
+            <span className="fail-note-head">Vi når inte servern</span>
+            Anropet gick aldrig fram. Vi vill inte visa en tom lista som om
+            svaret vore noll — då hade vi gett dig fel signal. Försök igen
+            om en stund.
             <div className="empty-options" style={{ marginTop: 14 }}>
               <button type="button" onClick={state.retry}>
                 Försök igen
@@ -212,8 +212,8 @@ export default function MatchningarLista({ sessionId, totalSkillCount }: Props) 
 
         {state.kind === "error" && (
           <div className="fail-note">
-            <span className="fail-note-head">Backenden returnerade fel {state.status}</span>
-            {state.detail.slice(0, 240) || "Inget felmeddelande från servern."}
+            <span className="fail-note-head">Servern svarade med fel {state.status}</span>
+            {state.detail.slice(0, 240) || "Servern sade inte vad som var fel."}
           </div>
         )}
 
@@ -247,7 +247,7 @@ export default function MatchningarLista({ sessionId, totalSkillCount }: Props) 
             {filtered.filteredOut > 0 && (
               <p className="skill-summary">
                 <span className="muted">
-                  {filtered.filteredOut} matchningar dolda av dina gränser.
+                  {filtered.filteredOut} matchningar göms av dina gränser.
                 </span>
               </p>
             )}

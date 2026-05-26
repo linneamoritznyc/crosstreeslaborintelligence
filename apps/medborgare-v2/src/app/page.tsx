@@ -6,45 +6,48 @@ export default function StartPage() {
       <header className="sheet-header">
         <p className="sheet-eyebrow">Crosstrees · Medborgarverktyg · v2</p>
         <h1 className="sheet-title">
-          Sondering av <span className="accent">kompetensbotten.</span>
+          Vad du <span className="accent">kan</span> — och var
+          det <span className="accent">behövs.</span>
         </h1>
         <p className="sheet-lede">
-          Ladda upp ditt CV. Vi extraherar dina kompetenser, jämför dem mot
-          Arbetsförmedlingens taxonomi, och visar var i Jönköpings län de
-          har djup. Inga matchningar fabriceras. Saknad data redovisas.
+          Ladda upp ditt CV. Vi läser ut dina kompetenser, jämför dem mot
+          Arbetsförmedlingens yrkestaxonomi, och visar vilka jobb i
+          Jönköpings län som faktiskt passar. Vi gissar inget. När vi
+          inte vet, säger vi det.
         </p>
       </header>
 
       <section className="sheet-section">
         <h2 className="sheet-section-head">
-          <span>Vad som faktiskt händer när du laddar upp</span>
+          <span>Vad som händer när du laddar upp</span>
           <span className="step-num">5 steg</span>
         </h2>
         <p className="sheet-prose">
-          Filen läses lokalt i din webbläsare. Texten skickas till vår
-          backend på Railway. Anthropic Claude läser texten och returnerar
-          en lista över yrkeskompetenser. Vi sparar dem mot ett session-id
-          som lever i 24 timmar och raderas sedan permanent. Du får se
-          listan innan vi söker jobb — du bestämmer vad som ska matchas.
+          Du väljer filen i din webbläsare. Texten skickas krypterat till
+          oss. En AI läser texten och tar fram en lista över dina
+          yrkeskompetenser. Du får se listan innan vi söker jobb — och du
+          bestämmer själv vad som ska användas. Sessionen sparas i 24
+          timmar och raderas sedan helt.
         </p>
       </section>
 
       <section className="sheet-section">
         <h2 className="sheet-section-head">
-          <span>Verktygets gränser</span>
+          <span>Vad verktyget inte klarar</span>
           <span className="step-num">02 · ärlighet</span>
         </h2>
         <p className="sheet-prose">
-          Skannade PDF:er (där texten är bild) fungerar inte — vi har ingen
-          OCR i den här versionen. Region är fast inställd på Jönköpings
-          län. Matchningspoäng visas med 95 % Wilson-konfidensintervall —
-          smal poäng från få datapunkter behandlas inte som säker poäng.
+          Skannade PDF:er — där texten är en bild — fungerar inte i den
+          här versionen. Sökningen är låst till Jönköpings län. Varje
+          matchning visas med ett konfidensintervall (95 %, Wilson). När
+          intervallet är brett betyder det att vi har för få datapunkter
+          för att vara säkra — och då säger vi det rakt ut.
         </p>
       </section>
 
       <section className="sheet-section">
         <h2 className="sheet-section-head">
-          <span>Kalibrering</span>
+          <span>Börja här</span>
           <span className="step-num">påbörja</span>
         </h2>
         <UppladdningInstrument />
@@ -52,10 +55,10 @@ export default function StartPage() {
 
       <aside className="act-note">
         <strong>EU AI Act · artikel 13</strong>
-        Det här är ett AI-system med hög risk enligt EU 2024/1689. Resultaten
-        är rekommendationer, inte beslut. Du fattar alltid det slutliga
-        beslutet om din karriär. AI-inferensanrop loggas i 6 månader för
-        artikel 12-revision.
+        Det här är ett AI-system med hög risk enligt EU 2024/1689.
+        Resultaten är rekommendationer, inte beslut. Du fattar alltid
+        själv det sista beslutet om din karriär. AI-anropen loggas i
+        sex månader så att de går att granska i efterhand (artikel 12).
       </aside>
     </main>
   );

@@ -27,12 +27,12 @@ export default async function MatchningarPage({ params }: Props) {
         <header className="sheet-header">
           <p className="sheet-eyebrow">03 · Matchningar</p>
           <h1 className="sheet-title">
-            Session <span className="accent">saknas.</span>
+            Sessionen <span className="accent">är borta.</span>
           </h1>
           <p className="sheet-lede">
             {failure === "missing"
-              ? "Sessionen har gått ut (24 h-TTL) eller försvann i en backend-omstart."
-              : "Vi når inte matching-API:n på Railway just nu. Inget sparat är förlorat — vi har bara inte tillgång till backenden."}
+              ? "De 24 timmar vi sparar din session har gått ut, eller så har vår server startats om sedan du laddade upp."
+              : "Vi når inte servern just nu. Inget av det du sparat är förlorat — vi har bara inte tillgång till det i ögonblicket."}
           </p>
         </header>
         <div className="empty-options">
@@ -47,12 +47,14 @@ export default async function MatchningarPage({ params }: Props) {
       <header className="sheet-header">
         <p className="sheet-eyebrow">03 · Matchningar</p>
         <h1 className="sheet-title">
-          Vad finns <span className="accent">just nu.</span>
+          Vad som finns <span className="accent">just nu.</span>
         </h1>
         <p className="sheet-lede">
-          Live från Arbetsförmedlingens Platsbanken. Rangordnat på
-          kompetensöverlapp med 95 % Wilson-konfidensintervall. Brett
-          intervall = osäker poäng.
+          Live från Arbetsförmedlingens Platsbanken. Annonserna rangordnas
+          efter hur väl dina kompetenser överlappar med kravprofilen.
+          Varje matchning visas med ett konfidensintervall — när det är
+          brett betyder det att vi har för få datapunkter för att vara
+          säkra.
         </p>
       </header>
 
@@ -60,10 +62,10 @@ export default async function MatchningarPage({ params }: Props) {
 
       <aside className="act-note">
         <strong>EU AI Act · artikel 13 · transparens</strong>
-        Poängen baseras på överlapp mellan dina extraherade kompetenser
-        och annonsens kravprofil. När en annons har få kompetenskrav blir
-        konfidensintervallet brett — det är inte en defekt, det är en
-        ärlig redovisning av att vi inte vet säkert.
+        Poängen bygger på hur dina kompetenser överlappar med annonsens
+        kravprofil. När en annons listar få krav blir intervallet brett
+        — det är inte ett fel, det är vår ärliga redovisning av att vi
+        inte har tillräckligt att räkna på.
       </aside>
     </main>
   );

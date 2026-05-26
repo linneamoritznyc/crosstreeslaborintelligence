@@ -21,11 +21,19 @@ export default function MatchKvalitet({ score, ciLow, ciHigh }: Props) {
   const wide = ciRange > 25; // brett intervall = osäker poäng
 
   return (
-    <div className="depth" aria-label={`Matchning ${score}%, KI ${ciLow}-${ciHigh}%`}>
+    <div
+      className="depth"
+      aria-label={`Matchning ${score} procent. Intervall ${ciLow} till ${ciHigh} procent.`}
+      title={
+        wide
+          ? `Konfidensintervallet är brett (${ciLow}–${ciHigh} %). Annonsen har för få utskrivna krav för att vi ska kunna vara säkra på poängen.`
+          : `Konfidensintervall ${ciLow}–${ciHigh} % enligt Wilson-metoden.`
+      }
+    >
       <span className={`depth-val ${cls}`}>{score}%</span>
       <span className="depth-ci">
         {ciLow}–{ciHigh}
-        {wide && " · brett"}
+        {wide && " · osäker"}
       </span>
       <span className="depth-band">
         <span

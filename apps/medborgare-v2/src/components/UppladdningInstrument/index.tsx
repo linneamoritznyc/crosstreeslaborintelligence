@@ -29,11 +29,11 @@ interface Stage {
 }
 
 const STAGES: Stage[] = [
-  { id: "read", mark: "01", label: "Läser dokumentet", estMs: 700 },
-  { id: "extract", mark: "02", label: "Extraherar text", estMs: 900 },
-  { id: "identify", mark: "03", label: "Identifierar kompetenser via språkmodell", estMs: 3500 },
-  { id: "esco", mark: "04", label: "Korsrefererar mot ESCO-taxonomin", estMs: 1200 },
-  { id: "ready", mark: "05", label: "Förbereder navigationssession", estMs: 400 },
+  { id: "read", mark: "01", label: "Öppnar dokumentet", estMs: 700 },
+  { id: "extract", mark: "02", label: "Läser ut texten", estMs: 900 },
+  { id: "identify", mark: "03", label: "Hittar dina kompetenser med AI", estMs: 3500 },
+  { id: "esco", mark: "04", label: "Jämför med Arbetsförmedlingens taxonomi", estMs: 1200 },
+  { id: "ready", mark: "05", label: "Förbereder dina resultat", estMs: 400 },
 ];
 
 interface StageRowProps {
@@ -46,7 +46,7 @@ function StageRow({ stage, state }: StageRowProps) {
     pending: "väntar",
     active: "pågår",
     done: "klart",
-    failed: "fel",
+    failed: "fastnade",
   };
   return (
     <div className="stage" data-state={state}>
@@ -68,25 +68,25 @@ function failNote(fail: FailState): { head: string; body: string } {
     case "size":
       return {
         head: "Filen är för stor",
-        body: "Tjänsten accepterar dokument upp till 5 MB. Detta är en gräns på Railway-backenden, inte ett gränssnittsval. Skicka en lättare version (TXT eller text-PDF utan skannade bilder).",
+        body: "Vi tar emot dokument upp till 5 MB. Om din fil är större kan du oftast spara om den som en lättare PDF eller TXT — då brukar storleken bli en bråkdel.",
       };
     case "unavailable":
       return {
-        head: "Backenden svarar inte",
-        body: "Matching-API:n på Railway går inte att nå just nu. Inget i ditt CV gick förlorat — ingen text har lämnat din enhet. Försök igen om en minut, eller kontrollera om Railway har ett pågående avbrott.",
+        head: "Vi når inte vår server just nu",
+        body: "Anropet gick aldrig fram. Inget av ditt CV är sparat hos oss. Försök igen om en minut — om det inte funkar då, vänta en kvart och pröva på nytt.",
       };
     case "server":
       return {
-        head: `Backenden returnerade ${fail.status}`,
+        head: `Servern svarade med fel ${fail.status}`,
         body:
           fail.detail ||
-          "Servern bekräftade att din begäran nådde fram men kunde inte hantera den. Det här är inte ditt fel. Försök igen — om felet upprepas är det ett driftproblem.",
+          "Vi tog emot din fil men kunde inte hantera den. Det är inte ditt fel. Försök igen — om samma fel kommer tillbaka är något ur funktion hos oss.",
       };
     case "empty":
       return {
-        head: "Inga kompetenser hittades",
+        head: "Inga kompetenser kunde läsas ut",
         body:
-          "Backenden parsade dokumentet men hittade noll yrkeskompetenser. Det betyder oftast att texten är inbäddad som bild (skannad PDF). Försök ladda upp en text-baserad fil (DOCX eller TXT, eller en PDF som är skapad från text).",
+          "Vi öppnade dokumentet men hittade ingen läsbar text. Det händer nästan alltid när texten är en bild — till exempel om CV:t är inskannat. Spara om det som DOCX, TXT, eller en text-PDF och ladda upp på nytt.",
       };
   }
 }
@@ -204,7 +204,7 @@ export default function UppladdningInstrument() {
     <form className="calibrator" onSubmit={onSubmit}>
       <span className="calibrator-tick" />
       <label htmlFor="cv-file" className="calibrator-label">
-        Ladda upp CV — text-PDF, DOCX eller TXT
+        Välj fil — PDF, DOCX eller TXT
       </label>
       <input
         ref={inputRef}
@@ -217,16 +217,17 @@ export default function UppladdningInstrument() {
         disabled={running}
       />
       <p className="calibrator-meta">
-        Max 5 MB · ingen filuppladdning utan din aktiva handling · texten
-        skickas till matching-api på Railway och vidare till Anthropic
-        för kompetensextraktion · session-id sparas i 24 h (EU AI Act art. 12)
+        Max 5 MB · ingenting laddas upp innan du klickar nedan · texten
+        skickas krypterat till oss och vidare till Anthropic för att
+        läsa ut kompetenserna · sessionen sparas i 24 timmar och
+        raderas sedan (EU AI Act art. 12)
       </p>
       <button
         type="submit"
         className="calibrator-btn"
         disabled={!file || running}
       >
-        {running ? "Pågående analys" : "Starta analys →"}
+        {running ? "Analys pågår" : "Starta analys →"}
       </button>
 
       {stageIdx >= 0 && (

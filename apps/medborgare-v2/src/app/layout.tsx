@@ -49,7 +49,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <footer className="foot-strip">
           <span className="l">Crosstrees Labor Intelligence · Vetlanda</span>
           <span className="m">CROSSTREES</span>
-          <span className="r">v2 · ej upphandlad · ej beslutsfattande</span>
+          <span className="r">v2 · rekommenderar — beslutar inte</span>
         </footer>
       </body>
     </html>

@@ -34,17 +34,16 @@ export default async function GranskaPage({ params }: Props) {
         <header className="sheet-header">
           <p className="sheet-eyebrow">02 · Granskning</p>
           <h1 className="sheet-title">
-            Session <span className="accent">saknas.</span>
+            Sessionen <span className="accent">är borta.</span>
           </h1>
           <p className="sheet-lede">
             {failure.kind === "missing"
-              ? "Den här CV-sessionen finns inte i backendens minne. Antingen har 24-timmars-TTL gått ut, eller så har Railway-containern startats om sedan du laddade upp."
-              : "Vi kan inte nå matching-API:n på Railway just nu. Inget av ditt CV är förlorat — vi visar bara fel data."}
+              ? "Vi hittar inte din CV-session. Antingen har de 24 timmar vi sparar den gått ut, eller så har vår server startats om sedan du laddade upp."
+              : "Vi når inte servern just nu. Inget av ditt CV är förlorat — vi har bara inte tillgång till det här ögonblicket."}
           </p>
         </header>
         <div className="empty-options">
           <Link href="/">Ladda upp på nytt</Link>
-          <Link href="https://status.railway.app">Kontrollera Railway-status</Link>
         </div>
       </main>
     );
@@ -55,12 +54,12 @@ export default async function GranskaPage({ params }: Props) {
       <header className="sheet-header">
         <p className="sheet-eyebrow">02 · Granskning</p>
         <h1 className="sheet-title">
-          Stämmer detta <span className="accent">med dig?</span>
+          Stämmer det <span className="accent">här med dig?</span>
         </h1>
         <p className="sheet-lede">
-          Innan vi söker jobb visar vi vad vår språkmodell läste från ditt
-          CV. Du bestämmer vad som ska användas i matchningen — vi
-          fabricerar inget om dig.
+          Innan vi söker jobb vill vi visa vad AI:n läste från ditt CV.
+          Det är du som bestämmer vad som ska användas i matchningen — vi
+          hittar inte på något om dig.
         </p>
       </header>
 
@@ -68,9 +67,9 @@ export default async function GranskaPage({ params }: Props) {
 
       <aside className="act-note">
         <strong>EU AI Act · artikel 14</strong>
-        Människan har sista ordet (human oversight). Genom att tysta
-        kompetenser eller lägga till gränser justerar du vad systemet får
-        matcha mot. Du kan ångra dig på nästa sida.
+        Du har sista ordet. När du tystar en kompetens eller sätter en
+        gräns ändras vad systemet får matcha mot. Du kan ångra dig på
+        nästa sida.
       </aside>
     </main>
   );

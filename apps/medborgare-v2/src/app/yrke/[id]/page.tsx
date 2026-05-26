@@ -24,10 +24,12 @@ export default async function YrkePage({ params, searchParams }: Props) {
       <main className="sheet">
         <header className="sheet-header">
           <p className="sheet-eyebrow">04 · Yrkesvy</p>
-          <h1 className="sheet-title">Ingen session.</h1>
+          <h1 className="sheet-title">
+            Ingen <span className="accent">session.</span>
+          </h1>
           <p className="sheet-lede">
-            Den här sidan visar matchning mellan en specifik annons och en
-            CV-session. Ladda upp ett CV först.
+            Den här sidan visar hur väl en enskild annons matchar ditt CV.
+            För att se det behöver du ladda upp ett CV först.
           </p>
         </header>
         <div className="empty-options">
@@ -54,19 +56,19 @@ export default async function YrkePage({ params, searchParams }: Props) {
         <header className="sheet-header">
           <p className="sheet-eyebrow">04 · Yrkesvy</p>
           <h1 className="sheet-title">
-            Kan inte ladda <span className="accent">annonsen.</span>
+            Vi når inte <span className="accent">annonsen.</span>
           </h1>
           <p className="sheet-lede">
-            Varken jobbdata eller matchningspoäng gick att hämta. Det är
-            inte ditt fel — det är ett backend-problem.
+            Varken jobbinformationen eller matchningen kunde hämtas. Det
+            är inte ditt fel — något är ur funktion hos oss.
           </p>
         </header>
         <div className="fail-note">
-          <span className="fail-note-head">Felinformation</span>
-          {jobErr instanceof ApiError && `Jobbet: ${jobErr.status} ${jobErr.body.slice(0, 100)}`}
-          {jobErr instanceof ApiUnavailable && "Jobbet: API onåbart."}
+          <span className="fail-note-head">Vad som gick fel</span>
+          {jobErr instanceof ApiError && `Annonsen: ${jobErr.status} ${jobErr.body.slice(0, 100)}`}
+          {jobErr instanceof ApiUnavailable && "Annonsen: vi når inte servern."}
           {scoreErr instanceof ApiError && ` · Poängen: ${scoreErr.status}.`}
-          {scoreErr instanceof ApiUnavailable && " · Poängen: API onåbart."}
+          {scoreErr instanceof ApiUnavailable && " · Poängen: vi når inte servern."}
         </div>
         <div className="empty-options" style={{ marginTop: 18 }}>
           <Link href={`/matchningar/${session}`}>Tillbaka till matchningar</Link>
@@ -93,7 +95,7 @@ export default async function YrkePage({ params, searchParams }: Props) {
 
       <section className="sheet-section">
         <h2 className="sheet-section-head">
-          <span>Matchning mot din CV-session</span>
+          <span>Hur väl du matchar</span>
           <span className="step-num">poäng</span>
         </h2>
         {score ? (
@@ -106,17 +108,19 @@ export default async function YrkePage({ params, searchParams }: Props) {
               />
             </div>
             <p className="sheet-prose">
-              Beräknad med viktad överlapp (krav 60 % · önskvärt 30 % · bonus 10 %).
-              Konfidensintervallet är Wilson-metoden med 95 % täckning över
-              antal kravkompetenser i annonsen.
+              Vi räknar viktat: arbetsgivarens krav väger 60 procent,
+              önskemål 30 procent, övriga kompetenser 10 procent. Det
+              gråa intervallet är Wilson-metoden — ju färre krav annonsen
+              listar, desto bredare blir intervallet och desto mindre
+              säker poängen.
             </p>
           </>
         ) : (
           <div className="fail-note">
-            <span className="fail-note-head">Poäng kunde inte beräknas</span>
+            <span className="fail-note-head">Vi kunde inte räkna ut en poäng</span>
             {scoreErr instanceof ApiError && scoreErr.status === 404
-              ? "Annonsen saknar strukturerade kompetenskrav i Platsbankens API. Vi fabricerar inte en poäng från text — då hade vi gett dig fel signal."
-              : "Det är ett driftproblem. Prova ladda om sidan."}
+              ? "Den här annonsen har inga utskrivna kompetenskrav i Platsbanken. Vi gissar inte fram en poäng från enbart annonstexten — det hade gett dig fel signal."
+              : "Något är ur funktion hos oss just nu. Prova ladda om sidan om en stund."}
           </div>
         )}
       </section>
@@ -124,18 +128,18 @@ export default async function YrkePage({ params, searchParams }: Props) {
       {score && (
         <section className="sheet-section">
           <h2 className="sheet-section-head">
-            <span>Styrkor mot gap</span>
+            <span>Vad du har och vad som saknas</span>
             <span className="step-num">80/20</span>
           </h2>
           <div className="split-grid">
             <div className="split-cell strengths">
               <p className="split-cell-head">
-                <span className="label strength">Styrkor</span>
+                <span className="label strength">Du har</span>
                 <span className="count">{score.matched_required.length}</span>
               </p>
               {score.matched_required.length === 0 ? (
                 <p className="sheet-prose">
-                  Ingen kravkompetens i annonsen matchar din CV-session direkt.
+                  Ingen av annonsens krav matchar dina kompetenser direkt.
                 </p>
               ) : (
                 <ul>
@@ -147,20 +151,20 @@ export default async function YrkePage({ params, searchParams }: Props) {
             </div>
             <div className="split-cell gaps">
               <p className="split-cell-head">
-                <span className="label gap">Gap</span>
+                <span className="label gap">Saknas</span>
                 <span className="count">
                   {score.missing_required.length + score.missing_preferred.length}
                 </span>
               </p>
               {score.missing_required.length === 0 && score.missing_preferred.length === 0 ? (
-                <p className="sheet-prose">Inga uppenbara gap.</p>
+                <p className="sheet-prose">Inget uppenbart saknas.</p>
               ) : (
                 <ul>
                   {score.missing_required.map((s) => (
                     <li key={s}>{s} · krav</li>
                   ))}
                   {score.missing_preferred.map((s) => (
-                    <li key={`p-${s}`}>{s} · önskvärt</li>
+                    <li key={`p-${s}`}>{s} · önskemål</li>
                   ))}
                 </ul>
               )}
@@ -172,7 +176,7 @@ export default async function YrkePage({ params, searchParams }: Props) {
       {descriptionText && (
         <section className="sheet-section">
           <h2 className="sheet-section-head">
-            <span>Annonsens text</span>
+            <span>Hela annonsen</span>
             <span className="step-num">källa</span>
           </h2>
           <p className="sheet-prose" style={{ whiteSpace: "pre-line", maxWidth: "62ch" }}>
@@ -189,9 +193,9 @@ export default async function YrkePage({ params, searchParams }: Props) {
 
       <aside className="act-note">
         <strong>EU AI Act · artikel 13</strong>
-        Listan över matchade och saknade kompetenser kommer från
-        Arbetsförmedlingens kompetenstaxonomi som finns i annonsen. Vi
-        infererar inte krav som inte är explicit angivna.
+        Listan över krav och saknade kompetenser kommer från
+        Arbetsförmedlingens kompetenstaxonomi i annonsen. Vi lägger inte
+        till krav som arbetsgivaren själv inte skrivit ut.
       </aside>
     </main>
   );

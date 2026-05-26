@@ -113,10 +113,10 @@ export default function KompetensVerifiering({ sessionId, skills, filename }: Pr
           <span className="step-num">verifiera</span>
         </h2>
         <p className="sheet-prose">
-          Det här är exakt vad språkmodellen läste ur ditt dokument.
-          Om något inte stämmer — om en kompetens är fel eller om du inte
-          vill bli matchad mot den — markera <em>tysta</em>. Tystade
-          kompetenser används inte i matchningen.
+          Det här är allt AI:n läste från ditt dokument. Om något inte
+          stämmer — om en kompetens är fel, eller om det är en del av
+          ditt CV du inte vill bli matchad mot just nu — välj{" "}
+          <em>tysta</em>. Tystade kompetenser används inte i matchningen.
         </p>
 
         <p className="skill-summary">
@@ -132,8 +132,9 @@ export default function KompetensVerifiering({ sessionId, skills, filename }: Pr
 
         {sortedSkills.length === 0 ? (
           <div className="skill-empty">
-            Inga kompetenser hittades. Det här är ovanligt — ladda gärna upp
-            CV:t igen i ett textbaserat format.
+            Vi hittade inga kompetenser. Det är ovanligt — ladda gärna
+            upp CV:t igen, helst som text-PDF eller DOCX (skannade
+            bilder fungerar inte).
           </div>
         ) : (
           <ol className="skill-table">
@@ -170,15 +171,16 @@ export default function KompetensVerifiering({ sessionId, skills, filename }: Pr
         </h2>
         <div className="boundaries">
           <p className="boundaries-prompt">
-            Finns det ämnen, sektorer eller jobbtyper du inte vill matchas
-            mot, oavsett vad ditt CV säger? Lägg till dem här. Jobb vars
-            beskrivning innehåller dessa ord visas inte.
+            Finns det ämnen, branscher eller jobbtyper du inte vill bli
+            matchad mot, även om ditt CV pekar dit? Lägg till dem här.
+            Jobb som innehåller orden i sin beskrivning visas inte.
+            Du behöver inte förklara varför.
           </p>
           <form className="boundaries-input-row" onSubmit={addTopic}>
             <input
               type="text"
               className="boundaries-input"
-              placeholder="t.ex. nattskift, kundtjänst, kemi"
+              placeholder="till exempel nattskift, kundtjänst, kemi"
               value={topicInput}
               onChange={(e) => setTopicInput(e.target.value)}
               maxLength={40}
