@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import Link from "next/link";
 import "./globals.css";
 import { getSiteUrl } from "@/lib/site-url";
+import NavBar from "@/components/NavBar";
 
 const DESCRIPTION =
   "Regional arbetsmarknadsanalys för Jönköpings läns 13 kommuner. " +
@@ -38,6 +38,7 @@ export const metadata: Metadata = {
     title: "Kompetensgrafen: Regional arbetsmarknadsanalys",
     description: "Bristkartor, omställningsanalys och ROI för Jönköpings läns 13 kommuner.",
   },
+  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
   robots: {
     index: true,
     follow: true,
@@ -88,20 +89,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body>
-        <div className="bar">
-          <Link href="/" className="mark">Crosstrees · Kompetensgrafen</Link>
-          <nav className="nav" aria-label="Huvudnavigation">
-            <Link href="/">Översikt</Link>
-            <Link href="/omstallning">Omställning</Link>
-            <Link href="/roi">ROI</Link>
-            <Link href="/chatt">Chatt</Link>
-          </nav>
-        </div>
+        <NavBar />
         {children}
         <footer className="foot">
           <span className="foot-t">Crosstrees Labor Intelligence · Vetlanda, Sverige</span>
           <span className="foot-mark">Crosstrees</span>
-          <span className="foot-t">crosstrees.se · © 2026</span>
+          <span className="foot-t">
+            <a href="/kontakt" style={{ color: "inherit", textDecoration: "none" }}>Kontakt</a>
+            {" · crosstrees.se · © 2026"}
+          </span>
         </footer>
       </body>
     </html>

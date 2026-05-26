@@ -41,7 +41,7 @@ export default async function ExportPage({ searchParams }: Props) {
       >
         <label htmlFor="sektor">Välj sektor</label>
         <select id="sektor" name="sektor" required defaultValue={sektor ?? ""}>
-          <option value="">— välj sektor —</option>
+          <option value="">Välj sektor</option>
           {SEKTORER.map((s) => (
             <option key={s.id} value={s.id}>
               {s.namn}

@@ -51,11 +51,17 @@ export default async function AnalysPage({ params }: Props) {
 
       {/* Unique insight — first 90 seconds */}
       <div className="rope-divider" />
-      <OmstallningsCanvas />
+      <OmstallningsCanvas sektor={sektor} />
 
       <div className="rope-divider" />
 
-      <Bristkarta sektor={sektor} />
+      <Suspense fallback={
+        <div className="analys-section">
+          <div className="skeleton" style={{ height: 340, borderRadius: 0 }} />
+        </div>
+      }>
+        <Bristkarta sektor={sektor} />
+      </Suspense>
 
       <Suspense fallback={<div className="analys-section"><p className="coord">Laddar bristyrken…</p></div>}>
         <BristyrkenTable sektor={sektor} />

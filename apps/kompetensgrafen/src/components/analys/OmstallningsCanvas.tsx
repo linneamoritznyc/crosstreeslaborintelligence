@@ -5,7 +5,18 @@ import { NODES, EDGES, HIGHLIGHT_PATH, TOP_TRANSITIONS } from "./career-graph-da
 
 const CANVAS_H = 400;
 
-export default function OmstallningsCanvas() {
+const SECTOR_EXAMPLES: Record<string, { from: string; to: string; pct: number }> = {
+  vard:       { from: "Lagerarbetare",     to: "Undersköterska",      pct: 78 },
+  industri:   { from: "Elektriker",        to: "Automationstekniker", pct: 71 },
+  it:         { from: "Systemanalytiker",  to: "Mjukvaruutvecklare",  pct: 84 },
+  bygg:       { from: "Snickare",          to: "Anläggningsarbetare", pct: 69 },
+  logistik:   { from: "Lastbilsförare",    to: "Truckförare",         pct: 82 },
+  service:    { from: "Säljare",           to: "Butikschef",          pct: 67 },
+  utbildning: { from: "Barnskötare",       to: "Förskollärare",       pct: 75 },
+};
+
+export default function OmstallningsCanvas({ sektor = "vard" }: { sektor?: string }) {
+  const ex = SECTOR_EXAMPLES[sektor] ?? SECTOR_EXAMPLES.vard;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number | null>(null);
 
@@ -111,8 +122,9 @@ export default function OmstallningsCanvas() {
       <div className="omst-explainer">
         <span className="omst-dot" aria-hidden="true" />
         <p className="omst-plain">
-          Den röda punkten visar en möjlig karriärväg: från <strong>Lagerarbetare</strong> till{" "}
-          <strong>Undersköterska</strong>. Yrkena delar transferabla kompetenser enligt ESCO-taxonomin.
+          Den röda punkten visar en möjlig karriärväg: från <strong>{ex.from}</strong> till{" "}
+          <strong>{ex.to}</strong>. Yrkena delar <strong>{ex.pct}%</strong> av sina kompetenser
+          enligt ESCO-taxonomin. Ingen annan svensk källa visar detta.
         </p>
       </div>
 
