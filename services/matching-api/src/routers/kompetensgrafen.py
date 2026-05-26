@@ -19,6 +19,8 @@ from ..services.kompetensgrafen_roi import calculate_roi, generate_pdf_report
 from ..services.kompetensgrafen_service import (
     get_brist_for_sektor,
     get_omstallning,
+    get_sector_stats,
+    get_top_shortage_occupations,
     list_occupations_for_sektor,
 )
 
@@ -60,6 +62,18 @@ async def sektor_info(sektor: str):
 @router.get("/sektorer")
 async def lista_sektorer():
     return [{"id": k, "namn": v} for k, v in _SEKTOR_NAMN.items()]
+
+
+@router.get("/sector-stats")
+async def sector_stats(sektor: str = Query(...)):
+    _validera(sektor)
+    return await get_sector_stats(sektor)
+
+
+@router.get("/top-shortage-occupations")
+async def top_shortage_occupations(sektor: str = Query(...)):
+    _validera(sektor)
+    return await get_top_shortage_occupations(sektor)
 
 
 @router.get("/brist")

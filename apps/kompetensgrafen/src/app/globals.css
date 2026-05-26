@@ -482,6 +482,99 @@ aside[role="note"] strong {
   letter-spacing: 0.06em;
 }
 
+/* ═══ ANALYS PAGE ═══════════════════════════════════════════════ */
+
+.rope-divider {
+  height: 3px;
+  background: repeating-linear-gradient(90deg,
+    #7A2E1A 0, #7A2E1A 5px,
+    #b8956a 5px, #b8956a 10px,
+    #8a6040 10px, #8a6040 15px,
+    #7A2E1A 15px, #7A2E1A 20px);
+  opacity: 0.55;
+}
+
+.analys-section { padding: 64px 40px; position: relative; }
+
+.analys-h2 {
+  font-family: "Alumni Sans Condensed", Impact, sans-serif;
+  font-weight: 900; font-size: 40px;
+  text-transform: uppercase; color: var(--ink);
+  line-height: 0.95; margin: 0 0 8px;
+}
+
+.analys-subhead {
+  font-family: "IM Fell English", "Libre Baskerville", Georgia, serif;
+  font-style: italic; font-size: 18px;
+  color: var(--muted); line-height: 1.5;
+  margin: 12px 0 0; max-width: 640px;
+}
+
+.rust-eyebrow {
+  font-family: "Courier Prime", monospace;
+  font-weight: 700; font-size: 9px;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--rust); margin-bottom: 16px;
+}
+
+/* Stats band for analys page - 3 column */
+.stats-band {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  background: rgba(237,231,216,0.5);
+  border-top: 0.5px solid var(--border-faint);
+  border-bottom: 0.5px solid var(--border-faint);
+}
+.stats-cell {
+  padding: 26px 32px;
+  border-right: 0.5px solid var(--border-faint);
+}
+.stats-cell:last-child { border-right: none; }
+.stats-val {
+  font-family: "Alumni Sans Condensed", Impact, sans-serif;
+  font-weight: 900; font-size: 36px;
+  text-transform: uppercase; color: var(--ink);
+  line-height: 1; margin: 6px 0 4px;
+}
+.stats-val.rust { color: var(--rust); }
+.stats-note {
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-style: italic; font-size: 11px; color: var(--muted);
+}
+
+/* Brist table rows */
+.brist-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 14px 0; border-bottom: 0.5px solid var(--border-faint);
+  cursor: pointer;
+}
+.brist-row:hover { background: rgba(122,46,26,0.04); margin: 0 -8px; padding-left: 8px; padding-right: 8px; }
+
+/* Analys two-col grid for omstallning section */
+.analys-two-col {
+  display: grid; grid-template-columns: 1fr 360px; gap: 48px;
+  align-items: start;
+}
+
+/* ROI comparison grid */
+.roi-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  border-top: 0.5px solid var(--ink); border-bottom: 0.5px solid var(--ink);
+  background: rgba(237,231,216,0.4);
+}
+.roi-cell {
+  padding: 32px 28px;
+  border-right: 0.5px solid var(--border-faint);
+}
+.roi-cell:last-child { border-right: none; }
+
+/* Nasta steg list */
+.nasta-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 22px 28px; border-bottom: 0.5px solid var(--border-faint);
+  cursor: pointer; text-decoration: none; color: inherit;
+}
+.nasta-row:hover { background: rgba(122,46,26,0.04); }
+
 /* ═══ RESPONSIVE ════════════════════════════════════════════════ */
 @media (max-width: 700px) {
   .band, .split { grid-template-columns: 1fr; }

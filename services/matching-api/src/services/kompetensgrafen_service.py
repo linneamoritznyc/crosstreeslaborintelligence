@@ -159,5 +159,57 @@ async def get_brist_for_sektor(sektor: str) -> list[dict]:
     return rows
 
 
+# TODO: Replace with real SCB Yrkesregistret + AF Yrkesbarometern data.
+# These are representative placeholders for Jönköpings läns sectors, 2024.
+_SECTOR_STATS: dict[str, dict] = {
+    "vard": {"employees": 24800, "shortage_pct": 18, "forecast_year": 2040},
+    "industri": {"employees": 18200, "shortage_pct": 12, "forecast_year": 2040},
+    "bygg": {"employees": 7400, "shortage_pct": 22, "forecast_year": 2040},
+    "it": {"employees": 8600, "shortage_pct": 8, "forecast_year": 2040},
+    "logistik": {"employees": 11200, "shortage_pct": 9, "forecast_year": 2040},
+    "service": {"employees": 15800, "shortage_pct": 7, "forecast_year": 2040},
+    "utbildning": {"employees": 12400, "shortage_pct": 15, "forecast_year": 2040},
+}
+
+
+async def get_sector_stats(sektor: str) -> dict:
+    """Returnerar sysselsättningsstatistik per sektor.
+
+    TODO: Wire up real SCB Yrkesregistret API and AF Yrkesbarometern data.
+    """
+    stats = _SECTOR_STATS.get(sektor, {"employees": 10000, "shortage_pct": 10, "forecast_year": 2040})
+    return {
+        "sektor": sektor,
+        "employees": stats["employees"],
+        "shortage_pct": stats["shortage_pct"],
+        "forecast_year": stats["forecast_year"],
+        "source": "SCB Yrkesregistret 2024 + AF Yrkesbarometern 2026 [placeholder]",
+    }
+
+
+async def get_top_shortage_occupations(sektor: str) -> list[dict]:
+    """Returnerar topp-10 bristyrken i sektorn, rangordnade efter annonsvolym.
+
+    Shortage-procent beräknas relativt maxvärdet i sektorn.
+    TODO: Replace relative scaling with real AF Yrkesbarometern shortage index.
+    """
+    yrken = await get_brist_for_sektor(sektor)
+    if not yrken:
+        return []
+    max_index = max(r["brist_index"] for r in yrken) or 1
+    top10 = yrken[:10]
+    return [
+        {
+            "rank": i + 1,
+            "occupation_id": row["occupation_id"],
+            "name": row["occupation_name"],
+            "ssyk_code": row.get("ssyk_code") or "—",
+            "shortage_pct": round((row["brist_index"] / max_index) * 82 + 10),
+            "antal_annonser": row["antal_annonser"],
+        }
+        for i, row in enumerate(top10)
+    ]
+
+
 async def close() -> None:
     await _driver.close()
