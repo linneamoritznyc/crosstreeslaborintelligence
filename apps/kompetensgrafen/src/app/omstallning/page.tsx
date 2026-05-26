@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import OmstallningsPanel from "@/components/OmstallningsPanel";
 
 export const metadata: Metadata = {
-  title: "Omställningsanalys — karriärövergångar via ESCO-substitutabilitet",
+  title: "Omställningsanalys: karriärövergångar via ESCO-substitutabilitet",
   description:
     "Se vilka yrken som kan substituera ett bristyrke i Jönköpings läns arbetsmarknad. " +
     "Baserat på Arbetsförmedlingens ESCO-substitutabilitetsdata och Neo4j-grafen.",

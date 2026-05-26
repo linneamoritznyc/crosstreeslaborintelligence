@@ -3,7 +3,7 @@ import Link from "next/link";
 import ROIKalkylator from "@/components/ROIKalkylator";
 
 export const metadata: Metadata = {
-  title: "ROI-kalkyl — avkastning på omställningsinvesteringar",
+  title: "ROI-kalkyl: avkastning på omställningsinvesteringar",
   description:
     "Beräkna avkastningen på omställningsinsatser för Jönköpings läns arbetsmarknad. " +
     "IFAU/OECD Cost-Benefit Analysis-metod: kostnad per omställd vs besparing i A-kassa och vakansförluster.",
@@ -22,7 +22,7 @@ export default function ROIPage() {
       </div>
       <h1>ROI-kalkyl</h1>
       <p className="tagline" style={{ fontSize: "15px", marginBottom: "0.75rem" }}>
-        Avkastning på utbildningsinsats — 95% konfidensintervall via bootstrap-resampling.
+        Avkastning på utbildningsinsats. 95% konfidensintervall via bootstrap-resampling.
       </p>
       <p className="body-t">
         Alla antaganden visas explicit. Modellen beräknar förväntad löneutveckling

@@ -4,7 +4,7 @@ import AIActDisclaimer from "@/components/AIActDisclaimer";
 import HeroNet from "@/components/HeroNet";
 
 export const metadata: Metadata = {
-  title: "Kompetensgrafen — Regional arbetsmarknadsanalys Jönköpings län",
+  title: "Kompetensgrafen: Regional arbetsmarknadsanalys Jönköpings län",
   description:
     "Komplement till SKR:s demografiverktyg och regionala kompetensplaner. Kopplar bristdata till " +
     "substituerbarhet mellan yrken och beräknar ROI per omställning. Live-data från AF Platsbanken och ESCO. " +
@@ -50,7 +50,7 @@ export default function StartPage() {
           </div>
           <p className="tagline">
             SKR visar var bristen finns. AF visar prognoser. Det som saknas är
-            kopplingen till substituerbarhet och ROI — vem kan faktiskt ställas om, och vad kostar det?
+            kopplingen till substituerbarhet och ROI: vem kan faktiskt ställas om, och vad kostar det?
           </p>
           <div className="cta-row">
             <Link href="#sektorer" className="btn-main">
@@ -111,7 +111,7 @@ export default function StartPage() {
         <p className="position-text">
           SKR:s demografiverktyg visar att antalet 80-åringar ökar. AF:s Yrkesbarometer visar
           att det behövs fler undersköterskor. Kompetensgrafen svarar på nästa fråga:{" "}
-          <em>vilka yrkesgrupper kan faktiskt ställas om dit, baserat på faktiskt kompetensöverlapp —
+          <em>vilka yrkesgrupper kan faktiskt ställas om dit, baserat på faktiskt kompetensöverlapp
           och vad kostar och sparar det per person?</em>
         </p>
       </div>
@@ -125,7 +125,7 @@ export default function StartPage() {
             <p className="cap-q">I vilken kommun är bristen hårdast?</p>
             <p className="cap-desc">
               Realtidsdata från AF Platsbanken, uppdelad per yrke och kommun.
-              Komplement till SKR:s demografiöversikt — operativt och uppdaterat dagligen.
+              Komplement till SKR:s demografiöversikt. Operativt och uppdaterat dagligen.
             </p>
             <Link href="/analys/vard" className="cap-link">Se ett exempel →</Link>
           </div>
@@ -134,7 +134,7 @@ export default function StartPage() {
             <h3 className="cap-title">Substituerbarhet</h3>
             <p className="cap-q">Vilka yrken kan faktiskt ställas om till bristyrken?</p>
             <p className="cap-desc">
-              Baserat på ESCO-taxonomins kompetensöverlapp — inte antaganden.
+              Baserat på ESCO-taxonomins kompetensöverlapp, inte antaganden.
               Det här är det lager som saknas i regionala kompetensplaner och AF:s prognoser.
             </p>
             <Link href="/omstallning" className="cap-link">Se karriärvägar →</Link>
@@ -142,7 +142,7 @@ export default function StartPage() {
           <div className="cap-card">
             <span className="cap-num">03</span>
             <h3 className="cap-title">ROI & PDF</h3>
-            <p className="cap-q">Vad kostar omställningen — och vad sparar den regionen?</p>
+            <p className="cap-q">Vad kostar omställningen och vad sparar den regionen?</p>
             <p className="cap-desc">
               IFAU/OECD Cost-Benefit-metod. Interaktiv slider per antal omställningar.
               Exportera beslutsunderlag direkt till Kompetensrådets nästa möte.

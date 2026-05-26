@@ -119,7 +119,7 @@ export default function ROIKalkylator() {
                       {formatMkr(resultat.netto_vinst_kr)}
                       <br />
                       <small className="data">
-                        95% KI: {formatMkr(resultat.ci_95_low)} —{" "}
+                        95% KI: {formatMkr(resultat.ci_95_low)} till{" "}
                         {formatMkr(resultat.ci_95_high)}
                       </small>
                     </td>

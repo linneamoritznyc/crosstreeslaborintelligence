@@ -100,7 +100,7 @@ export default function SectorHero({ sektor, info }: Props) {
             ← TILLBAKA TILL SEKTORVALET
           </Link>
           <span style={{ fontFamily: "'Courier Prime', monospace", fontSize: 9, color: "var(--muted)" }}>
-            57°24′N · 15°04′E — JÖNKÖPINGS LÄN · {today}
+            57°24′N · 15°04′E · JÖNKÖPINGS LÄN · {today}
           </span>
         </div>
 

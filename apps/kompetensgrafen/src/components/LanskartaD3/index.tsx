@@ -38,7 +38,7 @@ export default function LanskartaD3({ sektor }: Props) {
         setData(rows);
       } catch (err) {
         if ((err as Error).name === "AbortError") return;
-        setFel("Kartdata under validering — försök igen om en stund.");
+        setFel("Kartdata under validering. Försök igen om en stund.");
       }
     }
     hamta();
@@ -178,7 +178,7 @@ export default function LanskartaD3({ sektor }: Props) {
 
   return (
     <section aria-label="Länkarta">
-      <h2>Bristkarta — Jönköpings län</h2>
+      <h2>Bristkarta: Jönköpings län</h2>
       <p className="coord">57°37′N · 14°10′E · Mercator EPSG:3857 · Thiessen-regionalisering</p>
       {fel && (
         <p role="alert" className="body-t" style={{ fontStyle: "italic", marginTop: "0.5rem" }}>

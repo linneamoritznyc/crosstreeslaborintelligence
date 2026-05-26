@@ -111,7 +111,7 @@ export default function OmstallningsCanvas() {
       <div className="omst-explainer">
         <span className="omst-dot" aria-hidden="true" />
         <p className="omst-plain">
-          Den röda punkten visar en möjlig karriärväg — från <strong>Lagerarbetare</strong> till{" "}
+          Den röda punkten visar en möjlig karriärväg: från <strong>Lagerarbetare</strong> till{" "}
           <strong>Undersköterska</strong>. Yrkena delar transferabla kompetenser enligt ESCO-taxonomin.
         </p>
       </div>

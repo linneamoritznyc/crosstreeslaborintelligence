@@ -4,7 +4,7 @@ import { getSiteUrl } from "@/lib/site-url";
 
 const BASE_PLACEHOLDER = "{BASE_URL}";
 
-const CONTENT = `# Kompetensgrafen — Jönköpings Kompetensråd
+const CONTENT = `# Kompetensgrafen: Jönköpings Kompetensråd
 
 > Regional arbetsmarknadsanalys för Jönköpings läns 13 kommuner.
 > Verktyg för kompetensstyrning och omställningsplanering, byggt för
@@ -15,57 +15,57 @@ const CONTENT = `# Kompetensgrafen — Jönköpings Kompetensråd
 Kompetensgrafen är ett operativt komplement till befintliga strategiska verktyg
 (SKR:s demografivisualisering, regionala kompetensplaner, AF:s Yrkesbarometer).
 Befintliga verktyg visar var kompetensbristen finns och hur befolkningen utvecklas.
-Kompetensgrafen kopplar den informationen till substituerbarhet mellan yrken —
+Kompetensgrafen kopplar den informationen till substituerbarhet mellan yrken,
 vilka yrkesgrupper kan faktiskt ställas om till bristyrken, baserat på faktiskt
-kompetensöverlapp i ESCO-taxonomin — och beräknar ROI per omställning med
+kompetensöverlapp i ESCO-taxonomin, och beräknar ROI per omställning med
 Cost-Benefit Analysis-metoden från IFAU och OECD.
 
 ## Datakällor
 
-- AF Platsbanken — live jobbannonser per yrke och kommun (AF JobTech Dev API)
-- Neo4j-graf — ESCO substitutabilitetsdata (22 yrken, 51 kompetenser, 38 SUBSTITUTABLE_BY-kanter)
-- SCB Geodata — kommuncentroider, Jönköpings läns 13 kommuner
-- SCB Yrkesregistret — sysselsättningsstatistik per sektor [placeholder — TODO: live SCB API]
-- AF Yrkesbarometern — bristindex per sektor [placeholder — TODO: live]
+- AF Platsbanken: live jobbannonser per yrke och kommun (AF JobTech Dev API)
+- Neo4j-graf: ESCO substitutabilitetsdata (22 yrken, 51 kompetenser, 38 SUBSTITUTABLE_BY-kanter)
+- SCB Geodata: kommuncentroider, Jönköpings läns 13 kommuner
+- SCB Yrkesregistret: sysselsättningsstatistik per sektor [placeholder: TODO: live SCB API]
+- AF Yrkesbarometern: bristindex per sektor [placeholder: TODO: live]
 
 ## Sidor
 
-- / — Startsida: sektoröversikt, transferabilitetsgrafen för 13 kommuner, statistikband
-- /analys/{sektor} — Sektorsanalys (5 steg):
+- /: Startsida: sektoröversikt, transferabilitetsgrafen för 13 kommuner, statistikband
+- /analys/{sektor}: Sektorsanalys (5 steg):
     Steg 1: Bristkarta (D3 Voronoi choropleth, 13 kommuner, rust-intensitet = brist)
     Steg 2: Topp-10 bristyrken (rankade efter AF-annonsvolym)
     Steg 3: Karriärövergångar (animerad graf, ESCO-substitutabilitet)
     Steg 4: ROI-kalkyl (IFAU/OECD CBA-metod, live slider)
     Steg 5: Nästa steg → yrken, ROI, PDF-export
-- /omstallning — Omställningsanalys: vilka yrken kan substituera ett bristyrke?
-- /roi — ROI-kalkylator: kostnad vs besparing per omställd person
-- /chatt — AI-rådgivare (RAG-baserad, Claude + Qdrant vektorsök)
-- /export — PDF-rapport för beslutsfattare (Kompetensrådet)
+- /omstallning: Omställningsanalys: vilka yrken kan substituera ett bristyrke?
+- /roi: ROI-kalkylator: kostnad vs besparing per omställd person
+- /chatt: AI-rådgivare (RAG-baserad, Claude + Qdrant vektorsök)
+- /export: PDF-rapport för beslutsfattare (Kompetensrådet)
 
 ## Sektorer (används i /analys/{sektor})
 
-- industri — Tillverkning & industri (SSYK: 31, 72, 81, 82, 74)
-- vard — Vård & omsorg (SSYK: 22, 53, 32)
-- it — IT & digitalisering (SSYK: 25, 35)
-- bygg — Bygg & anläggning (SSYK: 71, 75)
-- logistik — Logistik & transport (SSYK: 43, 83, 93)
-- service — Service & handel (SSYK: 14, 51, 52)
-- utbildning — Utbildning (SSYK: 23)
+- industri: Tillverkning & industri (SSYK: 31, 72, 81, 82, 74)
+- vard: Vård & omsorg (SSYK: 22, 53, 32)
+- it: IT & digitalisering (SSYK: 25, 35)
+- bygg: Bygg & anläggning (SSYK: 71, 75)
+- logistik: Logistik & transport (SSYK: 43, 83, 93)
+- service: Service & handel (SSYK: 14, 51, 52)
+- utbildning: Utbildning (SSYK: 23)
 
 ## Backend-API (öppet för läsning)
 
 Bas-URL: {API_URL}
 
 Kompetensgrafen-endpoints:
-- GET /kompetensgrafen/brist?sektor={slug} — bristyrken med AF-annonsvolym
-- GET /kompetensgrafen/karta?sektor={slug} — kommundata (lon, lat, brist_index)
-- GET /kompetensgrafen/sector-stats?sektor={slug} — sysselsättning, bristtal, prognos
-- GET /kompetensgrafen/top-shortage-occupations?sektor={slug} — topp-10 bristyrken
-- GET /kompetensgrafen/omstallning?target={occupation_id} — substitutabilitetsanalys
-- GET /kompetensgrafen/yrken?sektor={slug} — alla yrken i sektorn
-- GET /kompetensgrafen/roi?antal_deltagare=N&utbildningskostnad_kr=K&sektor={slug} — ROI
-- GET /kompetensgrafen/export/pdf?sektor={slug} — PDF-rapport (application/pdf)
-- GET /health — hälsokontroll
+- GET /kompetensgrafen/brist?sektor={slug}: bristyrken med AF-annonsvolym
+- GET /kompetensgrafen/karta?sektor={slug}: kommundata (lon, lat, brist_index)
+- GET /kompetensgrafen/sector-stats?sektor={slug}: sysselsättning, bristtal, prognos
+- GET /kompetensgrafen/top-shortage-occupations?sektor={slug}: topp-10 bristyrken
+- GET /kompetensgrafen/omstallning?target={occupation_id}: substitutabilitetsanalys
+- GET /kompetensgrafen/yrken?sektor={slug}: alla yrken i sektorn
+- GET /kompetensgrafen/roi?antal_deltagare=N&utbildningskostnad_kr=K&sektor={slug}: ROI
+- GET /kompetensgrafen/export/pdf?sektor={slug}: PDF-rapport (application/pdf)
+- GET /health: hälsokontroll
 
 ## Kommuner (Jönköpings län, 13 st)
 

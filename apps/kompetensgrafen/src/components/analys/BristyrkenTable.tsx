@@ -73,7 +73,7 @@ export default async function BristyrkenTable({ sektor }: Props) {
       )}
 
       <p className="coord" style={{ marginTop: 16 }}>
-        KÄLLA — NEO4J YRKESGRAF + AF PLATSBANKEN · JÖNKÖPINGS LÄN
+        KÄLLA: NEO4J YRKESGRAF + AF PLATSBANKEN · JÖNKÖPINGS LÄN
       </p>
     </section>
   );

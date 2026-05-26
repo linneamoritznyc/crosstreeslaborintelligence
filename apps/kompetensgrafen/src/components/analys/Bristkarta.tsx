@@ -132,12 +132,12 @@ export default function Bristkarta({ sektor }: { sektor: string }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8 }}>
         <div>
           <p className="rust-eyebrow">KÄLLA · SCB GEODATA REGSO 2025</p>
-          <h2 className="analys-h2">BRISTKARTA — JÖNKÖPINGS LÄN</h2>
+          <h2 className="analys-h2">BRISTKARTA · JÖNKÖPINGS LÄN</h2>
           <p className="analys-subhead">
             Mättnad i Signal Rust visar bristens allvarlighetsgrad per kommun. Klicka på en kommun för fördjupad analys.
           </p>
         </div>
-        <span className="coord" style={{ whiteSpace: "nowrap", marginTop: 4 }}>57°24′N · 15°04′E — EPSG:3857</span>
+        <span className="coord" style={{ whiteSpace: "nowrap", marginTop: 4 }}>57°24′N · 15°04′E · EPSG:3857</span>
       </div>
       <div style={{ position: "relative", border: "0.5px solid rgba(26,26,24,0.4)", marginTop: 24,
         background: "var(--parchment)" }}>
@@ -147,7 +147,7 @@ export default function Bristkarta({ sektor }: { sektor: string }) {
           style={{ width: "100%", maxWidth: W, height: "auto", display: "block" }} />
       </div>
       <p className="coord" style={{ marginTop: 10 }}>
-        KÄLLA — SCB GEODATA REGSO 2025 + AF YRKESBAROMETERN · {today}
+        KÄLLA: SCB GEODATA REGSO 2025 + AF YRKESBAROMETERN · {today}
       </p>
     </section>
   );

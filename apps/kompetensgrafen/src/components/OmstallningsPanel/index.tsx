@@ -32,7 +32,7 @@ export default async function OmstallningsPanel({ target }: Props) {
       <section aria-label="Omställningsyrken">
         <h2>Omställningsanalys</h2>
         <p>
-          <em>Grafdata under validering — försök igen om en stund.</em>
+          <em>Grafdata under validering. Försök igen om en stund.</em>
         </p>
       </section>
     );

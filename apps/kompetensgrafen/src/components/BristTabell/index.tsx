@@ -23,7 +23,7 @@ export default async function BristTabell({ sektor }: Props) {
       <section aria-label="Bristyrken">
         <h2>Bristyrken i sektorn</h2>
         <p>
-          <em>Bristdata under validering — försök igen om en stund.</em>
+          <em>Bristdata under validering. Försök igen om en stund.</em>
         </p>
       </section>
     );
@@ -42,7 +42,7 @@ export default async function BristTabell({ sektor }: Props) {
 
   return (
     <section aria-label="Bristyrken">
-      <h2>Yrken i sektorn — rankade efter aktuell annonsvolym</h2>
+      <h2>Yrken i sektorn, rankade efter aktuell annonsvolym</h2>
       <table>
         <thead>
           <tr>

@@ -14,7 +14,7 @@ const siteUrl = getSiteUrl();
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Kompetensgrafen — Jönköpings Kompetensråd",
+    default: "Kompetensgrafen: Jönköpings Kompetensråd",
     template: "%s | Kompetensgrafen",
   },
   description: DESCRIPTION,
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Crosstrees Labor Intelligence" }],
   creator: "Crosstrees Labor Intelligence",
   openGraph: {
-    title: "Kompetensgrafen — Jönköpings Kompetensråd",
+    title: "Kompetensgrafen: Jönköpings Kompetensråd",
     description: DESCRIPTION,
     url: siteUrl,
     siteName: "Kompetensgrafen",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "Kompetensgrafen — Regional arbetsmarknadsanalys",
+    title: "Kompetensgrafen: Regional arbetsmarknadsanalys",
     description: "Bristkartor, omställningsanalys och ROI för Jönköpings läns 13 kommuner.",
   },
   robots: {
@@ -67,7 +67,7 @@ const JSON_LD = {
     {
       "@type": "Dataset",
       "@id": `${siteUrl}/#dataset`,
-      name: "Kompetensgrafen — Regional arbetsmarknadsdata",
+      name: "Kompetensgrafen: Regional arbetsmarknadsdata",
       description: "Bristindex, yrkesubstitutabilitet och sysselsättningsdata för Jönköpings läns 13 kommuner.",
       keywords: ["arbetsmarknad", "kompetensbrist", "ESCO", "Jönköping", "SCB", "Arbetsförmedlingen"],
       spatialCoverage: { "@type": "AdministrativeArea", name: "Jönköpings län", identifier: "SE-06" },

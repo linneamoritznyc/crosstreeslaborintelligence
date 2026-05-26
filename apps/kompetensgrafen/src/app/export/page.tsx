@@ -28,7 +28,7 @@ export default async function ExportPage({ searchParams }: Props) {
       </div>
       <h1>Exportera rapport</h1>
       <p className="tagline" style={{ fontSize: "15px", marginBottom: "0.75rem" }}>
-        Beslutsunderlag på svenska — bristyrken, antagandestabell och datakällor.
+        Beslutsunderlag på svenska: bristyrken, antagandestabell och datakällor.
       </p>
       <p className="body-t">
         Rapporten genereras direkt från live-data och kan delas med Kompetensrådet

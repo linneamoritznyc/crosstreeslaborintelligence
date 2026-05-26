@@ -73,7 +73,7 @@ export default function ROIBlock({ sektor }: { sektor: string }) {
         <p className="rust-eyebrow" style={{ marginBottom: 6 }}>ANTAL OMSTÄLLNINGAR I REGIONEN</p>
         <p style={{ fontFamily: "'IM Fell English', serif", fontStyle: "italic",
           fontSize: 15, color: "var(--ink-soft)", margin: "0 0 14px" }}>
-          Dra reglaget — se hur totalkostnaden och besparingen förändras.
+          Dra reglaget. Se hur totalkostnaden och besparingen förändras.
         </p>
         <input ref={sliderRef} type="range" min={10} max={500} value={antal}
           onChange={e => setAntal(Number(e.target.value))}
@@ -102,7 +102,7 @@ export default function ROIBlock({ sektor }: { sektor: string }) {
       </div>
 
       <p className="coord" style={{ marginTop: 12 }}>
-        BERÄKNINGSGRUND — IFAU RAPPORT 2025:28 · OECD COST-BENEFIT FRAMEWORK · CROSSTREES ROI-MODELL V1
+        BERÄKNINGSGRUND: IFAU RAPPORT 2025:28 · OECD COST-BENEFIT FRAMEWORK · CROSSTREES ROI-MODELL V1
       </p>
     </section>
   );

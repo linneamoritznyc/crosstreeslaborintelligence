@@ -6,7 +6,7 @@ interface Props {
 export default function DataLabel({ source, date }: Props) {
   return (
     <small className="data" style={{ display: "block", marginTop: "0.4rem" }}>
-      KÄLLA — {source}
+      KÄLLA: {source}
       {date && ` · ${date}`}
     </small>
   );

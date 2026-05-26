@@ -16,7 +16,7 @@ const DISCLAIMERS: Record<NonNullable<Props["variant"]>, string> = {
 export default function AIActDisclaimer({ variant = "score" }: Props) {
   return (
     <aside role="note" aria-label="AI Act-förbehåll">
-      <strong>AI Act-förbehåll —</strong> {DISCLAIMERS[variant]}
+      <strong>AI Act-förbehåll:</strong> {DISCLAIMERS[variant]}
     </aside>
   );
 }

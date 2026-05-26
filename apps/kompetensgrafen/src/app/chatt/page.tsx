@@ -4,7 +4,7 @@ import KompetensChatt from "@/components/KompetensChatt";
 import AIActDisclaimer from "@/components/AIActDisclaimer";
 
 export const metadata: Metadata = {
-  title: "AI-rådgivare — fråga om arbetsmarknaden i Jönköpings län",
+  title: "AI-rådgivare: fråga om arbetsmarknaden i Jönköpings län",
   description:
     "RAG-baserad AI-rådgivare för Jönköpings läns arbetsmarknad. " +
     "Fråga om bristyrken, omställningsvägar och kompetensförsörjning. " +
