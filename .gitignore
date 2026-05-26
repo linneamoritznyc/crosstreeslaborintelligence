@@ -11,3 +11,6 @@ __pycache__/
 data/
 *.json.bak
 .turbo/
+next-env.d.ts
+*.tsbuildinfo
+pnpm-lock.yaml
