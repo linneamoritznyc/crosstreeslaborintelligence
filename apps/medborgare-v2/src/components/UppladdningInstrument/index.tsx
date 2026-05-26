@@ -27,7 +27,7 @@ function stateText(s: StageState): string {
 }
 
 interface FailState {
-  kind: "size" | "unavailable" | "server" | "empty";
+  kind: "size" | "unavailable" | "server" | "empty" | "unconfigured";
   status?: number;
   detail?: string;
 }
@@ -55,6 +55,11 @@ function failCopy(fail: FailState): { head: string; body: string } {
       return {
         head: "Inga kompetenser kunde läsas ut",
         body: "Vi öppnade dokumentet men hittade ingen läsbar text. Det händer nästan alltid när texten är en bild — till exempel om CV:t är inskannat. Spara om det som DOCX, TXT, eller en text-PDF och ladda upp på nytt.",
+      };
+    case "unconfigured":
+      return {
+        head: "Systemet är inte fullt konfigurerat just nu",
+        body: "AI-analysen är tillfälligt otillgänglig — det är inte ditt fel och inget av ditt CV är sparat hos oss. Försök igen om en stund eller kontakta oss om felet kvarstår.",
       };
   }
 }
@@ -138,6 +143,8 @@ export default function UppladdningInstrument() {
       } else if (err instanceof ApiError) {
         if (err.status === 413) {
           setFail({ kind: "size" });
+        } else if (err.status === 503) {
+          setFail({ kind: "unconfigured" });
         } else if (err.status === 422 && err.body.includes("empty")) {
           setFail({ kind: "empty" });
         } else {

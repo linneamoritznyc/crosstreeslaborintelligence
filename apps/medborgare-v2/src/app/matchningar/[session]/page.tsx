@@ -60,6 +60,10 @@ export default async function MatchningarPage({ params, searchParams }: Props) {
         </p>
       </header>
 
+      <div className="print-header" aria-hidden="true">
+        Crosstrees Labor Intelligence · Matchningsrapport · {new Date().toLocaleDateString("sv-SE")}
+      </div>
+
       <MatchningarLista sessionId={session} totalSkillCount={skillCount} initialRegion={region ?? "06"} />
 
       <aside className="act-note">

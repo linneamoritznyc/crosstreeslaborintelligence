@@ -259,6 +259,26 @@ export default function KompetensVerifiering({ sessionId, skills: initialSkills,
           </ol>
         )}
 
+        {/* Export skills (#8) */}
+        {sortedSkills.length > 0 && (
+          <div style={{ marginTop: 10, marginBottom: 4 }}>
+            <button
+              type="button"
+              className="fortsatt-btn"
+              onClick={() => {
+                const active = sortedSkills.filter((s) => !muted.has(s));
+                const text = active.map((s) => `• ${s}`).join("\n");
+                void navigator.clipboard.writeText(text).then(() => {
+                  // brief visual feedback handled via aria-live on the button itself
+                });
+              }}
+              aria-label="Kopiera aktiva kompetenser till urklipp som bulletlista"
+            >
+              Kopiera kompetenser
+            </button>
+          </div>
+        )}
+
         {/* Add skill (#2) */}
         <div className="add-skill">
           <p className="add-skill-label">Saknas något? Sök och lägg till kompetens:</p>

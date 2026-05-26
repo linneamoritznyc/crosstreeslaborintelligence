@@ -122,6 +122,7 @@ export async function parseCvStream(
         }
         if (evt.stage === "error") {
           if (evt.code === "size") throw new ApiError("/cv/parse-stream", 413, "Filen är för stor");
+          if (evt.code === "unconfigured") throw new ApiError("/cv/parse-stream", 503, "unconfigured");
           throw new ApiError("/cv/parse-stream", 422, `Parsning misslyckades: ${evt.code}`);
         }
       } catch (e) {
@@ -254,4 +255,35 @@ export function jobLocation(job: JobHit): string {
 /** Platsbanken URL for a job ad */
 export function platsbankenUrl(jobId: string): string {
   return `https://arbetsformedlingen.se/platsbanken/annonser/${jobId}`;
+}
+
+/** Human-readable age of a job posting in Swedish. */
+export function jobAge(publicationDate?: string): string {
+  if (!publicationDate) return "";
+  const diffMs = Date.now() - new Date(publicationDate).getTime();
+  const days = Math.floor(diffMs / 86_400_000);
+  if (days === 0) return "idag";
+  if (days === 1) return "igår";
+  if (days < 30) return `${days} dagar sedan`;
+  const months = Math.floor(days / 30);
+  return `${months} månad${months > 1 ? "er" : ""} sedan`;
+}
+
+export interface CareerGraphNode {
+  id: string;
+  label: string;
+  type: "current" | "adjacent";
+}
+
+export interface CareerGraph {
+  nodes: CareerGraphNode[];
+  edges: { from: string; to: string; score: number | null }[];
+  unavailable?: boolean;
+  reason?: string;
+}
+
+export async function getCareerGraph(sessionId: string): Promise<CareerGraph> {
+  return apiFetch<CareerGraph>(
+    `/recommend/career-graph?session=${encodeURIComponent(sessionId)}`,
+  );
 }

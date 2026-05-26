@@ -20,10 +20,16 @@ def _client() -> anthropic.AsyncAnthropic | None:
     return anthropic.AsyncAnthropic(api_key=key)
 
 
+class SystemUnconfiguredError(Exception):
+    """Kastad när Anthropic-nyckeln saknas — frontend visar degraderat tillstånd."""
+
+
 async def parse_cv(contents: bytes, filename: str) -> list[str]:
     client = _client()
     if client is None:
-        return []
+        raise SystemUnconfiguredError(
+            "ANTHROPIC_API_KEY är inte konfigurerat — systemet kan inte läsa CV just nu."
+        )
 
     text = contents.decode("utf-8", errors="replace")[:8000]
 

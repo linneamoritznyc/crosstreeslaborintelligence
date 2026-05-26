@@ -14,7 +14,7 @@ from pydantic import BaseModel
 
 from ..middleware.logging import get_logger
 from ..services.cache import redis_client, CV_PARSE_TTL, AI_ACT_LOG_RETENTION
-from ..services.cv_parser import parse_cv
+from ..services.cv_parser import parse_cv, SystemUnconfiguredError
 from ..services.embeddings import store_session_skills, get_session_skill_ids
 
 log = get_logger(__name__)
@@ -32,7 +32,10 @@ async def upload_cv(file: UploadFile = File(...)):
         raise HTTPException(status_code=413, detail="Filen är för stor (max 5 MB)")
 
     session_id = str(uuid.uuid4())
-    skill_ids = await parse_cv(contents, file.filename or "")
+    try:
+        skill_ids = await parse_cv(contents, file.filename or "")
+    except SystemUnconfiguredError as e:
+        raise HTTPException(status_code=503, detail=str(e))
 
     await store_session_skills(session_id, skill_ids)
 
@@ -74,7 +77,11 @@ async def upload_cv_stream(file: UploadFile = File(...)):
         # Stage 3: Claude AI parsing (blocking, but emitted before the call)
         yield f"data: {json.dumps({'stage': 'parsing'})}\n\n"
 
-        skill_ids = await parse_cv(contents, filename)
+        try:
+            skill_ids = await parse_cv(contents, filename)
+        except SystemUnconfiguredError:
+            yield f"data: {json.dumps({'stage': 'error', 'code': 'unconfigured'})}\n\n"
+            return
 
         # Stage 4: ESCO cross-reference / session store
         yield f"data: {json.dumps({'stage': 'esco'})}\n\n"

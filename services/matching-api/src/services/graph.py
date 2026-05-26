@@ -15,8 +15,12 @@ from .cache import redis_client, OCCUPATION_OVERVIEW_TTL
 
 log = get_logger(__name__)
 
+def _neo4j_configured() -> bool:
+    return bool(os.environ.get("NEO4J_URI"))
+
+
 _driver = AsyncGraphDatabase.driver(
-    os.environ.get("NEO4J_URI", ""),
+    os.environ.get("NEO4J_URI", "bolt://localhost:7687"),
     auth=(
         os.environ.get("NEO4J_USERNAME", "neo4j"),
         os.environ.get("NEO4J_PASSWORD", ""),
@@ -25,7 +29,10 @@ _driver = AsyncGraphDatabase.driver(
 
 
 async def get_career_graph(session_id: str) -> dict:
-    """Returnerar noder och kanter för kariärovergångsgraf, cachad per session."""
+    """Returnerar noder och kanter för karriärövergångsgraf, cachad per session."""
+    if not _neo4j_configured():
+        return {"nodes": [], "edges": [], "unavailable": True, "reason": "neo4j_not_configured"}
+
     cache_key = f"graph:career:{session_id}"
     cached = await redis_client.get(cache_key)
     if cached:
@@ -65,7 +72,7 @@ async def get_career_graph(session_id: str) -> dict:
             }
         )
 
-    graph = {"nodes": list(nodes.values()), "edges": edges}
+    graph = {"nodes": list(nodes.values()), "edges": edges, "unavailable": False}
     await redis_client.setex(cache_key, OCCUPATION_OVERVIEW_TTL, json.dumps(graph))
     log.info(
         "graph.career", session_id=session_id, nodes=len(nodes), edges=len(edges)

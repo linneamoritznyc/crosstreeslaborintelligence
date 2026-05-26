@@ -391,7 +391,14 @@ html, body {
   padding: 0;
   list-style: none;
 }
+.match-row-wrap {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+.match-row-wrap:last-child .match-row { border-bottom: none; }
 .match-row {
+  flex: 1;
   display: grid;
   grid-template-columns: 56px 1fr 120px;
   gap: 18px;
@@ -402,6 +409,96 @@ html, body {
   color: inherit;
 }
 .match-row:last-child { border-bottom: none; }
+.match-save-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 10px;
+  color: var(--ink-faint);
+  align-self: center;
+  line-height: 1;
+  border-bottom: 0.5px dotted var(--chart-line-faint);
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.match-row-wrap:last-child .match-save-btn { border-bottom: none; }
+.match-save-btn:hover { color: var(--signal-rust); }
+.match-save-btn[aria-pressed="true"] { color: var(--signal-rust); }
+.match-save-btn:focus-visible {
+  outline: 2px solid var(--signal-rust);
+  outline-offset: 1px;
+}
+.match-age {
+  color: var(--ink-ghost);
+}
+.match-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.match-filters {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.date-filter {
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.date-filter legend {
+  font-family: "Courier Prime", monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  float: left;
+  margin-right: 12px;
+  padding-top: 2px;
+}
+.date-filter-opt {
+  font-family: "Courier Prime", monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+.date-filter-opt input { cursor: pointer; accent-color: var(--signal-rust); }
+.saved-filter {
+  font-family: "Courier Prime", monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.saved-filter input { cursor: pointer; accent-color: var(--signal-rust); }
+.print-btn {
+  font-family: "Courier Prime", monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--ink-faint);
+  border: 0.5px solid var(--chart-line);
+  padding: 8px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.print-btn:hover { border-color: var(--ink); color: var(--ink); }
+.print-btn:focus-visible { outline: 2px solid var(--signal-rust); outline-offset: 2px; }
 .match-row:hover { background: var(--parchment-warm); }
 .match-num {
   font-family: "Courier Prime", monospace;
@@ -1176,6 +1273,163 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
+/* KOMPETENSFREKVENS (#2) */
+.freq-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.freq-row {
+  display: grid;
+  grid-template-columns: 160px 1fr 60px;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 0.5px dotted var(--chart-line-faint);
+}
+.freq-row:last-child { border-bottom: none; }
+.freq-label {
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 13px;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.freq-bar-wrap {
+  background: var(--chart-line);
+  height: 6px;
+  position: relative;
+}
+.freq-bar-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background: var(--depth-good);
+  min-width: 2px;
+}
+.freq-count {
+  font-family: "Courier Prime", monospace;
+  font-size: 10px;
+  color: var(--ink-faint);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* KOMPETENSGLAPP-SYNTES (#3) */
+.gap-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.gap-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 0.5px dotted var(--chart-line-faint);
+}
+.gap-row:last-child { border-bottom: none; }
+.gap-label {
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 13px;
+  color: var(--ink);
+}
+.gap-label::before { content: "○ "; color: var(--signal-rust); font-family: "Courier Prime", monospace; }
+.gap-count {
+  font-family: "Courier Prime", monospace;
+  font-size: 10px;
+  color: var(--signal-rust);
+  white-space: nowrap;
+}
+
+/* KARRIÄRGRAFVY (#4) */
+.karriar-list { margin-top: 4px; }
+.karriar-intro {
+  font-family: "IM Fell English", Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: 0 0 14px;
+  max-width: 56ch;
+}
+.karriar-nodes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 0.5px solid var(--chart-line-strong);
+}
+.karriar-node {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 0.5px dotted var(--chart-line-faint);
+  gap: 12px;
+}
+.karriar-node:last-child { border-bottom: none; }
+.karriar-node-label {
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 14px;
+  color: var(--ink);
+}
+.karriar-node-score {
+  font-family: "Courier Prime", monospace;
+  font-size: 10px;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+.karriar-note {
+  font-family: "Courier Prime", monospace;
+  font-size: 10px;
+  color: var(--ink-ghost);
+  margin-top: 12px;
+  letter-spacing: 0.04em;
+}
+
+/* PRINT (#7) */
+.print-header {
+  display: none;
+}
+@media print {
+  .legend-bar,
+  .foot-strip,
+  .print-btn,
+  .empty-options,
+  .next-step,
+  .match-save-btn,
+  .match-controls,
+  .hidden-matches,
+  .act-log,
+  .act-note,
+  .add-skill,
+  .fortsatt-btn,
+  .boundaries,
+  .ci-explanation,
+  .score-breakdown-summary::after {
+    display: none !important;
+  }
+  .print-header {
+    display: block;
+    font-family: "Courier Prime", monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 0.5px solid var(--ink);
+    padding-bottom: 8px;
+    margin-bottom: 18px;
+  }
+  .sheet { padding: 20px 0; }
+  .sheet-section { break-inside: avoid; }
+  .matches-table { break-inside: auto; }
+  .match-row { break-inside: avoid; }
+  body { font-size: 12px; }
+  .depth-band { display: none; }
+}
+
 /* COMPACT MOBILE (#10) */
 @media (max-width: 720px) {
   .legend-bar { grid-template-columns: 1fr auto; gap: 14px; padding: 12px 18px; }
@@ -1202,4 +1456,11 @@ button:focus-visible {
   .ci-explanation { max-width: 100%; }
   .hidden-matches-note { max-width: 100%; }
   .score-breakdown-body { padding: 12px 14px 16px; }
+  .freq-row { grid-template-columns: 1fr 60px; }
+  .freq-bar-wrap { display: none; }
+  .match-controls { flex-direction: column; gap: 12px; }
+  .match-filters { flex-direction: column; gap: 10px; }
+  .date-filter { flex-wrap: wrap; gap: 8px; }
+  .freq-label { font-size: 12px; }
+  .karriar-node { flex-direction: column; gap: 4px; }
 }

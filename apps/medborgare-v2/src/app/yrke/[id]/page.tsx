@@ -7,18 +7,20 @@ import {
   employerName,
   jobLocation,
   jobTitle,
+  jobAge,
   platsbankenUrl,
 } from "@/lib/api";
 import MatchKvalitet from "@/components/MatchKvalitet";
 
 interface Props {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ session?: string }>;
+  searchParams: Promise<{ session?: string; region?: string }>;
 }
 
 export default async function YrkePage({ params, searchParams }: Props) {
   const { id } = await params;
-  const { session } = await searchParams;
+  const { session, region } = await searchParams;
+  const regionParam = region ? `&region=${encodeURIComponent(region)}` : "";
 
   if (!session) {
     return (
@@ -80,6 +82,7 @@ export default async function YrkePage({ params, searchParams }: Props) {
   const title = job ? jobTitle(job) : "Annons utan titel";
   const employer = job ? employerName(job) : "—";
   const location = job ? jobLocation(job) : "";
+  const age = job ? jobAge(job.publication_date) : "";
   const descriptionText = job?.description?.text ?? "";
 
   // Score breakdown arithmetic (#7)
@@ -101,6 +104,11 @@ export default async function YrkePage({ params, searchParams }: Props) {
         <p className="sheet-lede">
           {employer}
           {location && ` · ${location}`}
+          {age && (
+            <span style={{ color: "var(--ink-faint)", fontSize: "0.82em", marginLeft: 10 }}>
+              · {age}
+            </span>
+          )}
         </p>
       </header>
 
@@ -241,7 +249,7 @@ export default async function YrkePage({ params, searchParams }: Props) {
       )}
 
       <div className="empty-options" style={{ marginTop: 28 }}>
-        <Link href={`/matchningar/${session}`}>← Alla matchningar</Link>
+        <Link href={`/matchningar/${session}?region=${region ?? "06"}`}>← Alla matchningar</Link>
         <Link href={`/granska/${session}`}>Justera kompetenser</Link>
         <a
           href={platsbankenUrl(id)}
