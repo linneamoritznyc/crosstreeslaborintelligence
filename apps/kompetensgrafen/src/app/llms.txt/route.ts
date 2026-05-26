@@ -12,9 +12,13 @@ const CONTENT = `# Kompetensgrafen — Jönköpings Kompetensråd
 
 ## Syfte
 
-Kompetensgrafen visualiserar kompetensbrist per yrke och kommun,
-karriärövergångar baserade på ESCO-substitutabilitetsdata, och beräknar
-ROI för omställningsinsatser i Jönköpings läns sju sektorer.
+Kompetensgrafen är ett operativt komplement till befintliga strategiska verktyg
+(SKR:s demografivisualisering, regionala kompetensplaner, AF:s Yrkesbarometer).
+Befintliga verktyg visar var kompetensbristen finns och hur befolkningen utvecklas.
+Kompetensgrafen kopplar den informationen till substituerbarhet mellan yrken —
+vilka yrkesgrupper kan faktiskt ställas om till bristyrken, baserat på faktiskt
+kompetensöverlapp i ESCO-taxonomin — och beräknar ROI per omställning med
+Cost-Benefit Analysis-metoden från IFAU och OECD.
 
 ## Datakällor
 

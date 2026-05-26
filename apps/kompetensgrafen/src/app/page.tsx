@@ -6,8 +6,9 @@ import HeroNet from "@/components/HeroNet";
 export const metadata: Metadata = {
   title: "Kompetensgrafen — Regional arbetsmarknadsanalys Jönköpings län",
   description:
-    "Bristkartor, omställningsanalys och ROI-kalkyl för Jönköpings läns 13 kommuner och 7 sektorer. " +
-    "Live-data från AF Platsbanken och SCB. Byggd för Kompetensrådet Region Jönköping.",
+    "Komplement till SKR:s demografiverktyg och regionala kompetensplaner. Kopplar bristdata till " +
+    "substituerbarhet mellan yrken och beräknar ROI per omställning. Live-data från AF Platsbanken och ESCO. " +
+    "Byggd för Kompetensrådet Region Jönköping.",
   alternates: { canonical: "/" },
 };
 
@@ -48,7 +49,8 @@ export default function StartPage() {
             grafen
           </div>
           <p className="tagline">
-            Var saknas folk? Vem kan byta jobb? Vad kostar det?
+            SKR visar var bristen finns. AF visar prognoser. Det som saknas är
+            kopplingen till substituerbarhet och ROI — vem kan faktiskt ställas om, och vad kostar det?
           </p>
           <div className="cta-row">
             <Link href="#sektorer" className="btn-main">
@@ -103,28 +105,48 @@ export default function StartPage() {
         </div>
       </section>
 
+      {/* ── POSITIONING — what Crosstrees adds ───────────────── */}
+      <div className="position-band">
+        <p className="position-label">VAD KOMPETENSGRAFEN TILLFÖR</p>
+        <p className="position-text">
+          SKR:s demografiverktyg visar att antalet 80-åringar ökar. AF:s Yrkesbarometer visar
+          att det behövs fler undersköterskor. Kompetensgrafen svarar på nästa fråga:{" "}
+          <em>vilka yrkesgrupper kan faktiskt ställas om dit, baserat på faktiskt kompetensöverlapp —
+          och vad kostar och sparar det per person?</em>
+        </p>
+      </div>
+
       {/* ── WHAT YOU GET — 3 capability cards ────────────────── */}
       <section className="cap-section">
         <div className="cap-grid">
           <div className="cap-card">
             <span className="cap-num">01</span>
             <h3 className="cap-title">Bristkarta</h3>
-            <p className="cap-q">Var är bristen störst?</p>
-            <p className="cap-desc">Karta över 13 kommuner som visar var kompetensbristen är hårdast — per yrke och sektor.</p>
+            <p className="cap-q">I vilken kommun är bristen hårdast?</p>
+            <p className="cap-desc">
+              Realtidsdata från AF Platsbanken, uppdelad per yrke och kommun.
+              Komplement till SKR:s demografiöversikt — operativt och uppdaterat dagligen.
+            </p>
             <Link href="/analys/vard" className="cap-link">Se ett exempel →</Link>
           </div>
           <div className="cap-card">
             <span className="cap-num">02</span>
-            <h3 className="cap-title">Omställning</h3>
-            <p className="cap-q">Vem kan byta jobb till bristyrken?</p>
-            <p className="cap-desc">Visar vilka yrken som har transferabla kompetenser och kan omskola sig till sektorer med brist.</p>
+            <h3 className="cap-title">Substituerbarhet</h3>
+            <p className="cap-q">Vilka yrken kan faktiskt ställas om till bristyrken?</p>
+            <p className="cap-desc">
+              Baserat på ESCO-taxonomins kompetensöverlapp — inte antaganden.
+              Det här är det lager som saknas i regionala kompetensplaner och AF:s prognoser.
+            </p>
             <Link href="/omstallning" className="cap-link">Se karriärvägar →</Link>
           </div>
           <div className="cap-card">
             <span className="cap-num">03</span>
             <h3 className="cap-title">ROI & PDF</h3>
-            <p className="cap-q">Vad kostar en omskolutbildning — och vad sparar den?</p>
-            <p className="cap-desc">Räkna ut kostnader mot besparingar och exportera ett beslutsunderlag för Kompetensrådet.</p>
+            <p className="cap-q">Vad kostar omställningen — och vad sparar den regionen?</p>
+            <p className="cap-desc">
+              IFAU/OECD Cost-Benefit-metod. Interaktiv slider per antal omställningar.
+              Exportera beslutsunderlag direkt till Kompetensrådets nästa möte.
+            </p>
             <Link href="/roi" className="cap-link">Beräkna ROI →</Link>
           </div>
         </div>

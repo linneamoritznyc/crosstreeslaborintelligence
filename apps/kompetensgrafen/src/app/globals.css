@@ -552,6 +552,40 @@ aside[role="note"] strong {
   opacity: 0.5;
 }
 
+/* ═══ POSITIONING BAND ══════════════════════════════════════════ */
+
+.position-band {
+  padding: 36px 40px;
+  background: var(--parchment-dark);
+  border-bottom: 0.5px solid var(--border-faint);
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+.position-label {
+  font-family: "Courier Prime", monospace;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rust);
+  padding-top: 4px;
+  margin: 0;
+}
+.position-text {
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: none;
+}
+.position-text em {
+  font-style: italic;
+  color: var(--ink);
+}
+
 /* ═══ SECTOR TILES ══════════════════════════════════════════════ */
 
 .sector-section {
@@ -828,6 +862,7 @@ aside[role="note"] strong {
 @media (max-width: 700px) {
   .steps-band { flex-wrap: wrap; gap: 12px; padding: 16px 20px; }
   .step-arrow { display: none; }
+  .position-band { grid-template-columns: 1fr; gap: 12px; padding: 28px 20px; }
   .sector-section { padding: 40px 20px; }
   .sector-grid { grid-template-columns: 1fr; }
   .cap-grid { grid-template-columns: 1fr; }
