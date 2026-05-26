@@ -57,7 +57,7 @@ export default async function JobbLista({ sessionId }: Props) {
         {jobs.map((job) => (
           <li className="m-row" key={job.id}>
             <span className="m-name">
-              <Link href={`/jobb/${job.id}`} style={{ color: "inherit" }}>
+              <Link href={`/jobb/${job.id}?session=${sessionId}`} style={{ color: "inherit" }}>
                 {jobTitle(job)}
               </Link>
               <span className="coord" style={{ display: "block", marginTop: "2px" }}>
@@ -65,7 +65,7 @@ export default async function JobbLista({ sessionId }: Props) {
                 {job.workplace_address?.municipality && ` · ${job.workplace_address.municipality}`}
               </span>
             </span>
-            <Link href={`/jobb/${job.id}`} className="m-pct" style={{ textDecoration: "none", fontSize: "11px" }}>
+            <Link href={`/jobb/${job.id}?session=${sessionId}`} className="m-pct" style={{ textDecoration: "none", fontSize: "11px" }}>
               →
             </Link>
           </li>

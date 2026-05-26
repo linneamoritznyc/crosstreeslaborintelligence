@@ -1,6 +1,8 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { apiClient } from "@/lib/api-client";
 import DataLabel from "@/components/DataLabel";
+import FitScoreKort from "@/components/FitScoreKort";
 
 interface AFJob {
   id: string;
@@ -14,6 +16,7 @@ interface AFJob {
 
 interface Props {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ session?: string }>;
 }
 
 function readEmployer(j: AFJob): string {
@@ -30,18 +33,20 @@ function readDescription(j: AFJob): string {
   return j.description?.text ?? "Ingen beskrivning tillgänglig.";
 }
 
-export default async function JobbDetaljPage({ params }: Props) {
+export default async function JobbDetaljPage({ params, searchParams }: Props) {
   const { id } = await params;
+  const { session } = await searchParams;
 
   let jobb: AFJob;
   try {
     jobb = await apiClient<AFJob>(`/jobs/${id}`);
   } catch {
+    const backHref = session ? `/resultat?session=${session}` : "/resultat";
     return (
       <main className="page">
         <div className="hero-eyebrow" style={{ marginBottom: "1.5rem" }}>
           <div className="eyebrow-line" />
-          <span className="eyebrow-text">← <Link href="/resultat" style={{ color: "inherit", textDecoration: "none" }}>MATCHNINGAR</Link></span>
+          <span className="eyebrow-text">← <Link href={backHref} style={{ color: "inherit", textDecoration: "none" }}>MATCHNINGAR</Link></span>
         </div>
         <h1>Annonsen kunde inte hämtas</h1>
         <p className="body-t">Annonsen kan ha tagits bort från Platsbanken. Försök igen om en stund.</p>
@@ -59,7 +64,7 @@ export default async function JobbDetaljPage({ params }: Props) {
       <div className="hero-eyebrow" style={{ marginBottom: "1.5rem" }}>
         <div className="eyebrow-line" />
         <span className="eyebrow-text">
-          <Link href="/resultat" style={{ color: "inherit", textDecoration: "none" }}>← MATCHNINGAR</Link>
+          <Link href={session ? `/resultat?session=${session}` : "/resultat"} style={{ color: "inherit", textDecoration: "none" }}>← MATCHNINGAR</Link>
           {" · ANNONS"}
         </span>
       </div>
@@ -77,6 +82,13 @@ export default async function JobbDetaljPage({ params }: Props) {
           <a href={jobb.application_details.url} target="_blank" rel="noopener noreferrer" className="btn-main" style={{ display: "inline-flex" }}>
             Ansök på arbetsgivarens sida →
           </a>
+        </div>
+      )}
+      {session && (
+        <div style={{ marginTop: "2rem" }}>
+          <Suspense fallback={<p className="coord">Beräknar matchningspoäng…</p>}>
+            <FitScoreKort sessionId={session} jobId={id} />
+          </Suspense>
         </div>
       )}
       <div style={{ marginTop: "2rem" }}>
