@@ -1,6 +1,7 @@
 import Link from "next/link";
 import AIActDisclaimer from "@/components/AIActDisclaimer";
 import RegionCanvas from "@/components/RegionCanvas";
+import HeroNet from "@/components/HeroNet";
 
 const SEKTORER = [
   { id: "industri", namn: "Tillverkning & industri", beskrivning: "Maskinoperatörer · svetsare · automationstekniker · vindkrafttekniker" },
@@ -37,6 +38,7 @@ export default function StartPage() {
           <text x="440" y="275" fontFamily="Courier Prime, monospace" fontSize="8" fill="#1A1A18" opacity="0.45" letterSpacing="0.1em">— 24 m</text>
           <text x="440" y="335" fontFamily="Courier Prime, monospace" fontSize="8" fill="#1A1A18" opacity="0.45" letterSpacing="0.1em">— 15 m</text>
         </svg>
+        <HeroNet />
         <div className="hero-content">
           <div className="hero-eyebrow">
             <div className="eyebrow-line" />

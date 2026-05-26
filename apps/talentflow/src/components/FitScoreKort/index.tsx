@@ -36,35 +36,37 @@ export default async function FitScoreKort({ sessionId, jobId }: Props) {
   return (
     <article aria-label={`Matchningspoäng: ${score}%`}>
       <h2>Matchningspoäng</h2>
-      <p>
-        <strong>{score}%</strong>{" "}
-        <small>
-          (95% Wilson-KI: {confidence_interval.low}–{confidence_interval.high}%)
-        </small>
+      <p className="body-t">
+        <strong style={{ fontSize: "1.5rem" }}>{score}%</strong>{" "}
+        <span className="coord">
+          95% Wilson-KI: {confidence_interval.low}–{confidence_interval.high}%
+        </span>
       </p>
       {matched_required.length > 0 && (
-        <section>
+        <>
           <h3>Matchade kompetenser</h3>
-          <ul>
+          <ul className="matches" style={{ paddingLeft: 0 }}>
             {matched_required.map((s) => (
-              <li key={s} style={{ color: "#0a7d2c" }}>
-                {s}
+              <li className="m-row" key={s}>
+                <span className="m-name">{s}</span>
+                <span className="m-pct" style={{ fontSize: "11px" }}>✓</span>
               </li>
             ))}
           </ul>
-        </section>
+        </>
       )}
       {missing_required.length > 0 && (
-        <section>
+        <>
           <h3>Saknade kompetenser</h3>
-          <ul>
+          <ul className="matches" style={{ paddingLeft: 0 }}>
             {missing_required.map((s) => (
-              <li key={s} style={{ color: "#b00020" }}>
-                {s}
+              <li className="m-row" key={s}>
+                <span className="m-name" style={{ color: "var(--rust)" }}>{s}</span>
+                <span className="m-pct" style={{ fontSize: "11px", color: "var(--rust)" }}>gap</span>
               </li>
             ))}
           </ul>
-        </section>
+        </>
       )}
       <DataLabel source="AF Platsbanken + AF kompetenstaxonomi" />
       <AIActDisclaimer variant="score" />
