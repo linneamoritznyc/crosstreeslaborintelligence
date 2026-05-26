@@ -108,13 +108,21 @@ export default function OmstallningsCanvas() {
         ESCO-taxonomins substitutabilitetsdata.
       </p>
 
-      <div className="analys-two-col" style={{ marginTop: 32 }}>
+      <div className="omst-explainer">
+        <span className="omst-dot" aria-hidden="true" />
+        <p className="omst-plain">
+          Den röda punkten visar en möjlig karriärväg — från <strong>Lagerarbetare</strong> till{" "}
+          <strong>Undersköterska</strong>. Yrkena delar transferabla kompetenser enligt ESCO-taxonomin.
+        </p>
+      </div>
+
+      <div className="analys-two-col" style={{ marginTop: 24 }}>
         <div>
           <canvas ref={canvasRef} aria-hidden="true"
             style={{ width: "100%", height: CANVAS_H, display: "block",
               border: "0.5px solid var(--border-faint)", background: "var(--parchment)" }} />
           <p className="coord" style={{ textAlign: "center", marginTop: 8 }}>
-            KARRIÄRGRAF · 44 YRKEN · 24 SUBSTITUTABILITETSKANTER · ESCO
+            44 YRKEN · 24 KOMPETENSÖVERLAPP · ESCO-TAXONOMIN
           </p>
         </div>
 

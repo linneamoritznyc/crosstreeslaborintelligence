@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const COST_PER_PERSON = 185_000;
 const SAVING_PER_PERSON = 742_000;
@@ -18,6 +18,17 @@ function fmtSign(n: number) {
 
 export default function ROIBlock({ sektor }: { sektor: string }) {
   const [antal, setAntal] = useState(100);
+  const sliderRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const el = sliderRef.current;
+    if (!el) return;
+    const t = setTimeout(() => {
+      el.style.animation = "sliderWiggle 0.7s ease";
+      el.addEventListener("animationend", () => { el.style.animation = ""; }, { once: true });
+    }, 800);
+    return () => clearTimeout(t);
+  }, []);
   const total_cost = antal * COST_PER_PERSON;
   const total_saving = antal * SAVING_PER_PERSON;
   const net = total_saving - total_cost;
@@ -59,11 +70,16 @@ export default function ROIBlock({ sektor }: { sektor: string }) {
 
       <div style={{ marginTop: 40, padding: "28px 32px", borderTop: "0.5px solid var(--border-faint)",
         borderBottom: "0.5px solid var(--border-faint)" }}>
-        <p className="rust-eyebrow" style={{ marginBottom: 16 }}>ANTAL OMSTÄLLNINGAR I REGIONEN</p>
-        <input type="range" min={10} max={500} value={antal}
+        <p className="rust-eyebrow" style={{ marginBottom: 6 }}>ANTAL OMSTÄLLNINGAR I REGIONEN</p>
+        <p style={{ fontFamily: "'IM Fell English', serif", fontStyle: "italic",
+          fontSize: 15, color: "var(--ink-soft)", margin: "0 0 14px" }}>
+          Dra reglaget — se hur totalkostnaden och besparingen förändras.
+        </p>
+        <input ref={sliderRef} type="range" min={10} max={500} value={antal}
           onChange={e => setAntal(Number(e.target.value))}
+          aria-label="Antal omställningar"
           style={{ width: "100%", maxWidth: 420, accentColor: "var(--rust)",
-            appearance: "none", height: 2, background: "var(--ink)", outline: "none",
+            appearance: "none", height: 3, background: "var(--ink)", outline: "none",
             cursor: "pointer" }} />
         <div style={{ display: "flex", gap: 0, marginTop: 28,
           borderTop: "0.5px solid var(--border-faint)" }}>
