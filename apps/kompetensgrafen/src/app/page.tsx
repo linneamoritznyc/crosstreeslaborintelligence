@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description:
     "Bristkartor, omställningsanalys och ROI-kalkyl för Jönköpings läns 13 kommuner och 7 sektorer. " +
     "Live-data från AF Platsbanken och SCB. Byggd för Kompetensrådet Region Jönköping.",
-  alternates: { canonical: "https://kompetensgrafen.crosstrees.se" },
+  alternates: { canonical: "/" },
 };
 
 const SEKTORER = [
@@ -63,8 +63,8 @@ export default function StartPage() {
             Live-data från AF Platsbanken, SCB och Neo4j-grafen.
           </p>
           <div className="cta-row">
-            <Link href="/analys/industri" className="btn-main">
-              Välj bransch →
+            <Link href="#sektorer" className="btn-main">
+              Välj sektor →
             </Link>
             <Link href="/chatt" className="btn-ghost">
               AI-rådgivare
@@ -91,7 +91,7 @@ export default function StartPage() {
         </div>
       </div>
 
-      <div className="split">
+      <div className="split" id="sektorer">
         <div className="split-left">
           <div className="rope-band" />
           <div className="sec-tag">Steg 1 · Välj bransch</div>

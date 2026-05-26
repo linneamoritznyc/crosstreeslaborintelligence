@@ -38,8 +38,8 @@ export default async function BristyrkenTable({ sektor }: Props) {
       </p>
 
       {rows.length === 0 ? (
-        <p className="body-t" style={{ fontStyle: "italic" }}>
-          Bristdata hämtas från Neo4j — kontrollera att grafen är seedat och att Railway är online.
+        <p className="body-t" style={{ fontStyle: "italic", color: "var(--muted)" }}>
+          Bristdata för denna sektor är inte tillgänglig för tillfället.
         </p>
       ) : (
         <div style={{ borderTop: "0.5px solid var(--border-faint)" }}>
@@ -55,7 +55,7 @@ export default async function BristyrkenTable({ sektor }: Props) {
                   {pad(row.rank)}
                 </span>
                 <span style={{ fontFamily: "'Libre Baskerville', Georgia, serif",
-                  fontSize: 14, color: "var(--ink)", flex: 1, padding: "0 16px" }}>
+                  fontSize: 16, color: "var(--ink)", flex: 1, padding: "0 16px" }}>
                   {row.name}
                 </span>
                 <span style={{ fontFamily: "'Courier Prime', monospace", fontSize: 10,

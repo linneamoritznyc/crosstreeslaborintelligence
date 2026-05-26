@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description:
     "Beräkna avkastningen på omställningsinsatser för Jönköpings läns arbetsmarknad. " +
     "IFAU/OECD Cost-Benefit Analysis-metod: kostnad per omställd vs besparing i A-kassa och vakansförluster.",
-  alternates: { canonical: "https://kompetensgrafen.crosstrees.se/roi" },
+  alternates: { canonical: "/roi" },
 };
 
 export default function ROIPage() {

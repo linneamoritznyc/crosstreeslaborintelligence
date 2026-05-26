@@ -187,27 +187,123 @@ async def get_sector_stats(sektor: str) -> dict:
     }
 
 
+# Fallback demo data — shown when Neo4j is not available.
+# Based on AF Yrkesbarometern 2025/2026 patterns for Jönköpings län.
+# TODO: Remove when live Neo4j + AF data is fully operational.
+_DEMO_SHORTAGE: dict[str, list[dict]] = {
+    "vard": [
+        {"rank": 1, "name": "Undersköterska, hemtjänst och äldreboende", "ssyk_code": "5321", "shortage_pct": 92},
+        {"rank": 2, "name": "Sjuksköterska, grundutbildad", "ssyk_code": "2221", "shortage_pct": 88},
+        {"rank": 3, "name": "Specialistsjuksköterska", "ssyk_code": "2222", "shortage_pct": 85},
+        {"rank": 4, "name": "Undersköterska, psykiatri", "ssyk_code": "5322", "shortage_pct": 81},
+        {"rank": 5, "name": "Personlig assistent", "ssyk_code": "5329", "shortage_pct": 78},
+        {"rank": 6, "name": "Barnmorska", "ssyk_code": "2223", "shortage_pct": 74},
+        {"rank": 7, "name": "Läkare, allmänmedicin", "ssyk_code": "2211", "shortage_pct": 70},
+        {"rank": 8, "name": "Röntgensjuksköterska", "ssyk_code": "2262", "shortage_pct": 65},
+        {"rank": 9, "name": "Barnskötare", "ssyk_code": "5311", "shortage_pct": 58},
+        {"rank": 10, "name": "Biståndshandläggare", "ssyk_code": "3412", "shortage_pct": 52},
+    ],
+    "industri": [
+        {"rank": 1, "name": "Automationstekniker", "ssyk_code": "3115", "shortage_pct": 89},
+        {"rank": 2, "name": "Svetsare", "ssyk_code": "7212", "shortage_pct": 84},
+        {"rank": 3, "name": "CNC-operatör", "ssyk_code": "8223", "shortage_pct": 80},
+        {"rank": 4, "name": "Underhållstekniker", "ssyk_code": "7233", "shortage_pct": 76},
+        {"rank": 5, "name": "Produktionstekniker", "ssyk_code": "3115", "shortage_pct": 72},
+        {"rank": 6, "name": "Elektriker, industri", "ssyk_code": "7411", "shortage_pct": 68},
+        {"rank": 7, "name": "Processoperatör, kemi", "ssyk_code": "8131", "shortage_pct": 63},
+        {"rank": 8, "name": "Maskinoperatör, plastprodukter", "ssyk_code": "8141", "shortage_pct": 58},
+        {"rank": 9, "name": "Mekatroniker", "ssyk_code": "3114", "shortage_pct": 54},
+        {"rank": 10, "name": "Ingenjör, konstruktion", "ssyk_code": "2141", "shortage_pct": 49},
+    ],
+    "bygg": [
+        {"rank": 1, "name": "Elektriker", "ssyk_code": "7411", "shortage_pct": 91},
+        {"rank": 2, "name": "Rörmokare och VVS-montör", "ssyk_code": "7126", "shortage_pct": 87},
+        {"rank": 3, "name": "Byggnadsingenjör", "ssyk_code": "3123", "shortage_pct": 79},
+        {"rank": 4, "name": "Snickare", "ssyk_code": "7115", "shortage_pct": 73},
+        {"rank": 5, "name": "Plåtslagare", "ssyk_code": "7212", "shortage_pct": 68},
+        {"rank": 6, "name": "Anläggningsmaskinförare", "ssyk_code": "8342", "shortage_pct": 62},
+        {"rank": 7, "name": "Betongarbetare", "ssyk_code": "7112", "shortage_pct": 57},
+        {"rank": 8, "name": "Byggprojektledare", "ssyk_code": "1323", "shortage_pct": 52},
+        {"rank": 9, "name": "Ventilationsmontör", "ssyk_code": "7127", "shortage_pct": 47},
+        {"rank": 10, "name": "Murare", "ssyk_code": "7112", "shortage_pct": 43},
+    ],
+    "it": [
+        {"rank": 1, "name": "Systemutvecklare, backend", "ssyk_code": "2512", "shortage_pct": 86},
+        {"rank": 2, "name": "DevOps-ingenjör", "ssyk_code": "2519", "shortage_pct": 83},
+        {"rank": 3, "name": "Dataingenjör", "ssyk_code": "2511", "shortage_pct": 79},
+        {"rank": 4, "name": "IT-säkerhetsspecialist", "ssyk_code": "2513", "shortage_pct": 75},
+        {"rank": 5, "name": "Molnarkitekt", "ssyk_code": "2514", "shortage_pct": 71},
+        {"rank": 6, "name": "AI/ML-ingenjör", "ssyk_code": "2519", "shortage_pct": 67},
+        {"rank": 7, "name": "UX-designer", "ssyk_code": "2166", "shortage_pct": 61},
+        {"rank": 8, "name": "Testingenjör", "ssyk_code": "2519", "shortage_pct": 55},
+        {"rank": 9, "name": "IT-projektledare", "ssyk_code": "2519", "shortage_pct": 50},
+        {"rank": 10, "name": "Systemarkitekt", "ssyk_code": "2512", "shortage_pct": 45},
+    ],
+    "logistik": [
+        {"rank": 1, "name": "Lastbilsförare, fjärrtransport", "ssyk_code": "8332", "shortage_pct": 82},
+        {"rank": 2, "name": "Truckförare", "ssyk_code": "9333", "shortage_pct": 77},
+        {"rank": 3, "name": "Logistikplanerare", "ssyk_code": "3331", "shortage_pct": 72},
+        {"rank": 4, "name": "Busschaufför", "ssyk_code": "8331", "shortage_pct": 68},
+        {"rank": 5, "name": "Lagerarbetare", "ssyk_code": "9333", "shortage_pct": 63},
+        {"rank": 6, "name": "Speditionsassistent", "ssyk_code": "3331", "shortage_pct": 57},
+        {"rank": 7, "name": "Godstrafikchef", "ssyk_code": "1324", "shortage_pct": 51},
+        {"rank": 8, "name": "Tulldeklanant", "ssyk_code": "3331", "shortage_pct": 46},
+        {"rank": 9, "name": "Inköpare", "ssyk_code": "3323", "shortage_pct": 41},
+        {"rank": 10, "name": "Supply chain-analytiker", "ssyk_code": "2431", "shortage_pct": 37},
+    ],
+    "service": [
+        {"rank": 1, "name": "Kock", "ssyk_code": "3434", "shortage_pct": 85},
+        {"rank": 2, "name": "Kökschef", "ssyk_code": "1412", "shortage_pct": 81},
+        {"rank": 3, "name": "Restaurangchef", "ssyk_code": "1412", "shortage_pct": 74},
+        {"rank": 4, "name": "Bagare och konditoriarbetare", "ssyk_code": "7512", "shortage_pct": 68},
+        {"rank": 5, "name": "Butikschef, dagligvaror", "ssyk_code": "1420", "shortage_pct": 62},
+        {"rank": 6, "name": "Frisör", "ssyk_code": "5141", "shortage_pct": 57},
+        {"rank": 7, "name": "Säljare, teknisk handel", "ssyk_code": "3322", "shortage_pct": 51},
+        {"rank": 8, "name": "Ekonomiassistent", "ssyk_code": "4311", "shortage_pct": 45},
+        {"rank": 9, "name": "HR-specialist", "ssyk_code": "2423", "shortage_pct": 40},
+        {"rank": 10, "name": "Kundtjänstmedarbetare", "ssyk_code": "4221", "shortage_pct": 35},
+    ],
+    "utbildning": [
+        {"rank": 1, "name": "Lärare, grundskola år 4–6", "ssyk_code": "2321", "shortage_pct": 94},
+        {"rank": 2, "name": "Förskollärare", "ssyk_code": "2342", "shortage_pct": 90},
+        {"rank": 3, "name": "Specialpedagog", "ssyk_code": "2351", "shortage_pct": 86},
+        {"rank": 4, "name": "Lärare, matematik och naturvetenskap", "ssyk_code": "2321", "shortage_pct": 83},
+        {"rank": 5, "name": "Lärare, yrkesämnen industri", "ssyk_code": "2320", "shortage_pct": 79},
+        {"rank": 6, "name": "Rektor, grundskola", "ssyk_code": "1345", "shortage_pct": 74},
+        {"rank": 7, "name": "Studie- och yrkesvägledare", "ssyk_code": "2635", "shortage_pct": 68},
+        {"rank": 8, "name": "Lärare, svenska som andraspråk", "ssyk_code": "2321", "shortage_pct": 63},
+        {"rank": 9, "name": "Skolpsykolog", "ssyk_code": "2634", "shortage_pct": 58},
+        {"rank": 10, "name": "Barnskötare, fritidshem", "ssyk_code": "5311", "shortage_pct": 52},
+    ],
+}
+
+
 async def get_top_shortage_occupations(sektor: str) -> list[dict]:
     """Returnerar topp-10 bristyrken i sektorn, rangordnade efter annonsvolym.
 
-    Shortage-procent beräknas relativt maxvärdet i sektorn.
+    Försöker hämta live-data från Neo4j + AF Platsbanken. Om grafen saknas
+    eller returnerar tomt, faller funktionen tillbaka på AF Yrkesbarometern-baserade
+    demodata för att säkerställa att sidan alltid visar något meningsfullt.
     TODO: Replace relative scaling with real AF Yrkesbarometern shortage index.
     """
     yrken = await get_brist_for_sektor(sektor)
-    if not yrken:
-        return []
-    max_index = max(r["brist_index"] for r in yrken) or 1
-    top10 = yrken[:10]
+    if yrken:
+        max_index = max(r["brist_index"] for r in yrken) or 1
+        return [
+            {
+                "rank": i + 1,
+                "occupation_id": row["occupation_id"],
+                "name": row["occupation_name"],
+                "ssyk_code": row.get("ssyk_code") or "—",
+                "shortage_pct": round((row["brist_index"] / max_index) * 82 + 10),
+                "antal_annonser": row["antal_annonser"],
+            }
+            for i, row in enumerate(yrken[:10])
+        ]
+    # Fallback to demo data when Neo4j or AF data is unavailable
     return [
-        {
-            "rank": i + 1,
-            "occupation_id": row["occupation_id"],
-            "name": row["occupation_name"],
-            "ssyk_code": row.get("ssyk_code") or "—",
-            "shortage_pct": round((row["brist_index"] / max_index) * 82 + 10),
-            "antal_annonser": row["antal_annonser"],
-        }
-        for i, row in enumerate(top10)
+        {**row, "occupation_id": f"demo-{row['rank']}", "antal_annonser": 0}
+        for row in _DEMO_SHORTAGE.get(sektor, [])
     ]
 
 

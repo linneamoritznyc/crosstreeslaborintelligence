@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "RAG-baserad AI-rådgivare för Jönköpings läns arbetsmarknad. " +
     "Fråga om bristyrken, omställningsvägar och kompetensförsörjning. " +
     "Drivs av Claude och Qdrant vektorsök mot regionala arbetsmarknadsdata.",
-  alternates: { canonical: "https://kompetensgrafen.crosstrees.se/chatt" },
+  alternates: { canonical: "/chatt" },
 };
 
 export default function ChattPage() {

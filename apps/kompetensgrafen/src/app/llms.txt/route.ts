@@ -1,5 +1,8 @@
 // llms.txt — machine-readable site guide for LLMs and automated crawlers.
 // Convention described at https://llmstxt.org
+import { getSiteUrl } from "@/lib/site-url";
+
+const BASE_PLACEHOLDER = "{BASE_URL}";
 
 const CONTENT = `# Kompetensgrafen — Jönköpings Kompetensråd
 
@@ -47,7 +50,7 @@ ROI för omställningsinsatser i Jönköpings läns sju sektorer.
 
 ## Backend-API (öppet för läsning)
 
-Bas-URL: https://api.crosstrees.se
+Bas-URL: {API_URL}
 
 Kompetensgrafen-endpoints:
 - GET /kompetensgrafen/brist?sektor={slug} — bristyrken med AF-annonsvolym
@@ -77,7 +80,11 @@ Crosstrees Labor Intelligence · Vetlanda, Sverige · crosstrees.se
 `;
 
 export function GET() {
-  return new Response(CONTENT, {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "https://api.crosstrees.se";
+  const body = CONTENT
+    .replaceAll(BASE_PLACEHOLDER, getSiteUrl())
+    .replaceAll("{API_URL}", apiUrl);
+  return new Response(body, {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
       "Cache-Control": "public, max-age=86400",

@@ -51,10 +51,12 @@ export default function OmstallningsCanvas() {
         ctx.moveTo(a.x * sx, a.y); ctx.lineTo(b.x * sx, b.y);
         ctx.stroke();
         const mx = ((a.x + b.x) / 2) * sx, my = (a.y + b.y) / 2;
-        ctx.font = "8px 'Courier Prime', monospace";
-        ctx.fillStyle = isPath ? "rgba(122,46,26,0.8)" : "rgba(26,26,24,0.3)";
-        ctx.textAlign = "center";
-        ctx.fillText(String(e.w), mx, my - 4);
+        if (isPath) {
+          ctx.font = "700 10px 'Courier Prime', monospace";
+          ctx.fillStyle = "rgba(122,46,26,0.85)";
+          ctx.textAlign = "center";
+          ctx.fillText(String(e.w), mx, my - 4);
+        }
       });
 
       NODES.forEach((n, i) => {
@@ -65,10 +67,12 @@ export default function OmstallningsCanvas() {
         ctx.arc(n.x * sx, n.y, r, 0, Math.PI * 2);
         ctx.fillStyle = isPath ? `${fill}0.85)` : `${fill}0.35)`;
         ctx.fill();
-        ctx.font = `${isPath ? "700 " : ""}8px 'Courier Prime', monospace`;
-        ctx.fillStyle = isPath ? `${fill}0.9)` : "rgba(26,26,24,0.45)";
-        ctx.textAlign = "left";
-        ctx.fillText(n.label, n.x * sx + 6, n.y + 3);
+        if (isPath) {
+          ctx.font = "700 11px 'Courier Prime', monospace";
+          ctx.fillStyle = `${fill}0.9)`;
+          ctx.textAlign = "left";
+          ctx.fillText(n.label, n.x * sx + r + 4, n.y + 4);
+        }
       });
 
       pathProg += 0.003;
@@ -125,7 +129,7 @@ export default function OmstallningsCanvas() {
                 alignItems: "baseline", padding: "11px 0",
                 borderBottom: "0.5px solid var(--border-faint)" }}>
                 <span style={{ fontFamily: "'Libre Baskerville', Georgia, serif",
-                  fontStyle: "italic", fontSize: 12, color: "rgba(26,26,24,0.8)" }}>
+                  fontStyle: "italic", fontSize: 14, color: "rgba(26,26,24,0.8)" }}>
                   {t.from} → {t.to}
                 </span>
                 <span style={{ fontFamily: "'Courier Prime', monospace", fontWeight: 700,

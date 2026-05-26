@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     openGraph: { title: `${info.namn} | Kompetensgrafen`, description },
-    alternates: { canonical: `https://kompetensgrafen.crosstrees.se/analys/${sektor}` },
+    alternates: { canonical: `/analys/${sektor}` },
   };
 }
 

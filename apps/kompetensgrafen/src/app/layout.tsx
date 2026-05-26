@@ -2,15 +2,17 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import "./globals.css";
+import { getSiteUrl } from "@/lib/site-url";
 
-const BASE = "https://kompetensgrafen.crosstrees.se";
 const DESCRIPTION =
   "Regional arbetsmarknadsanalys för Jönköpings läns 13 kommuner. " +
   "Bristkartor, omställningsanalys och ROI-kalkyl för Kompetensrådet Region Jönköping. " +
   "Live-data från AF Platsbanken, SCB och ESCO-taxonomin.";
 
+const siteUrl = getSiteUrl();
+
 export const metadata: Metadata = {
-  metadataBase: new URL(BASE),
+  metadataBase: new URL(siteUrl),
   title: {
     default: "Kompetensgrafen — Jönköpings Kompetensråd",
     template: "%s | Kompetensgrafen",
@@ -21,12 +23,12 @@ export const metadata: Metadata = {
     "ESCO", "kompetensförsörjning", "bristyrken", "yrkessubstitutabilitet",
     "Kompetensrådet", "Region Jönköping", "SCB", "Arbetsförmedlingen",
   ],
-  authors: [{ name: "Crosstrees Labor Intelligence", url: "https://crosstrees.se" }],
+  authors: [{ name: "Crosstrees Labor Intelligence" }],
   creator: "Crosstrees Labor Intelligence",
   openGraph: {
     title: "Kompetensgrafen — Jönköpings Kompetensråd",
     description: DESCRIPTION,
-    url: BASE,
+    url: siteUrl,
     siteName: "Kompetensgrafen",
     locale: "sv_SE",
     type: "website",
@@ -41,7 +43,7 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-snippet": -1 },
   },
-  alternates: { canonical: BASE },
+  alternates: { canonical: "/" },
 };
 
 const JSON_LD = {
@@ -49,24 +51,22 @@ const JSON_LD = {
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": `${BASE}/#website`,
-      url: BASE,
+      "@id": `${siteUrl}/#website`,
+      url: siteUrl,
       name: "Kompetensgrafen",
       description: DESCRIPTION,
       inLanguage: "sv-SE",
-      publisher: { "@id": `${BASE}/#org` },
     },
     {
       "@type": "Organization",
-      "@id": `${BASE}/#org`,
+      "@id": `${siteUrl}/#org`,
       name: "Crosstrees Labor Intelligence",
-      url: "https://crosstrees.se",
       description: "AI-driven arbetsmarknadsintelligens för Sverige.",
       areaServed: { "@type": "AdministrativeArea", name: "Jönköpings län" },
     },
     {
       "@type": "Dataset",
-      "@id": `${BASE}/#dataset`,
+      "@id": `${siteUrl}/#dataset`,
       name: "Kompetensgrafen — Regional arbetsmarknadsdata",
       description: "Bristindex, yrkesubstitutabilitet och sysselsättningsdata för Jönköpings läns 13 kommuner.",
       keywords: ["arbetsmarknad", "kompetensbrist", "ESCO", "Jönköping", "SCB", "Arbetsförmedlingen"],
@@ -74,7 +74,6 @@ const JSON_LD = {
       temporalCoverage: "2024/2026",
       license: "https://creativecommons.org/licenses/by/4.0/",
       isAccessibleForFree: true,
-      includedInDataCatalog: { "@type": "DataCatalog", name: "Crosstrees Open Data" },
     },
   ],
 };

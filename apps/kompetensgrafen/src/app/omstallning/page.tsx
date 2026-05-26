@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description:
     "Se vilka yrken som kan substituera ett bristyrke i Jönköpings läns arbetsmarknad. " +
     "Baserat på Arbetsförmedlingens ESCO-substitutabilitetsdata och Neo4j-grafen.",
-  alternates: { canonical: "https://kompetensgrafen.crosstrees.se/omstallning" },
+  alternates: { canonical: "/omstallning" },
 };
 
 interface Props {
