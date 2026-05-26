@@ -327,8 +327,8 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 /* Match rows → career transitions, occupation listings */
 .matches { margin-top: 22px; padding: 0; list-style: none; }
 .m-row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  padding: 11px 0;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 13px 0;
   border-bottom: 0.5px solid var(--border-faint);
 }
 .m-name {
@@ -482,6 +482,88 @@ aside[role="note"] strong {
   letter-spacing: 0.06em;
 }
 
+/* ═══ HOME PAGE CAPABILITIES ════════════════════════════════════ */
+
+.hero-sub {
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  max-width: 440px;
+  margin: -16px 0 28px;
+}
+
+.cap-section {
+  padding: 56px 40px;
+  border-bottom: 0.5px solid var(--chart-line-strong);
+  background: var(--parchment);
+}
+.cap-intro {
+  margin-bottom: 36px;
+}
+.cap-intro-desc {
+  font-family: "IM Fell English", "Libre Baskerville", Georgia, serif;
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: 600px;
+}
+.cap-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  border-top: 0.5px solid var(--border-faint);
+  border-left: 0.5px solid var(--border-faint);
+}
+.cap-card {
+  padding: 36px 32px 40px;
+  border-right: 0.5px solid var(--border-faint);
+  border-bottom: 0.5px solid var(--border-faint);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--parchment);
+  transition: background 0.15s;
+}
+.cap-card:hover { background: var(--parchment-dark); }
+.cap-num {
+  font-family: "Courier Prime", monospace;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--rust);
+}
+.cap-title {
+  font-family: "Alumni Sans Condensed", Impact, sans-serif;
+  font-weight: 900;
+  font-size: 28px;
+  text-transform: uppercase;
+  line-height: 0.95;
+  color: var(--ink);
+  margin: 0;
+}
+.cap-desc {
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  margin: 0;
+  flex: 1;
+}
+.cap-link {
+  font-family: "Courier Prime", monospace;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rust);
+  text-decoration: none;
+  margin-top: 4px;
+  align-self: flex-start;
+}
+.cap-link:hover { text-decoration: underline; text-decoration-thickness: 0.5px; }
+
 /* ═══ ANALYS PAGE ═══════════════════════════════════════════════ */
 
 .rope-divider {
@@ -577,6 +659,8 @@ aside[role="note"] strong {
 
 /* ═══ RESPONSIVE ════════════════════════════════════════════════ */
 @media (max-width: 700px) {
+  .cap-grid { grid-template-columns: 1fr; }
+  .cap-section { padding: 40px 20px; }
   .band, .split { grid-template-columns: 1fr; }
   .band-cell, .split-left, .split-right { border-right: none; }
   .band-cell { border-bottom: 0.5px solid var(--border-faint); }
