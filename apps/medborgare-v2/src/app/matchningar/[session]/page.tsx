@@ -4,10 +4,12 @@ import MatchningarLista from "@/components/MatchningarLista";
 
 interface Props {
   params: Promise<{ session: string }>;
+  searchParams: Promise<{ region?: string }>;
 }
 
-export default async function MatchningarPage({ params }: Props) {
+export default async function MatchningarPage({ params, searchParams }: Props) {
   const { session } = await params;
+  const { region } = await searchParams;
 
   let skillCount = 0;
   let failure: "missing" | "unavailable" | null = null;
@@ -58,7 +60,7 @@ export default async function MatchningarPage({ params }: Props) {
         </p>
       </header>
 
-      <MatchningarLista sessionId={session} totalSkillCount={skillCount} />
+      <MatchningarLista sessionId={session} totalSkillCount={skillCount} initialRegion={region ?? "06"} />
 
       <aside className="act-note">
         <strong>EU AI Act · artikel 13 · transparens</strong>

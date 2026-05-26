@@ -7,6 +7,7 @@ import {
   employerName,
   jobLocation,
   jobTitle,
+  platsbankenUrl,
 } from "@/lib/api";
 import MatchKvalitet from "@/components/MatchKvalitet";
 
@@ -39,7 +40,6 @@ export default async function YrkePage({ params, searchParams }: Props) {
     );
   }
 
-  // Fetch job detail and fit score in parallel; degrade each independently.
   const [jobResult, scoreResult] = await Promise.allSettled([
     getJobDetail(id),
     getFitScore(session, id),
@@ -59,8 +59,8 @@ export default async function YrkePage({ params, searchParams }: Props) {
             Vi når inte <span className="accent">annonsen.</span>
           </h1>
           <p className="sheet-lede">
-            Varken jobbinformationen eller matchningen kunde hämtas. Det
-            är inte ditt fel — något är ur funktion hos oss.
+            Varken jobbinformationen eller matchningen kunde hämtas.
+            Det är inte ditt fel — något är ur funktion hos oss.
           </p>
         </header>
         <div className="fail-note">
@@ -81,6 +81,17 @@ export default async function YrkePage({ params, searchParams }: Props) {
   const employer = job ? employerName(job) : "—";
   const location = job ? jobLocation(job) : "";
   const descriptionText = job?.description?.text ?? "";
+
+  // Score breakdown arithmetic (#7)
+  const breakdown = score
+    ? (() => {
+        const reqMatched = score.matched_required.length;
+        const reqTotal = reqMatched + score.missing_required.length;
+        const prefMatched = 0; // preferred matched not in current FitScore — use missing count
+        const prefTotal = score.missing_preferred.length;
+        return { reqMatched, reqTotal, prefMatched, prefTotal };
+      })()
+    : null;
 
   return (
     <main className="sheet">
@@ -105,15 +116,58 @@ export default async function YrkePage({ params, searchParams }: Props) {
                 score={score.score}
                 ciLow={score.confidence_interval.low}
                 ciHigh={score.confidence_interval.high}
+                showExplanation
               />
             </div>
-            <p className="sheet-prose">
-              Vi räknar viktat: arbetsgivarens krav väger 60 procent,
-              önskemål 30 procent, övriga kompetenser 10 procent. Det
-              gråa intervallet är Wilson-metoden — ju färre krav annonsen
-              listar, desto bredare blir intervallet och desto mindre
-              säker poängen.
-            </p>
+
+            {/* Score breakdown (#7) */}
+            {breakdown && (
+              <details className="score-breakdown">
+                <summary className="score-breakdown-summary">
+                  Varför denna poäng? — visa beräkningen
+                </summary>
+                <div className="score-breakdown-body">
+                  <p className="score-breakdown-prose">
+                    Vi räknar viktat i tre steg:
+                  </p>
+                  <table className="score-breakdown-table">
+                    <tbody>
+                      <tr>
+                        <td>Krav du möter</td>
+                        <td className="num">
+                          {breakdown.reqMatched} av {breakdown.reqTotal}
+                          {breakdown.reqTotal > 0
+                            ? ` = ${Math.round((breakdown.reqMatched / breakdown.reqTotal) * 100)}%`
+                            : " (inga krav listade)"}
+                        </td>
+                        <td className="weight">× 60%</td>
+                      </tr>
+                      <tr>
+                        <td>Önskemål du möter</td>
+                        <td className="num">
+                          0 av {breakdown.prefTotal}
+                          {breakdown.prefTotal > 0 ? " = 0%" : " (inga önskemål listade)"}
+                        </td>
+                        <td className="weight">× 30%</td>
+                      </tr>
+                      <tr>
+                        <td>Övriga kompetenser</td>
+                        <td className="num">—</td>
+                        <td className="weight">× 10%</td>
+                      </tr>
+                      <tr className="score-total-row">
+                        <td>Sammanvägd poäng</td>
+                        <td className="num" colSpan={2}>{score.score}%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <p className="score-breakdown-prose" style={{ marginTop: 8 }}>
+                    Konfidensintervallet ({score.confidence_interval.low}–{score.confidence_interval.high}%)
+                    beräknas med Wilson-metoden. Ju färre listade krav, desto bredare intervall.
+                  </p>
+                </div>
+              </details>
+            )}
           </>
         ) : (
           <div className="fail-note">
@@ -189,6 +243,14 @@ export default async function YrkePage({ params, searchParams }: Props) {
       <div className="empty-options" style={{ marginTop: 28 }}>
         <Link href={`/matchningar/${session}`}>← Alla matchningar</Link>
         <Link href={`/granska/${session}`}>Justera kompetenser</Link>
+        <a
+          href={platsbankenUrl(id)}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Öppna annonsen i Platsbanken (nytt fönster)"
+        >
+          Öppna i Platsbanken →
+        </a>
       </div>
 
       <aside className="act-note">

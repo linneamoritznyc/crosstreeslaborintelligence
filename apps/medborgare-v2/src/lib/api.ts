@@ -70,6 +70,70 @@ export async function parseCv(file: File): Promise<CvParseResponse> {
   });
 }
 
+/** SSE event types from /cv/parse-stream */
+export type ParseStageEvent =
+  | { stage: "reading" | "extracting" | "parsing" | "esco" }
+  | { stage: "done"; session_id: string; skill_count: number }
+  | { stage: "error"; code: "size" | "empty" | string };
+
+/**
+ * Strömmar CV-parsning via SSE. Kallar onStage för varje händelse.
+ * Kastar ApiUnavailable/ApiError vid nätverks-/serverfel.
+ */
+export async function parseCvStream(
+  file: File,
+  onStage: (event: ParseStageEvent) => void,
+): Promise<CvParseResponse> {
+  if (!API_URL) throw new ApiUnavailable("/cv/parse-stream");
+
+  const form = new FormData();
+  form.append("file", file);
+
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}/cv/parse-stream`, { method: "POST", body: form });
+  } catch (cause) {
+    throw new ApiUnavailable("/cv/parse-stream", cause);
+  }
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new ApiError("/cv/parse-stream", res.status, body);
+  }
+
+  const reader = res.body!.getReader();
+  const decoder = new TextDecoder();
+  let buf = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    const blocks = buf.split("\n\n");
+    buf = blocks.pop() ?? "";
+    for (const block of blocks) {
+      const dataLine = block.split("\n").find((l) => l.startsWith("data: "));
+      if (!dataLine) continue;
+      try {
+        const evt = JSON.parse(dataLine.slice(6)) as ParseStageEvent;
+        onStage(evt);
+        if (evt.stage === "done") {
+          return { session_id: evt.session_id, skill_count: evt.skill_count };
+        }
+        if (evt.stage === "error") {
+          if (evt.code === "size") throw new ApiError("/cv/parse-stream", 413, "Filen är för stor");
+          throw new ApiError("/cv/parse-stream", 422, `Parsning misslyckades: ${evt.code}`);
+        }
+      } catch (e) {
+        if (e instanceof ApiError) throw e;
+        // malformed SSE line — ignore
+      }
+    }
+  }
+
+  throw new ApiError("/cv/parse-stream", 500, "SSE-strömmen avslutades utan done-event");
+}
+
 export interface CvSession {
   session_id: string;
   skills: string[];
@@ -78,6 +142,49 @@ export interface CvSession {
 
 export async function getSession(sessionId: string): Promise<CvSession> {
   return apiFetch<CvSession>(`/cv/session/${encodeURIComponent(sessionId)}`);
+}
+
+export interface AddSkillsResponse {
+  session_id: string;
+  skills: string[];
+  skill_count: number;
+  added: number;
+}
+
+export async function addSkillsToSession(
+  sessionId: string,
+  skills: string[],
+): Promise<AddSkillsResponse> {
+  return apiFetch<AddSkillsResponse>(`/cv/session/${encodeURIComponent(sessionId)}/skills`, {
+    method: "PATCH",
+    body: JSON.stringify({ skills }),
+  });
+}
+
+export interface EscoSkill {
+  concept_id: string;
+  preferred_label?: string;
+  label?: string;
+  type?: string;
+}
+
+export async function searchSkills(q: string): Promise<EscoSkill[]> {
+  return apiFetch<EscoSkill[]>(`/skills/?q=${encodeURIComponent(q)}`);
+}
+
+export interface SessionLog {
+  session_id: string;
+  logged_fields: { field: string; description: string }[];
+  retention: { session_skills: string; ai_act_log: string };
+  data_controller: string;
+  ai_system: string;
+  your_rights: string;
+  no_personal_data: boolean;
+  current_skill_count: number;
+}
+
+export async function getSessionLog(sessionId: string): Promise<SessionLog> {
+  return apiFetch<SessionLog>(`/cv/session/${encodeURIComponent(sessionId)}/log`);
 }
 
 export interface ConfidenceInterval {
@@ -114,10 +221,10 @@ export interface JobHit {
   occupation?: { label?: string };
 }
 
-export async function getMatchedJobs(sessionId: string): Promise<JobHit[]> {
-  return apiFetch<JobHit[]>(
-    `/match/jobs?session=${encodeURIComponent(sessionId)}`,
-  );
+export async function getMatchedJobs(sessionId: string, region?: string): Promise<JobHit[]> {
+  const params = new URLSearchParams({ session: sessionId });
+  if (region) params.set("region", region);
+  return apiFetch<JobHit[]>(`/match/jobs?${params.toString()}`);
 }
 
 export async function getJobDetail(jobId: string): Promise<JobHit> {
@@ -142,4 +249,9 @@ export function jobTitle(job: JobHit): string {
 
 export function jobLocation(job: JobHit): string {
   return job.workplace_address?.municipality ?? job.workplace_address?.region ?? "";
+}
+
+/** Platsbanken URL for a job ad */
+export function platsbankenUrl(jobId: string): string {
+  return `https://arbetsformedlingen.se/platsbanken/annonser/${jobId}`;
 }

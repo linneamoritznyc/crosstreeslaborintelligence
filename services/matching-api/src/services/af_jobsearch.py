@@ -16,19 +16,23 @@ from ._af_http import af_request
 log = get_logger(__name__)
 
 _BASE = os.environ.get("AF_JOBSEARCH_URL", "https://jobsearch.api.jobtechdev.se")
-_LAN = os.environ.get("JONKOPING_LAN_CODE", "06")
+_DEFAULT_REGION = os.environ.get("JONKOPING_LAN_CODE", "06")
 _SEARCH_LIMIT = 20
 
 
-async def search_jobs(q: str) -> list[dict]:
-    """Söker annonser i Jönköpings län. Tomt q returnerar senaste annonser."""
-    body: dict[str, Any] = {"limit": _SEARCH_LIMIT, "offset": 0, "region": _LAN}
+async def search_jobs(q: str, region: str | None = None) -> list[dict]:
+    """Söker annonser i angiven region (standard: Jönköpings län). Tomt q returnerar senaste annonser."""
+    body: dict[str, Any] = {"limit": _SEARCH_LIMIT, "offset": 0}
+    if region:
+        body["region"] = region
+    else:
+        body["region"] = _DEFAULT_REGION
     if q:
         body["q"] = q
     async with httpx.AsyncClient(timeout=30) as client:
         response = await af_request(client, "POST", f"{_BASE}/search", json=body)
     hits: list[dict] = response.json().get("hits", [])
-    log.info("af_jobsearch.search", q=q, count=len(hits))
+    log.info("af_jobsearch.search", q=q, region=body["region"], count=len(hits))
     return hits
 
 
@@ -41,20 +45,20 @@ async def get_job_detail(job_id: str) -> dict:
     return data
 
 
-async def get_job_skill_ids(skill_ids: list[str]) -> list[dict]:
+async def get_job_skill_ids(skill_ids: list[str], region: str | None = None) -> list[dict]:
     """Söker annonser som matchar givna kompetens-id:n (concept_id-filter)."""
     if not skill_ids:
         return []
     body: dict[str, Any] = {
         "limit": _SEARCH_LIMIT,
         "offset": 0,
-        "region": _LAN,
+        "region": region or _DEFAULT_REGION,
         "skills": skill_ids,
     }
     async with httpx.AsyncClient(timeout=30) as client:
         response = await af_request(client, "POST", f"{_BASE}/search", json=body)
     hits: list[dict] = response.json().get("hits", [])
-    log.info("af_jobsearch.skill_match", skills=len(skill_ids), hits=len(hits))
+    log.info("af_jobsearch.skill_match", skills=len(skill_ids), region=body["region"], hits=len(hits))
     return hits
 
 

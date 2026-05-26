@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSession, ApiError, ApiUnavailable } from "@/lib/api";
 import KompetensVerifiering from "@/components/KompetensVerifiering";
+import AiActLog from "@/components/AiActLog";
 
 interface Props {
   params: Promise<{ session: string }>;
@@ -71,6 +72,8 @@ export default async function GranskaPage({ params }: Props) {
         gräns ändras vad systemet får matcha mot. Du kan ångra dig på
         nästa sida.
       </aside>
+
+      <AiActLog sessionId={session} />
     </main>
   );
 }

@@ -1,17 +1,5 @@
 "use client";
 
-/**
- * Lista över matchade jobb. Fetchar /match/jobs + per-jobb /match/score
- * parallellt. Applicerar klientsides-filter baserat på användarens
- * gränser (boundaries) från sessionStorage.
- *
- * Lärdom från antiapathyjobportal: tysta fallbacks är farliga. Här:
- *  - om backenden är onåbar → tydligt meddelande, retry-knapp
- *  - om noll jobb returneras → IngenMatch med konkret förklaring
- *  - om filter tog bort allt → IngenMatch med annan förklaring
- *  - varje rad har Wilson-CI synligt (osäkerhet är aldrig dold)
- */
-
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -22,12 +10,14 @@ import {
   jobTitle,
   type JobHit,
 } from "@/lib/api";
+import { SWEDISH_REGIONS } from "@/components/KompetensVerifiering";
 import JobbRad from "@/components/JobbRad";
 import IngenMatch from "@/components/IngenMatch";
 
 interface Props {
   sessionId: string;
   totalSkillCount: number;
+  initialRegion?: string;
 }
 
 interface JobWithScore {
@@ -55,14 +45,23 @@ function readBoundaries(sessionId: string): Boundaries {
   }
 }
 
-function matchesBoundary(job: JobHit, topics: string[]): boolean {
-  if (topics.length === 0) return false;
+function readRegion(sessionId: string, fallback: string): string {
+  try {
+    return sessionStorage.getItem(`cv:${sessionId}:region`) ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+/** Returns the first boundary topic that triggered the filter, or null. */
+function matchedBoundary(job: JobHit, topics: string[]): string | null {
+  if (topics.length === 0) return null;
   const haystack = [
     jobTitle(job).toLowerCase(),
     job.description?.text?.toLowerCase() ?? "",
     job.occupation?.label?.toLowerCase() ?? "",
   ].join(" ");
-  return topics.some((t) => haystack.includes(t));
+  return topics.find((t) => haystack.includes(t)) ?? null;
 }
 
 type LoadState =
@@ -71,40 +70,28 @@ type LoadState =
   | { kind: "unavailable"; retry: () => void }
   | { kind: "error"; status: number; detail: string };
 
-export default function MatchningarLista({ sessionId, totalSkillCount }: Props) {
+export default function MatchningarLista({ sessionId, totalSkillCount, initialRegion = "06" }: Props) {
   const [state, setState] = useState<LoadState>({ kind: "loading" });
-  const [boundaries, setBoundaries] = useState<Boundaries>({
-    mutedSkills: [],
-    mutedTopics: [],
-  });
+  const [boundaries, setBoundaries] = useState<Boundaries>({ mutedSkills: [], mutedTopics: [] });
+  const [region, setRegion] = useState(initialRegion);
+  const [showHidden, setShowHidden] = useState(false);
 
   useEffect(() => {
     setBoundaries(readBoundaries(sessionId));
-  }, [sessionId]);
+    setRegion(readRegion(sessionId, initialRegion));
+  }, [sessionId, initialRegion]);
 
   const load = useCallback(async () => {
     setState({ kind: "loading" });
     try {
-      const jobs = await getMatchedJobs(sessionId);
-      // Parallel score fetches; individual failures don't sink the page.
+      const jobs = await getMatchedJobs(sessionId, region);
       const enriched = await Promise.all(
         jobs.map(async (job): Promise<JobWithScore> => {
           try {
             const s = await getFitScore(sessionId, job.id);
-            return {
-              job,
-              score: {
-                value: s.score,
-                low: s.confidence_interval.low,
-                high: s.confidence_interval.high,
-              },
-            };
+            return { job, score: { value: s.score, low: s.confidence_interval.low, high: s.confidence_interval.high } };
           } catch (err) {
-            return {
-              job,
-              score: null,
-              error: err instanceof Error ? err.message : String(err),
-            };
+            return { job, score: null, error: err instanceof Error ? err.message : String(err) };
           }
         }),
       );
@@ -118,27 +105,32 @@ export default function MatchningarLista({ sessionId, totalSkillCount }: Props) 
         setState({ kind: "error", status: 0, detail: String(err) });
       }
     }
-  }, [sessionId]);
+  }, [sessionId, region]);
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+  useEffect(() => { void load(); }, [load]);
 
-  const filtered = useMemo(() => {
+  const regionName = SWEDISH_REGIONS.find((r) => r.code === region)?.name ?? region;
+
+  interface FilteredResult {
+    visible: JobWithScore[];
+    hidden: { item: JobWithScore; trigger: string }[];
+    total: number;
+  }
+
+  const filtered = useMemo((): FilteredResult | null => {
     if (state.kind !== "ready") return null;
-    const allowed = state.jobs.filter(
-      ({ job }) => !matchesBoundary(job, boundaries.mutedTopics),
-    );
-    // Sort by score descending; jobs with no score go to end but keep stable order.
-    return {
-      visible: allowed.sort((a, b) => {
-        const av = a.score?.value ?? -1;
-        const bv = b.score?.value ?? -1;
-        return bv - av;
-      }),
-      total: state.jobs.length,
-      filteredOut: state.jobs.length - allowed.length,
-    };
+    const visible: JobWithScore[] = [];
+    const hidden: { item: JobWithScore; trigger: string }[] = [];
+    for (const item of state.jobs) {
+      const trigger = matchedBoundary(item.job, boundaries.mutedTopics);
+      if (trigger) {
+        hidden.push({ item, trigger });
+      } else {
+        visible.push(item);
+      }
+    }
+    visible.sort((a, b) => (b.score?.value ?? -1) - (a.score?.value ?? -1));
+    return { visible, hidden, total: state.jobs.length };
   }, [state, boundaries]);
 
   return (
@@ -151,17 +143,14 @@ export default function MatchningarLista({ sessionId, totalSkillCount }: Props) 
         <div className="context-strip">
           <div className="context-row">
             <span className="k">Område</span>
-            <span className="v">Jönköpings län — den här versionen söker bara här</span>
+            <span className="v">{regionName}</span>
           </div>
           <div className="context-row">
             <span className="k">Kompetenser</span>
             <span className="v">
               {totalSkillCount - boundaries.mutedSkills.length} används
               {boundaries.mutedSkills.length > 0 && (
-                <>
-                  {" "}
-                  · <span className="muted">{boundaries.mutedSkills.length} tystade</span>
-                </>
+                <> · <span className="muted">{boundaries.mutedSkills.length} tystade</span></>
               )}
             </span>
           </div>
@@ -177,7 +166,7 @@ export default function MatchningarLista({ sessionId, totalSkillCount }: Props) 
           </div>
         </div>
         <p className="sheet-prose" style={{ marginTop: 8 }}>
-          <Link href={`/granska/${sessionId}`}>← Justera kompetenser eller gränser</Link>
+          <Link href={`/granska/${sessionId}`}>← Justera kompetenser, region eller gränser</Link>
         </p>
       </section>
 
@@ -199,12 +188,9 @@ export default function MatchningarLista({ sessionId, totalSkillCount }: Props) 
           <div className="fail-note">
             <span className="fail-note-head">Vi når inte servern</span>
             Anropet gick aldrig fram. Vi vill inte visa en tom lista som om
-            svaret vore noll — då hade vi gett dig fel signal. Försök igen
-            om en stund.
+            svaret vore noll — då hade vi gett dig fel signal. Försök igen om en stund.
             <div className="empty-options" style={{ marginTop: 14 }}>
-              <button type="button" onClick={state.retry}>
-                Försök igen
-              </button>
+              <button type="button" onClick={state.retry}>Försök igen</button>
               <Link href="/">Tillbaka till start</Link>
             </div>
           </div>
@@ -221,37 +207,58 @@ export default function MatchningarLista({ sessionId, totalSkillCount }: Props) 
           <IngenMatch sessionId={sessionId} reason="no-jobs" />
         )}
 
-        {filtered && filtered.visible.length === 0 && filtered.filteredOut > 0 && (
-          <IngenMatch
-            sessionId={sessionId}
-            reason="all-filtered"
-            filteredCount={filtered.filteredOut}
-          />
+        {filtered && filtered.visible.length === 0 && filtered.hidden.length > 0 && (
+          <IngenMatch sessionId={sessionId} reason="all-filtered" filteredCount={filtered.hidden.length} />
         )}
 
         {filtered && filtered.visible.length > 0 && (
-          <>
-            <ol className="matches-table">
-              {filtered.visible.map((item, i) => (
-                <li key={item.job.id} style={{ listStyle: "none" }}>
-                  <JobbRad
-                    index={i}
-                    job={item.job}
-                    sessionId={sessionId}
-                    score={item.score}
-                    scoreError={item.error}
-                  />
-                </li>
-              ))}
-            </ol>
-            {filtered.filteredOut > 0 && (
-              <p className="skill-summary">
-                <span className="muted">
-                  {filtered.filteredOut} matchningar göms av dina gränser.
-                </span>
-              </p>
+          <ol className="matches-table">
+            {filtered.visible.map((item, i) => (
+              <li key={item.job.id} style={{ listStyle: "none" }}>
+                <JobbRad index={i} job={item.job} sessionId={sessionId} score={item.score} scoreError={item.error} />
+              </li>
+            ))}
+          </ol>
+        )}
+
+        {/* Expandable hidden matches (#5) */}
+        {filtered && filtered.hidden.length > 0 && (
+          <div className="hidden-matches">
+            <button
+              type="button"
+              className="hidden-matches-toggle"
+              onClick={() => setShowHidden((v) => !v)}
+              aria-expanded={showHidden}
+            >
+              <span className="muted">
+                {filtered.hidden.length} matchning{filtered.hidden.length !== 1 ? "ar" : ""} döljs av dina gränser
+              </span>
+              <span className="hidden-matches-arrow">{showHidden ? "↑ Dölj" : "↓ Visa"}</span>
+            </button>
+            {showHidden && (
+              <div className="hidden-matches-panel" aria-label="Dolda matchningar">
+                <p className="hidden-matches-note">
+                  Dessa annonser matchar dina kompetenser men innehåller ord
+                  från dina gränser. De visas här så att du vet att de finns
+                  — du bestämmer själv om du vill titta.
+                </p>
+                <ol className="matches-table" style={{ opacity: 0.6 }}>
+                  {filtered.hidden.map(({ item, trigger }, i) => (
+                    <li key={item.job.id} style={{ listStyle: "none" }}>
+                      <JobbRad
+                        index={i}
+                        job={item.job}
+                        sessionId={sessionId}
+                        score={item.score}
+                        scoreError={item.error}
+                        hiddenTrigger={trigger}
+                      />
+                    </li>
+                  ))}
+                </ol>
+              </div>
             )}
-          </>
+          </div>
         )}
       </section>
     </>

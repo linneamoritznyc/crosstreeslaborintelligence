@@ -17,14 +17,17 @@ router = APIRouter()
 
 
 @router.get("/jobs")
-async def matched_jobs(session: str = Query(..., min_length=1)):
+async def matched_jobs(
+    session: str = Query(..., min_length=1),
+    region: str = Query(default="", max_length=10),
+):
     """Returnerar jobbannonser rankade mot CV-sessionens kompetenser."""
     skill_ids = await get_session_skill_ids(session)
     if not skill_ids:
         log.info("match.jobs.empty_session", session=session)
         return []
-    hits = await get_job_skill_ids(skill_ids)
-    log.info("match.jobs", session=session, skills=len(skill_ids), hits=len(hits))
+    hits = await get_job_skill_ids(skill_ids, region=region or None)
+    log.info("match.jobs", session=session, region=region, skills=len(skill_ids), hits=len(hits))
     return hits
 
 
