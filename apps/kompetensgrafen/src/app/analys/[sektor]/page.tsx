@@ -7,7 +7,8 @@ import Bristkarta from "@/components/analys/Bristkarta";
 import BristyrkenTable from "@/components/analys/BristyrkenTable";
 import OmstallningsCanvas from "@/components/analys/OmstallningsCanvas";
 import ROIBlock from "@/components/analys/ROIBlock";
-import NastaSteg from "@/components/analys/NastaSteg";
+import ShareButton from "@/components/analys/ShareButton";
+import PDFExportBlock from "@/components/analys/PDFExportBlock";
 import { SEKTORER } from "@/lib/sektor-data";
 
 interface Props {
@@ -48,6 +49,12 @@ export default async function AnalysPage({ params }: Props) {
         <StatsBand sektor={sektor} />
       </Suspense>
 
+      {/* Unique insight — first 90 seconds */}
+      <div className="rope-divider" />
+      <OmstallningsCanvas />
+
+      <div className="rope-divider" />
+
       <Bristkarta sektor={sektor} />
 
       <Suspense fallback={<div className="analys-section"><p className="coord">Laddar bristyrken…</p></div>}>
@@ -56,17 +63,16 @@ export default async function AnalysPage({ params }: Props) {
 
       <div className="rope-divider" />
 
-      <OmstallningsCanvas />
-
-      <div className="rope-divider" />
-
       <ROIBlock sektor={sektor} />
 
-      <NastaSteg sektor={sektor} />
+      {/* PDF export — the payoff */}
+      <PDFExportBlock sektor={sektor} sektorNamn={info.namn} />
 
       <div style={{ padding: "16px 40px", background: "var(--parchment-dark)",
-        borderTop: "0.5px solid var(--border-faint)" }}>
+        borderTop: "0.5px solid var(--border-faint)",
+        display: "flex", justifyContent: "space-between", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
         <AIActDisclaimer variant="graph" />
+        <ShareButton />
       </div>
     </main>
   );
