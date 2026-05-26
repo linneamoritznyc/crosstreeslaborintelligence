@@ -1,6 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import OmstallningsPanel from "@/components/OmstallningsPanel";
+
+export const metadata: Metadata = {
+  title: "Omställningsanalys — karriärövergångar via ESCO-substitutabilitet",
+  description:
+    "Se vilka yrken som kan substituera ett bristyrke i Jönköpings läns arbetsmarknad. " +
+    "Baserat på Arbetsförmedlingens ESCO-substitutabilitetsdata och Neo4j-grafen.",
+  alternates: { canonical: "https://kompetensgrafen.crosstrees.se/omstallning" },
+};
 
 interface Props {
   searchParams: Promise<{ target?: string }>;

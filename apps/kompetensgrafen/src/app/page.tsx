@@ -1,7 +1,16 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import AIActDisclaimer from "@/components/AIActDisclaimer";
 import RegionCanvas from "@/components/RegionCanvas";
 import HeroNet from "@/components/HeroNet";
+
+export const metadata: Metadata = {
+  title: "Kompetensgrafen — Regional arbetsmarknadsanalys Jönköpings län",
+  description:
+    "Bristkartor, omställningsanalys och ROI-kalkyl för Jönköpings läns 13 kommuner och 7 sektorer. " +
+    "Live-data från AF Platsbanken och SCB. Byggd för Kompetensrådet Region Jönköping.",
+  alternates: { canonical: "https://kompetensgrafen.crosstrees.se" },
+};
 
 const SEKTORER = [
   { id: "industri", namn: "Tillverkning & industri", beskrivning: "Maskinoperatörer · svetsare · automationstekniker · vindkrafttekniker" },

@@ -1,5 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import ROIKalkylator from "@/components/ROIKalkylator";
+
+export const metadata: Metadata = {
+  title: "ROI-kalkyl — avkastning på omställningsinvesteringar",
+  description:
+    "Beräkna avkastningen på omställningsinsatser för Jönköpings läns arbetsmarknad. " +
+    "IFAU/OECD Cost-Benefit Analysis-metod: kostnad per omställd vs besparing i A-kassa och vakansförluster.",
+  alternates: { canonical: "https://kompetensgrafen.crosstrees.se/roi" },
+};
 
 export default function ROIPage() {
   return (

@@ -1,6 +1,16 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import KompetensChatt from "@/components/KompetensChatt";
 import AIActDisclaimer from "@/components/AIActDisclaimer";
+
+export const metadata: Metadata = {
+  title: "AI-rådgivare — fråga om arbetsmarknaden i Jönköpings län",
+  description:
+    "RAG-baserad AI-rådgivare för Jönköpings läns arbetsmarknad. " +
+    "Fråga om bristyrken, omställningsvägar och kompetensförsörjning. " +
+    "Drivs av Claude och Qdrant vektorsök mot regionala arbetsmarknadsdata.",
+  alternates: { canonical: "https://kompetensgrafen.crosstrees.se/chatt" },
+};
 
 export default function ChattPage() {
   return (

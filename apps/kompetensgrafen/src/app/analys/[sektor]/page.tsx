@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import AIActDisclaimer from "@/components/AIActDisclaimer";
 import SectorHero from "@/components/analys/SectorHero";
 import StatsBand from "@/components/analys/StatsBand";
@@ -11,6 +12,23 @@ import { SEKTORER } from "@/lib/sektor-data";
 
 interface Props {
   params: Promise<{ sektor: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { sektor } = await params;
+  const info = SEKTORER[sektor];
+  if (!info) return {};
+  const title = `${info.namn} — Bristkarta Jönköpings län`;
+  const description =
+    `Bristkarta, topp-10 bristyrken, karriärövergångar och ROI-kalkyl för ` +
+    `${info.namn.toLowerCase()} i Jönköpings läns 13 kommuner. ` +
+    `Live-data från AF Platsbanken och ESCO-taxonomin.`;
+  return {
+    title,
+    description,
+    openGraph: { title: `${info.namn} | Kompetensgrafen`, description },
+    alternates: { canonical: `https://kompetensgrafen.crosstrees.se/analys/${sektor}` },
+  };
 }
 
 export default async function AnalysPage({ params }: Props) {
