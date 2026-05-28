@@ -78,7 +78,8 @@ export type ParseStageEvent =
 
 /**
  * Strömmar CV-parsning via SSE. Kallar onStage för varje händelse.
- * Kastar ApiUnavailable/ApiError vid nätverks-/serverfel.
+ * Faller automatiskt tillbaka till /cv/parse med syntetiska stage-events
+ * om SSE-endpointen inte finns (backend ej uppgraderad ännu).
  */
 export async function parseCvStream(
   file: File,
@@ -89,19 +90,30 @@ export async function parseCvStream(
   const form = new FormData();
   form.append("file", file);
 
-  let res: Response;
+  let res: Response | null = null;
+  let useFallback = false;
+
   try {
     res = await fetch(`${API_URL}/cv/parse-stream`, { method: "POST", body: form });
-  } catch (cause) {
-    throw new ApiUnavailable("/cv/parse-stream", cause);
+    // 404/405/501 = endpoint doesn't exist on this backend version
+    if (res.status === 404 || res.status === 405 || res.status === 501) {
+      useFallback = true;
+    }
+  } catch {
+    // Network error or CORS preflight failure — fall back, don't give up
+    useFallback = true;
   }
 
-  if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    throw new ApiError("/cv/parse-stream", res.status, body);
+  if (useFallback) {
+    return _parseCvFallback(file, onStage);
   }
 
-  const reader = res.body!.getReader();
+  if (!res!.ok) {
+    const body = await res!.text().catch(() => "");
+    throw new ApiError("/cv/parse-stream", res!.status, body);
+  }
+
+  const reader = res!.body!.getReader();
   const decoder = new TextDecoder();
   let buf = "";
 
@@ -133,6 +145,29 @@ export async function parseCvStream(
   }
 
   throw new ApiError("/cv/parse-stream", 500, "SSE-strömmen avslutades utan done-event");
+}
+
+/** Timer-based fallback when /cv/parse-stream isn't available on the backend. */
+async function _parseCvFallback(
+  file: File,
+  onStage: (event: ParseStageEvent) => void,
+): Promise<CvParseResponse> {
+  onStage({ stage: "reading" });
+  const apiPromise = parseCv(file);
+  await _wait(700);
+  onStage({ stage: "extracting" });
+  await _wait(900);
+  onStage({ stage: "parsing" });
+  // Stay on parsing until the real API responds
+  const result = await apiPromise;
+  onStage({ stage: "esco" });
+  await _wait(900);
+  onStage({ stage: "done", session_id: result.session_id, skill_count: result.skill_count });
+  return result;
+}
+
+function _wait(ms: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, ms));
 }
 
 export interface CvSession {
