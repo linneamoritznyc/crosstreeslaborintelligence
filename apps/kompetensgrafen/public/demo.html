@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kompetensgrafen · Crosstrees Labor Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #09090B;
+  --bg-2:     #0D0D10;
+  --surface:  #111115;
+  --surface-2:#17171D;
+  --surface-3:#1E1E26;
+  --line:     rgba(255,255,255,0.06);
+  --line-mid: rgba(255,255,255,0.11);
+  --line-strong: rgba(255,255,255,0.20);
+  --text:     #EEEEF0;
+  --text-2:   #A8A8B3;
+  --text-dim: #6B6B78;
+  --text-faint:#42424E;
+  --accent:   #FF5A36;
+  --accent-glow: rgba(255,90,54,0.28);
+  --accent-dim:  rgba(255,90,54,0.10);
+  --good:     #6EE7B7;
+  --f-sans:   'Geist', system-ui, sans-serif;
+  --f-mono:   'Geist Mono', ui-monospace, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; background: var(--bg); }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--f-sans);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* grid texture */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 20%, transparent 70%);
+}
+
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--accent); color: #09090B; }
+button, input, select { font-family: inherit; color: inherit; }
+
+/* ═══ SCROLL PROGRESS ═══ */
+#prog {
+  position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+  background: linear-gradient(90deg, var(--accent), #ff8c6e);
+  z-index: 200; transition: width 0.1s linear;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* ═══ TOPBAR ═══ */
+.top {
+  position: sticky; top: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px clamp(20px, 3.5vw, 44px);
+  background: rgba(9,9,11,0.80);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand .wm { font-family: var(--f-mono); font-weight: 600; font-size: 13px; letter-spacing: 0.03em; }
+.brand .wm span { color: var(--text-dim); }
+nav.nav { display: flex; gap: 2px; }
+nav.nav a {
+  font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.03em;
+  padding: 7px 13px; color: var(--text-dim); border-radius: 6px; transition: .15s;
+}
+nav.nav a:hover, nav.nav a.on { background: var(--surface-2); color: var(--text); }
+.live {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--text-dim);
+  padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px;
+}
+.live .dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--good);
+  box-shadow: 0 0 8px var(--good); animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse { 50% { opacity: .35; } }
+.btn {
+  font-family: var(--f-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.02em;
+  padding: 8px 16px; border: 1px solid var(--line-strong); border-radius: 8px;
+  background: transparent; color: var(--text); cursor: pointer; transition: .15s;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn:hover { background: var(--surface-2); }
+.btn-acc {
+  background: var(--accent); border-color: var(--accent); color: #09090B; font-weight: 600;
+  box-shadow: 0 0 20px rgba(255,90,54,0.22);
+}
+.btn-acc:hover { background: #ff6f50; border-color: #ff6f50; box-shadow: 0 0 28px rgba(255,90,54,0.35); }
+.top-cta { display: flex; align-items: center; gap: 10px; }
+@media(max-width: 880px) { nav.nav { display: none; } .live { display: none; } }
+
+/* ═══ HERO ═══ */
+.hero {
+  position: relative; overflow: hidden;
+  padding: clamp(96px,12vw,160px) clamp(20px,4vw,44px) clamp(72px,9vw,112px);
+  border-bottom: 1px solid var(--line);
+}
+#heroCanvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+.hero-glow {
+  position: absolute; width: 800px; height: 800px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,90,54,0.18) 0%, transparent 65%);
+  top: -260px; right: -160px; z-index: 0; pointer-events: none;
+  transition: transform 0.6s cubic-bezier(.2,.8,.2,1);
+}
+.hero-inner { position: relative; z-index: 3; max-width: 1160px; margin: 0 auto; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.05em; color: var(--text-dim);
+  padding: 6px 13px; border: 1px solid var(--line-mid); border-radius: 999px;
+  background: rgba(255,255,255,0.02);
+}
+.eyebrow .acc { color: var(--accent); }
+.hero h1 {
+  font-size: clamp(52px, 8.2vw, 106px);
+  font-weight: 600; letter-spacing: -0.042em; line-height: 0.95;
+  margin-top: 28px; max-width: 17ch;
+}
+.hero h1 .hl {
+  color: var(--accent); position: relative; display: inline-block;
+}
+.hero h1 .hl::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0.06em; height: 0.055em;
+  background: var(--accent); filter: blur(8px); opacity: 0.5; border-radius: 2px;
+}
+.hero .lead {
+  font-size: clamp(17px, 1.6vw, 21px); color: var(--text-2);
+  margin-top: 28px; max-width: 58ch; line-height: 1.6;
+}
+.hero .lead b { color: var(--text); font-weight: 500; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 38px; }
+.hero-meta {
+  display: flex; gap: 36px; margin-top: 52px; padding-top: 24px;
+  border-top: 1px solid var(--line); flex-wrap: wrap;
+}
+.hero-meta .m { font-family: var(--f-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.04em; }
+.hero-meta .m b {
+  display: block; font-family: var(--f-sans); font-size: 14.5px; color: var(--text);
+  font-weight: 500; letter-spacing: -0.01em; margin-top: 5px;
+}
+
+/* ═══ STATS ═══ */
+.stats {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  border-bottom: 1px solid var(--line); position: relative; z-index: 2;
+}
+.stat { padding: 30px clamp(20px,3vw,36px); border-right: 1px solid var(--line); }
+.stat:last-child { border-right: none; }
+.stat .l { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.05em; color: var(--text-dim); text-transform: uppercase; }
+.stat .v {
+  font-family: var(--f-sans); font-weight: 600; font-size: clamp(36px,4.5vw,56px);
+  letter-spacing: -0.04em; line-height: 1; margin-top: 12px; font-variant-numeric: tabular-nums;
+}
+.stat .v.acc { color: var(--accent); }
+.stat .n { font-size: 13px; color: var(--text-dim); margin-top: 8px; }
+@media(max-width:860px){.stats{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:none}.stat:nth-child(1),.stat:nth-child(2){border-bottom:1px solid var(--line)}}
+@media(max-width:520px){.stats{grid-template-columns:1fr}.stat{border-right:none;border-bottom:1px solid var(--line)}.stat:last-child{border-bottom:none}}
+
+/* ═══ SECTIONS ═══ */
+section { position: relative; z-index: 2; padding: clamp(72px,9vw,120px) clamp(20px,4vw,44px); border-bottom: 1px solid var(--line); }
+.sec-inner { max-width: 1160px; margin: 0 auto; }
+.sec-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 48px; flex-wrap: wrap; margin-bottom: 52px; }
+.sec-head .left { flex: 1; min-width: 280px; }
+.sec-head .right { flex: 1; min-width: 280px; max-width: 520px; }
+.tag { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.05em; color: var(--text-dim); }
+.tag .num { color: var(--accent); }
+h2 { font-size: clamp(32px,4.2vw,50px); font-weight: 600; letter-spacing: -0.04em; line-height: 1.04; max-width: 18ch; margin-top: 12px; }
+.lead2 { font-size: 18px; color: var(--text-2); line-height: 1.6; margin-top: 16px; }
+
+/* ═══ STEP CARDS ═══ */
+.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.step { background: var(--surface); padding: 32px 28px; transition: background .2s; }
+.step:hover { background: var(--surface-2); }
+.step .num {
+  font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.04em; color: var(--accent);
+  margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+}
+.step .num::before { content: ''; width: 22px; height: 1px; background: var(--accent); }
+.step h3 { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 10px; }
+.step p { font-size: 15px; color: var(--text-2); line-height: 1.65; }
+@media(max-width:860px){ .steps { grid-template-columns: 1fr; } }
+
+/* ═══ SECTOR CARDS ═══ */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.card { background: var(--surface); padding: 24px 26px; cursor: pointer; transition: background .2s; position: relative; overflow: hidden; }
+.card::before {
+  content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity .2s;
+  background: linear-gradient(135deg, rgba(255,90,54,0.05) 0%, transparent 60%);
+}
+.card:hover { background: var(--surface-2); }
+.card:hover::before { opacity: 1; }
+.card:hover .card-border { opacity: 1; }
+.card-border {
+  position: absolute; inset: 0; opacity: 0; transition: opacity .2s; pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(255,90,54,0.25);
+  border-radius: inherit;
+}
+.card .ix { font-family: var(--f-mono); font-size: 10.5px; color: var(--text-faint); letter-spacing: 0.04em; }
+.card h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; margin: 8px 0; }
+.card .roles { font-size: 14px; color: var(--text-dim); line-height: 1.55; min-height: 42px; }
+.card .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--line); }
+.roi-chip { font-family: var(--f-mono); font-size: 11.5px; font-weight: 600; color: var(--accent); padding: 3px 8px; background: var(--accent-dim); border-radius: 4px; }
+.open { font-family: var(--f-mono); font-size: 11.5px; color: var(--text-dim); display: inline-flex; align-items: center; gap: 5px; transition: color .15s; }
+.open .arr { display: inline-block; transition: transform .2s; }
+.card:hover .open { color: var(--accent); }
+.card:hover .open .arr { transform: translateX(3px); }
+
+/* ═══ MAP ═══ */
+.map-row { display: grid; grid-template-columns: 1.45fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+@media(max-width:880px){ .map-row { grid-template-columns: 1fr; } }
+.map-stage { background: var(--surface); padding: 28px; position: relative; min-height: 520px; }
+.map-stage::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background-image: linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);
+  background-size: 22px 22px; opacity: 0.7;
+}
+.map-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: relative; z-index: 2; }
+.map-head .h { font-size: 17px; font-weight: 600; letter-spacing: -0.015em; }
+.map-head .meta { font-family: var(--f-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.04em; }
+.map-geo { position: relative; width: 100%; max-width: 520px; margin: 0 auto; aspect-ratio: 5/6; z-index: 2; }
+.km {
+  position: absolute; display: flex; align-items: center; justify-content: center; text-align: center;
+  cursor: pointer; transition: transform .2s, box-shadow .25s, border-color .2s;
+  border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);
+  width: 17%; height: 14%;
+}
+.km span { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: 0.02em; line-height: 1.2; padding: 2px; pointer-events: none; }
+.km:hover, .km.sel {
+  transform: scale(1.08); z-index: 6;
+  border-color: var(--accent);
+  box-shadow: 0 0 24px var(--accent-glow), 0 0 0 1px rgba(255,90,54,0.3);
+}
+.legend { display: flex; align-items: center; gap: 12px; margin-top: 20px; font-family: var(--f-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.04em; position: relative; z-index: 2; }
+.legend .bar { flex: 1; height: 5px; max-width: 240px; background: linear-gradient(90deg, var(--surface-3), var(--accent)); border-radius: 3px; }
+.map-detail { background: var(--surface); padding: 28px; }
+.dk-l { font-family: var(--f-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+.dk { font-size: 32px; font-weight: 600; letter-spacing: -0.03em; margin-top: 8px; line-height: 1; }
+.detail-rows { margin-top: 22px; }
+.drow { display: flex; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid var(--line); font-size: 14px; color: var(--text-2); }
+.drow b { color: var(--text); font-family: var(--f-mono); font-weight: 500; font-variant-numeric: tabular-nums; }
+.drow b.acc { color: var(--accent); }
+.occ-pills { margin-top: 22px; }
+.occ-pill { display: inline-flex; font-family: var(--f-mono); font-size: 11px; padding: 5px 10px; border: 1px solid var(--line-mid); border-radius: 999px; margin: 5px 5px 0 0; color: var(--text-2); }
+
+/* ═══ TRANSITIONS ═══ */
+.trans-row { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+@media(max-width:880px){ .trans-row { grid-template-columns: 1fr; } }
+.trans-stage { background: var(--surface); padding: 20px; min-height: 420px; position: relative; }
+.trans-stage::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background-image: linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);
+  background-size: 22px 22px; opacity: 0.5;
+}
+#transSvg { position: relative; z-index: 2; width: 100%; height: auto; }
+.nl { font-family: 'Geist Mono',monospace; font-size: 12px; fill: var(--text); }
+.nl.dim { fill: var(--text-dim); }
+.npct { font-family: 'Geist Mono',monospace; font-weight: 700; font-size: 12px; fill: var(--accent); }
+.ch { font-family: 'Geist Mono',monospace; font-size: 10px; fill: var(--text-faint); letter-spacing: 0.08em; }
+.trans-list { background: var(--surface); padding: 24px; }
+.tth { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--text-dim); text-transform: uppercase; margin-bottom: 12px; }
+.mrow {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 12px; border: 1px solid transparent; border-radius: 8px;
+  cursor: pointer; transition: .15s; margin-bottom: 3px;
+}
+.mrow:hover, .mrow.on { background: var(--surface-2); border-color: var(--line-mid); }
+.mrow.on { border-color: rgba(255,90,54,0.4); box-shadow: 0 0 0 1px var(--accent-dim) inset; }
+.mrow .pair { font-size: 14px; color: var(--text); }
+.mrow .pair .arr { color: var(--text-faint); margin: 0 7px; }
+.mrow .pct { font-family: var(--f-mono); font-weight: 600; font-size: 13px; color: var(--accent); font-variant-numeric: tabular-nums; }
+
+/* ═══ ROI ═══ */
+.roi-row { display: grid; grid-template-columns: 1fr 1.2fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+@media(max-width:880px){ .roi-row { grid-template-columns: 1fr; } }
+.roi-in { background: var(--surface); padding: 30px; }
+.field { margin-bottom: 26px; }
+.field label {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--f-mono); font-size: 11px; color: var(--text-dim);
+  letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 12px;
+}
+.field label b { color: var(--accent); font-size: 14.5px; font-family: var(--f-mono); font-weight: 600; font-variant-numeric: tabular-nums; }
+input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 3px; background: var(--surface-3); border-radius: 2px; outline: none; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 17px; height: 17px; background: var(--accent); border-radius: 50%; cursor: pointer; box-shadow: 0 0 12px var(--accent-glow); }
+select, input[type=number] { width: 100%; font-size: 15px; padding: 11px 13px; background: var(--surface-2); border: 1px solid var(--line-mid); color: var(--text); border-radius: 8px; }
+select:focus, input:focus { outline: none; border-color: rgba(255,90,54,0.5); }
+.roi-note { font-family: var(--f-mono); font-size: 11.5px; color: var(--text-dim); letter-spacing: 0.01em; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); line-height: 1.6; }
+.roi-out { background: var(--surface); padding: 30px; position: relative; overflow: hidden; }
+.roi-out::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at top right, rgba(255,90,54,0.10) 0%, transparent 55%); }
+.roi-nums { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; position: relative; z-index: 2; }
+.rn { background: var(--surface); padding: 18px; }
+.rn .l { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--text-dim); text-transform: uppercase; }
+.rn .v { font-family: var(--f-mono); font-weight: 500; font-size: 28px; letter-spacing: -0.015em; line-height: 1; margin-top: 9px; font-variant-numeric: tabular-nums; }
+.rn.acc .v { color: var(--accent); }
+.rn .d { font-size: 12px; color: var(--text-dim); margin-top: 6px; }
+
+/* ROI bar comparison */
+.roi-bars { position: relative; z-index: 2; margin-top: 20px; }
+.roi-bar-row { margin-bottom: 14px; }
+.roi-bar-label { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 11px; color: var(--text-dim); margin-bottom: 6px; letter-spacing: 0.02em; }
+.roi-bar-label b { color: var(--text); }
+.roi-bar-track { height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden; }
+.roi-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+.roi-bar-fill.cost { background: var(--text-dim); }
+.roi-bar-fill.save { background: linear-gradient(90deg, var(--accent), #ff8c6e); box-shadow: 0 0 10px rgba(255,90,54,0.3); }
+
+.roi-pct-row { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+.roi-pct { font-family: var(--f-mono); font-size: 52px; font-weight: 600; color: var(--accent); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1; }
+.roi-pct-meta { text-align: right; font-family: var(--f-mono); font-size: 11.5px; color: var(--text-dim); line-height: 1.6; }
+.roi-pct-meta b { color: var(--text); display: block; font-weight: 500; font-size: 13px; margin-bottom: 4px; }
+
+/* ═══ DISCLAIMER + FOOTER ═══ */
+.disc { padding: 20px clamp(20px,4vw,44px); background: var(--surface); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 16px; font-size: 13px; color: var(--text-2); flex-wrap: wrap; }
+.disc .pill { font-family: var(--f-mono); font-size: 10.5px; color: var(--accent); background: var(--accent-dim); padding: 4px 10px; border-radius: 4px; letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; white-space: nowrap; }
+footer { padding: 52px clamp(20px,4vw,44px); background: var(--bg-2); }
+.ft { max-width: 1160px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 48px; }
+@media(max-width:760px){ .ft { grid-template-columns: 1fr; gap: 32px; } }
+.ft-brand .wm { font-family: var(--f-mono); font-weight: 600; font-size: 17px; }
+.ft-brand p { font-size: 14px; color: var(--text-dim); margin-top: 12px; max-width: 36ch; line-height: 1.6; }
+.ft h4 { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--text-dim); text-transform: uppercase; margin-bottom: 14px; }
+.ft a { display: block; font-size: 14px; color: var(--text-2); padding: 5px 0; transition: color .15s; }
+.ft a:hover { color: var(--accent); }
+.ft-bot { max-width: 1160px; margin: 44px auto 0; padding-top: 22px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 11.5px; color: var(--text-faint); flex-wrap: wrap; gap: 10px; }
+
+/* ═══ TOOLTIP + REVEAL ═══ */
+.tip { position: fixed; pointer-events: none; background: var(--surface-2); color: var(--text); font-family: var(--f-mono); font-size: 11.5px; padding: 7px 12px; border-radius: 7px; border: 1px solid var(--line-strong); z-index: 200; opacity: 0; transition: opacity .1s; white-space: nowrap; box-shadow: 0 8px 28px rgba(0,0,0,0.5); }
+.tip b { color: var(--accent); }
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity .65s ease, transform .65s ease; }
+.reveal.in { opacity: 1; transform: none; }
+.reveal[data-d="1"] { transition-delay: .08s; }
+.reveal[data-d="2"] { transition-delay: .16s; }
+.reveal[data-d="3"] { transition-delay: .24s; }
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<!-- TOPBAR -->
+<header class="top">
+  <div class="brand">
+    <svg viewBox="0 0 22 22" width="20" height="20">
+      <path d="M3 11 L11 3 L19 11 L11 19 Z" fill="none" stroke="#FF5A36" stroke-width="1.4"/>
+      <circle cx="11" cy="11" r="2.2" fill="#FF5A36"/>
+      <path d="M11 3 L11 19 M3 11 L19 11" stroke="#FF5A36" stroke-width="0.7" opacity="0.35"/>
+    </svg>
+    <div class="wm">crosstrees<span>/kompetensgrafen</span></div>
+  </div>
+  <nav class="nav">
+    <a href="#hero" class="on">Översikt</a>
+    <a href="#sektorer">Sektorer</a>
+    <a href="#karta">Bristkarta</a>
+    <a href="#graf">Omställning</a>
+    <a href="#roi">ROI</a>
+  </nav>
+  <div class="top-cta">
+    <span class="live"><span class="dot"></span>Live · AF.platsbanken</span>
+    <a href="#roi" class="btn btn-acc">Boka demo</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-glow" id="heroGlow"></div>
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-inner">
+    <span class="eyebrow"><span class="acc">◆</span>&nbsp;&nbsp;Regionalt beslutsstöd · Jönköpings län · v0.4</span>
+    <h1>Den dolda strukturen i den <span class="hl">svenska arbetsmarknaden</span>.</h1>
+    <p class="lead">Arbetsförmedlingen har redan kartlagt <b>51 000 övergångsvägar</b> mellan yrken. Kompetensgrafen gör den kartan användbar: var folk saknas, vilka som kan ställas om dit, och vad det kostar — och sparar.</p>
+    <div class="hero-cta">
+      <a href="#karta" class="btn btn-acc">Öppna bristkartan →</a>
+      <a href="#roi" class="btn">Beräkna ROI</a>
+    </div>
+    <div class="hero-meta">
+      <div class="m">DATAKÄLLOR<b>AF · SCB · ESCO · Yrkesbarometern</b></div>
+      <div class="m">METOD<b>Cost-Benefit, IFAU / OECD</b></div>
+      <div class="m">UPPDATERAS<b>Dagligen · Platsbanken</b></div>
+      <div class="m">REGLERING<b>EU AI Act, Annex III</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="l">Kommuner</div><div class="v" data-count="13">13</div><div class="n">Hela Jönköpings län</div></div>
+  <div class="stat"><div class="l">Övergångsvägar</div><div class="v" data-count="51000">51 000</div><div class="n">Från AF:s öppna data</div></div>
+  <div class="stat"><div class="l">Sektorer</div><div class="v" data-count="7">7</div><div class="n">Industri till utbildning</div></div>
+  <div class="stat"><div class="l">Till beslutsunderlag</div><div class="v acc">&lt;3 min</div><div class="n">Från fråga till PDF</div></div>
+</div>
+
+<!-- STEPS -->
+<section>
+  <div class="sec-inner">
+    <div class="sec-head">
+      <div class="left">
+        <span class="tag"><span class="num">01</span> · Så fungerar det</span>
+        <h2>Tre frågor. Ett beslutsunderlag.</h2>
+      </div>
+      <div class="right">
+        <p class="lead2">SKR visar att antalet äldre ökar. AF visar att det behövs fler undersköterskor. Kompetensgrafen svarar på nästa fråga: vilka kan ställas om dit, och lönar det sig?</p>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step reveal" data-d="0"><div class="num">01</div><h3>Var saknas folk?</h3><p>Bristkarta över länets 13 kommuner. Färgintensitet visar hur hård bristen är per kommun, hämtat direkt från Arbetsförmedlingens öppna data.</p></div>
+      <div class="step reveal" data-d="1"><div class="num">02</div><h3>Vem kan ställas om?</h3><p>Grafen visar vilka yrkesgrupper som ligger nära ett bristyrke, baserat på faktiskt kompetensöverlapp i EU:s ESCO-taxonomi med 3 000+ kompetenser.</p></div>
+      <div class="step reveal" data-d="2"><div class="num">03</div><h3>Vad kostar det?</h3><p>Kalkyl per omställd person. Utbildningskostnad ställs mot besparing i a-kassa, ökade skatteintäkter och minskade vakansförluster, modellerat över 5 år.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTORS -->
+<section id="sektorer">
+  <div class="sec-inner">
+    <div class="sec-head">
+      <div class="left">
+        <span class="tag"><span class="num">02</span> · Välj sektor</span>
+        <h2>Sju sektorer. En analys per klick.</h2>
+      </div>
+      <div class="right">
+        <p class="lead2">Klicka på en sektor för att se bristyrken, möjliga omställningar och beräknad avkastning för regionen.</p>
+      </div>
+    </div>
+    <div class="cards" id="cards"></div>
+  </div>
+</section>
+
+<!-- MAP -->
+<section id="karta">
+  <div class="sec-inner">
+    <div class="sec-head">
+      <div class="left">
+        <span class="tag"><span class="num">03</span> · Bristkarta</span>
+        <h2>Var är bristen störst?</h2>
+      </div>
+      <div class="right">
+        <p class="lead2">Bristindex per kommun. Hovra för värde, klicka för detaljpanel med bristyrken och möjliga omställningskandidater.</p>
+      </div>
+    </div>
+    <div class="map-row reveal">
+      <div class="map-stage">
+        <div class="map-head">
+          <span class="h">Jönköpings läns 13 kommuner</span>
+          <span class="meta">SCB RegSO 2025 · 57°N 14°E</span>
+        </div>
+        <div class="map-geo" id="mapGeo"></div>
+        <div class="legend"><span>Låg brist</span><div class="bar"></div><span>Hög brist</span></div>
+      </div>
+      <div class="map-detail" id="mapDetail"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TRANSITIONS -->
+<section id="graf">
+  <div class="sec-inner">
+    <div class="sec-head">
+      <div class="left">
+        <span class="tag"><span class="num">04</span> · Omställningsanalys</span>
+        <h2>Karriärövergångar.</h2>
+      </div>
+      <div class="right">
+        <p class="lead2">Klicka på ett par för att markera vägen. Procenten är kompetensöverlapp enligt EU:s ESCO-taxonomi — en elektriker är redan 71&nbsp;% av vägen till automationstekniker.</p>
+      </div>
+    </div>
+    <div class="trans-row reveal">
+      <div class="trans-stage">
+        <svg id="transSvg" viewBox="0 0 680 400" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+      <div class="trans-list">
+        <div class="tth">Matchningar · rangordnade</div>
+        <div id="mlist"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROI -->
+<section id="roi">
+  <div class="sec-inner">
+    <div class="sec-head">
+      <div class="left">
+        <span class="tag"><span class="num">05</span> · Business case</span>
+        <h2>Vad får regionen tillbaka?</h2>
+      </div>
+      <div class="right">
+        <p class="lead2">Cost-Benefit-modell enligt IFAU och OECD. Justera reglagen — siffrorna uppdateras direkt.</p>
+      </div>
+    </div>
+    <div class="roi-row reveal">
+      <div class="roi-in">
+        <div class="field">
+          <label>Sektor</label>
+          <select id="roiSector"></select>
+        </div>
+        <div class="field">
+          <label>Antal omställningar <b id="roiCountV">100</b></label>
+          <input type="range" id="roiCount" min="1" max="300" value="100">
+        </div>
+        <div class="field">
+          <label>Utbildningskostnad / person (kr)</label>
+          <input type="number" id="roiCost" value="148000" step="5000">
+        </div>
+        <p class="roi-note">Modellen viktar a-kasseersättning, skatteintäkter och vakansförluster över 5 år med matchningssannolikhet från AF:s efterfrågedata.</p>
+      </div>
+      <div class="roi-out">
+        <div class="roi-nums">
+          <div class="rn"><div class="l">Investering / pers</div><div class="v" id="oCostP">148 TKR</div><div class="d">Utbildning 12 mån</div></div>
+          <div class="rn"><div class="l">Besparing / pers · 5 år</div><div class="v" id="oSaveP">612 TKR</div><div class="d">Modellerad totaleffekt</div></div>
+          <div class="rn"><div class="l">Total investering</div><div class="v" id="oCostT">14,8 MKR</div><div class="d">Hela kohorten</div></div>
+          <div class="rn acc"><div class="l">Nettoeffekt</div><div class="v" id="oNet">+46,4 MKR</div><div class="d">Över 5 år</div></div>
+        </div>
+        <div class="roi-bars">
+          <div class="roi-bar-row">
+            <div class="roi-bar-label"><span>Investering</span><b id="bCostV">14,8 MKR</b></div>
+            <div class="roi-bar-track"><div class="roi-bar-fill cost" id="bCost" style="width:20%"></div></div>
+          </div>
+          <div class="roi-bar-row">
+            <div class="roi-bar-label"><span>Besparing</span><b id="bSaveV">61,2 MKR</b></div>
+            <div class="roi-bar-track"><div class="roi-bar-fill save" id="bSave" style="width:100%"></div></div>
+          </div>
+        </div>
+        <div class="roi-pct-row">
+          <div><div class="roi-pct" id="oRoi">314%</div><div style="font-family:var(--f-mono);font-size:11px;color:var(--text-dim);margin-top:5px;letter-spacing:0.04em">Avkastning på investering</div></div>
+          <div class="roi-pct-meta">95% konfidensintervall<b id="oCi">+39,4 till +53,4 MKR</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DISCLAIMER -->
+<div class="disc">
+  <span class="pill">EU AI Act</span>
+  <span>Modellen är AI-genererad baserat på Arbetsförmedlingens öppna data och ESCO-taxonomin. Beslut fattas av ansvarig handläggare vid Kompetensrådet. Klassificerad som högrisk, Annex III artikel 6.</span>
+</div>
+
+<!-- FOOTER -->
+<footer id="kontakt">
+  <div class="ft">
+    <div class="ft-brand">
+      <div class="wm">crosstrees<span style="color:var(--text-dim)">/labor intelligence</span></div>
+      <p>Kompetensinfrastruktur för svenska regioner. Vi gör Arbetsförmedlingens öppna data användbar som beslutsstöd för regional planering.</p>
+    </div>
+    <div>
+      <h4>Produkt</h4>
+      <a href="#karta">Bristkarta</a>
+      <a href="#graf">Omställningsanalys</a>
+      <a href="#roi">ROI-kalkyl</a>
+      <a href="#sektorer">Sektorer</a>
+    </div>
+    <div>
+      <h4>Kontakt</h4>
+      <a href="mailto:linnea@crosstrees.se">linnea@crosstrees.se</a>
+      <a href="#">crosstrees.se</a>
+      <a href="#">Vetlanda · Sverige</a>
+    </div>
+  </div>
+  <div class="ft-bot">
+    <span>© 2026 Crosstrees Labor Intelligence</span>
+    <span>Byggd för Kompetensrådet Region Jönköping</span>
+  </div>
+</footer>
+
+<div class="tip" id="tip"></div>
+
+<script>
+/* ═══ DATA ═══ */
+const SECTORS = [
+  {id:'industri', name:'Tillverkning & industri', roles:'Svetsare · maskinoperatörer · automationstekniker', roi:314, save:612000, ix:'01'},
+  {id:'vard',     name:'Vård & omsorg',           roles:'Undersköterskor · sjuksköterskor · personliga assistenter', roi:301, save:593000, ix:'02'},
+  {id:'it',       name:'IT & digitalisering',     roles:'Mjukvaruutvecklare · systemarkitekter · dataingenjörer', roi:367, save:689000, ix:'03'},
+  {id:'bygg',     name:'Bygg & anläggning',       roles:'Elektriker · snickare · anläggningsarbetare', roi:315, save:614000, ix:'04'},
+  {id:'logistik', name:'Logistik & transport',    roles:'Truckförare · lastbilsförare · lagerarbetare', roi:329, save:635000, ix:'05'},
+  {id:'service',  name:'Service & handel',        roles:'Butikschefer · kockar · restaurangchefer', roi:248, save:515000, ix:'06'},
+  {id:'utbildning',name:'Utbildning',             roles:'Lärare · förskollärare', roi:268, save:545000, ix:'07'},
+];
+
+/* geo positions (left%, top%) within the map container, approximating real Jönköping county */
+const KOMMUNER = [
+  {n:'Habo',      lp:14, tp: 9, brist:34, top:'Undersköterska'},
+  {n:'Mullsjö',   lp: 7, tp:24, brist:41, top:'Sjuksköterska'},
+  {n:'Jönköping', lp:20, tp:30, brist:88, top:'Undersköterska'},
+  {n:'Vaggeryd',  lp:20, tp:54, brist:52, top:'Truckförare'},
+  {n:'Gnosjö',    lp: 5, tp:66, brist:67, top:'Maskinoperatör'},
+  {n:'Gislaved',  lp:16, tp:75, brist:69, top:'Automationstekniker'},
+  {n:'Värnamo',   lp:28, tp:82, brist:81, top:'Svetsare'},
+  {n:'Aneby',     lp:48, tp:10, brist:46, top:'Undersköterska'},
+  {n:'Tranås',    lp:72, tp:10, brist:58, top:'Svetsare'},
+  {n:'Nässjö',    lp:52, tp:36, brist:74, top:'Lastbilsförare'},
+  {n:'Eksjö',     lp:65, tp:28, brist:63, top:'Sjuksköterska'},
+  {n:'Sävsjö',    lp:54, tp:60, brist:55, top:'Undersköterska'},
+  {n:'Vetlanda',  lp:68, tp:52, brist:71, top:'Undersköterska'},
+];
+
+const TRANSITIONS = [
+  {from:'Handelsbiträde',  to:'Undersköterska',      pct:85},
+  {from:'Maskinoperatör',  to:'Automationstekniker',  pct:83},
+  {from:'Lagerarbetare',   to:'Spec.undersköterska',  pct:81},
+  {from:'Butiksbiträde',   to:'Kock',                 pct:80},
+  {from:'Barnskötare',     to:'Förskollärare',         pct:75},
+  {from:'Elektriker',      to:'Automationstekniker',  pct:71},
+];
+
+/* ═══ SCROLL PROGRESS ═══ */
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  document.getElementById('prog').style.width = pct + '%';
+});
+
+/* ═══ HERO CANVAS ═══ */
+const cv = document.getElementById('heroCanvas'), cx = cv.getContext('2d');
+let nodes=[], edges=[], particles=[];
+
+function setupCanvas() {
+  const r = cv.parentElement.getBoundingClientRect();
+  cv.width = r.width * devicePixelRatio; cv.height = r.height * devicePixelRatio;
+  cv.style.width = r.width+'px'; cv.style.height = r.height+'px';
+  cx.scale(devicePixelRatio, devicePixelRatio);
+  const w = r.width, h = r.height;
+  /* seed with mulberry32 so layout is deterministic after first setup */
+  let s = 0x9e3779b9;
+  const rand = () => { s ^= s<<13; s ^= s>>17; s ^= s<<5; return ((s>>>0)/4294967296); };
+  nodes = Array.from({length:55}, () => ({
+    x: rand()*w, y: rand()*h,
+    vx: (rand()-.5)*0.22, vy: (rand()-.5)*0.22,
+    r: 0.8 + rand()*1.8,
+    hot: rand() < 0.14,
+  }));
+  edges = [];
+  for (let i=0; i<nodes.length; i++)
+    for (let j=i+1; j<nodes.length; j++)
+      if (Math.hypot(nodes[i].x-nodes[j].x, nodes[i].y-nodes[j].y) < 160) edges.push([i,j]);
+  particles = Array.from({length:18}, () => ({
+    e: Math.floor(rand()*edges.length), t: rand(), sp: 0.0015+rand()*0.003
+  }));
+}
+
+function loopCanvas() {
+  const w = cv.width/devicePixelRatio, h = cv.height/devicePixelRatio;
+  cx.clearRect(0,0,w,h);
+  for (const n of nodes) {
+    n.x+=n.vx; n.y+=n.vy;
+    if(n.x<0||n.x>w) n.vx*=-1;
+    if(n.y<0||n.y>h) n.vy*=-1;
+  }
+  for (const [i,j] of edges) {
+    const a=nodes[i],b=nodes[j];
+    const d = Math.hypot(a.x-b.x,a.y-b.y);
+    if (d < 160) {
+      cx.strokeStyle = `rgba(255,255,255,${0.07*(1-d/160)})`; cx.lineWidth=0.5;
+      cx.beginPath(); cx.moveTo(a.x,a.y); cx.lineTo(b.x,b.y); cx.stroke();
+    }
+  }
+  for (const n of nodes) {
+    cx.fillStyle = n.hot ? 'rgba(255,90,54,0.88)' : 'rgba(255,255,255,0.42)';
+    cx.beginPath(); cx.arc(n.x,n.y,n.r,0,7); cx.fill();
+    if (n.hot) {
+      cx.fillStyle='rgba(255,90,54,0.12)'; cx.beginPath(); cx.arc(n.x,n.y,n.r*5,0,7); cx.fill();
+    }
+  }
+  for (const p of particles) {
+    const e=edges[p.e]; if(!e){p.e=Math.floor(Math.random()*edges.length);continue;}
+    const a=nodes[e[0]],b=nodes[e[1]];
+    const x=a.x+(b.x-a.x)*p.t, y=a.y+(b.y-a.y)*p.t;
+    cx.fillStyle='rgba(255,90,54,0.92)'; cx.beginPath(); cx.arc(x,y,1.8,0,7); cx.fill();
+    cx.fillStyle='rgba(255,90,54,0.18)'; cx.beginPath(); cx.arc(x,y,5.5,0,7); cx.fill();
+    p.t+=p.sp; if(p.t>1){p.t=0; p.e=Math.floor(Math.random()*edges.length);}
+  }
+  requestAnimationFrame(loopCanvas);
+}
+setupCanvas(); loopCanvas();
+window.addEventListener('resize', setupCanvas);
+
+/* mouse parallax on hero glow */
+document.getElementById('hero').addEventListener('mousemove', e => {
+  const r = e.currentTarget.getBoundingClientRect();
+  const dx = (e.clientX - r.width/2) / r.width * 30;
+  const dy = (e.clientY - r.height/2) / r.height * 20;
+  document.getElementById('heroGlow').style.transform = `translate(${dx}px,${dy}px)`;
+});
+
+/* ═══ STATS COUNT-UP ═══ */
+function countUp(el, target, duration=1200) {
+  const start = performance.now();
+  const update = now => {
+    const p = Math.min((now-start)/duration, 1);
+    const ease = 1-Math.pow(1-p,3);
+    const val = Math.round(ease*target);
+    el.textContent = val >= 1000 ? val.toLocaleString('sv-SE') : val;
+    if (p < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+const statsObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('[data-count]').forEach(el => {
+        countUp(el, +el.dataset.count);
+      });
+      statsObs.unobserve(e.target);
+    }
+  });
+}, {threshold:0.5});
+statsObs.observe(document.querySelector('.stats'));
+
+/* ═══ SECTOR CARDS ═══ */
+const cardsEl = document.getElementById('cards');
+SECTORS.forEach(s => {
+  const d = document.createElement('div');
+  d.className = 'card';
+  d.innerHTML = `<div class="card-border"></div>
+    <div class="ix">SEKTOR · ${s.ix}</div>
+    <h3>${s.name}</h3>
+    <div class="roles">${s.roles}</div>
+    <div class="foot">
+      <span class="open">Öppna analysen <span class="arr">→</span></span>
+      <span class="roi-chip">ROI ${s.roi}%</span>
+    </div>`;
+  d.onclick = () => {
+    document.getElementById('roiSector').value = s.id;
+    updateRoi();
+    document.getElementById('roi').scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  cardsEl.appendChild(d);
+});
+
+/* ═══ MAP ═══ */
+const geo = document.getElementById('mapGeo');
+const detail = document.getElementById('mapDetail');
+const tip = document.getElementById('tip');
+
+function renderDetail(k) {
+  detail.innerHTML = `
+    <div class="dk-l">Vald kommun</div>
+    <div class="dk">${k.n}</div>
+    <div class="detail-rows">
+      <div class="drow"><span>Bristindex</span><b class="acc">${k.brist} / 100</b></div>
+      <div class="drow"><span>Hårdast bristyrke</span><b>${k.top}</b></div>
+      <div class="drow"><span>Öppna platser (Platsbanken)</span><b>${Math.round(k.brist*4.2)}</b></div>
+      <div class="drow"><span>Möjliga omställningar</span><b>${Math.round(k.brist*1.7)} pers.</b></div>
+      <div class="drow"><span>Prognos 2030</span><b>${k.brist>60?'Förvärrad':'Stabil'}</b></div>
+    </div>
+    <div class="occ-pills">
+      <div class="dk-l" style="margin-bottom:10px">Möjliga källyrken</div>
+      <span class="occ-pill">Handelsbiträde</span>
+      <span class="occ-pill">Lagerarbetare</span>
+      <span class="occ-pill">Maskinoperatör</span>
+    </div>`;
+}
+
+KOMMUNER.forEach(k => {
+  const el = document.createElement('div');
+  el.className = 'km';
+  const t = k.brist/100;
+  /* interpolate from dark surface to coral */
+  const r = Math.round(17 + (255-17)*t*0.9);
+  const g = Math.round(17 + (90-17)*t*0.7);
+  const b = Math.round(21 + (54-21)*t*0.7);
+  el.style.background = `rgb(${r},${g},${b})`;
+  if (k.brist > 65) el.style.boxShadow = `0 0 ${k.brist*0.25}px rgba(255,90,54,${0.2+t*0.25})`;
+  el.style.left = k.lp+'%';
+  el.style.top  = k.tp+'%';
+  el.innerHTML  = `<span style="color:${k.brist>55?'#fff':'#EEEEF0'}">${k.n}</span>`;
+  el.onmousemove = e => {
+    tip.style.opacity = 1;
+    tip.innerHTML = `${k.n} · brist <b>${k.brist}</b>`;
+    tip.style.left = (e.clientX+14)+'px'; tip.style.top = (e.clientY+14)+'px';
+  };
+  el.onmouseleave = () => tip.style.opacity = 0;
+  el.onclick = () => {
+    document.querySelectorAll('.km').forEach(x => x.classList.remove('sel'));
+    el.classList.add('sel');
+    renderDetail(k);
+  };
+  geo.appendChild(el);
+});
+renderDetail(KOMMUNER.find(k => k.n==='Jönköping'));
+
+/* ═══ TRANSITIONS SVG ═══ */
+const svgEl = document.getElementById('transSvg');
+const NS='http://www.w3.org/2000/svg';
+const TW=680, TH=400, padY=56;
+const gap = (TH-2*padY)/(TRANSITIONS.length-1);
+const Lx=165, Rx=515;
+let active=5;
+
+function mkEl(tag,attrs,txt) {
+  const e=document.createElementNS(NS,tag);
+  for(const k in attrs) e.setAttribute(k,attrs[k]);
+  if(txt!==undefined) e.textContent=txt;
+  return e;
+}
+
+function drawTrans() {
+  svgEl.innerHTML='';
+  /* defs */
+  const defs=mkEl('defs');
+  defs.innerHTML='<filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  svgEl.appendChild(defs);
+
+  svgEl.appendChild(mkEl('text',{x:Lx,y:24,'text-anchor':'middle',class:'ch'},'NUVARANDE YRKE'));
+  svgEl.appendChild(mkEl('text',{x:Rx,y:24,'text-anchor':'middle',class:'ch'},'BRISTYRKE'));
+
+  /* inactive edges */
+  TRANSITIONS.forEach((t,i) => {
+    if(i===active) return;
+    const y=padY+i*gap;
+    svgEl.appendChild(mkEl('path',{d:`M ${Lx} ${y} C ${(Lx+Rx)/2} ${y}, ${(Lx+Rx)/2} ${y}, ${Rx} ${y}`,fill:'none',stroke:'rgba(255,255,255,0.10)','stroke-width':1.2}));
+  });
+
+  /* active edge with animation */
+  const ay=padY+active*gap;
+  const pathLen=Rx-Lx;
+  const activePath=mkEl('path',{d:`M ${Lx} ${ay} C ${(Lx+Rx)/2} ${ay}, ${(Lx+Rx)/2} ${ay}, ${Rx} ${ay}`,fill:'none',stroke:'#FF5A36','stroke-width':2.5,'stroke-dasharray':pathLen,'stroke-dashoffset':pathLen,filter:'url(#glow)'});
+  svgEl.appendChild(activePath);
+  /* animate draw */
+  activePath.animate([{strokeDashoffset:pathLen},{strokeDashoffset:0}],{duration:420,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});
+
+  /* pct badge on active */
+  const mid=(Lx+Rx)/2;
+  svgEl.appendChild(mkEl('rect',{x:mid-28,y:ay-22,width:56,height:18,fill:'#0D0D10',stroke:'#FF5A36','stroke-width':1,rx:5}));
+  svgEl.appendChild(mkEl('text',{x:mid,y:ay-9,'text-anchor':'middle',class:'npct'},TRANSITIONS[active].pct+'%'));
+
+  /* nodes */
+  TRANSITIONS.forEach((t,i) => {
+    const y=padY+i*gap, on=i===active;
+    svgEl.appendChild(mkEl('circle',{cx:Lx,cy:y,r:on?7:4.5,fill:on?'#FF5A36':'#1E1E26',stroke:on?'#FF5A36':'rgba(255,255,255,0.25)','stroke-width':1.2}));
+    svgEl.appendChild(mkEl('text',{x:Lx-14,y:y+4,'text-anchor':'end',class:on?'nl':'nl dim'},t.from));
+    svgEl.appendChild(mkEl('circle',{cx:Rx,cy:y,r:on?7:4.5,fill:on?'#FF5A36':'#1E1E26',stroke:on?'#FF5A36':'rgba(255,90,54,0.4)','stroke-width':1.2}));
+    svgEl.appendChild(mkEl('text',{x:Rx+14,y:y+4,'text-anchor':'start',class:on?'nl':'nl dim'},t.to));
+    /* row divider */
+    svgEl.appendChild(mkEl('line',{x1:0,x2:TW,y1:y,y2:y,stroke:'rgba(255,255,255,0.04)','stroke-width':1}));
+  });
+}
+
+const mlist=document.getElementById('mlist');
+TRANSITIONS.forEach((t,i) => {
+  const r=document.createElement('div');
+  r.className='mrow'+(i===active?' on':'');
+  r.innerHTML=`<span class="pair">${t.from}<span class="arr">→</span>${t.to}</span><span class="pct">${t.pct}%</span>`;
+  r.onclick=()=>{
+    active=i; drawTrans();
+    document.querySelectorAll('.mrow').forEach(x=>x.classList.remove('on'));
+    r.classList.add('on');
+  };
+  mlist.appendChild(r);
+});
+drawTrans();
+
+/* ═══ ROI CALCULATOR ═══ */
+const roiSel=document.getElementById('roiSector');
+SECTORS.forEach(s=>{const o=document.createElement('option');o.value=s.id;o.textContent=s.name;roiSel.appendChild(o);});
+roiSel.value='industri';
+
+const fmt1=v=>(v/1e6).toLocaleString('sv-SE',{minimumFractionDigits:1,maximumFractionDigits:1})+' MKR';
+const fmtT=v=>Math.round(v/1000).toLocaleString('sv-SE')+' TKR';
+
+function updateRoi() {
+  const s=SECTORS.find(x=>x.id===roiSel.value)||SECTORS[0];
+  const cnt=+document.getElementById('roiCount').value;
+  const cost=+document.getElementById('roiCost').value;
+  const saveP=s.save, netP=saveP-cost;
+  const totC=cost*cnt, totS=saveP*cnt, net=netP*cnt;
+  const roi=cost>0?Math.round(netP/cost*100):0;
+  document.getElementById('roiCountV').textContent=cnt;
+  document.getElementById('oCostP').textContent=fmtT(cost);
+  document.getElementById('oSaveP').textContent=fmtT(saveP);
+  document.getElementById('oCostT').textContent=fmt1(totC);
+  document.getElementById('oNet').textContent='+'+fmt1(net);
+  document.getElementById('oRoi').textContent=roi+'%';
+  document.getElementById('oCi').textContent='+'+fmt1(net*0.85)+' till +'+fmt1(net*1.15);
+  /* bars */
+  const maxBar=Math.max(totC,totS);
+  document.getElementById('bCost').style.width=(totC/maxBar*100)+'%';
+  document.getElementById('bSave').style.width=(totS/maxBar*100)+'%';
+  document.getElementById('bCostV').textContent=fmt1(totC);
+  document.getElementById('bSaveV').textContent=fmt1(totS);
+}
+['roiSector','roiCount','roiCost'].forEach(id=>document.getElementById(id).addEventListener('input',updateRoi));
+updateRoi();
+
+/* ═══ REVEAL ON SCROLL ═══ */
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting) e.target.classList.add('in');});
+},{threshold:0.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ═══ NAV ACTIVE STATE ═══ */
+const navLinks=document.querySelectorAll('nav.nav a');
+const sectionIds=['hero','sektorer','karta','graf','roi'];
+window.addEventListener('scroll',()=>{
+  const y=window.scrollY+180;
+  let cur=0;
+  sectionIds.forEach((id,i)=>{const el=document.getElementById(id);if(el&&el.offsetTop<=y)cur=i;});
+  navLinks.forEach((a,i)=>a.classList.toggle('on',i===cur));
+},{passive:true});
+</script>
+</body>
+</html>
