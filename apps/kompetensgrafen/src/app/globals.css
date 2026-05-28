@@ -632,8 +632,8 @@ aside[role="note"] strong {
 }
 .sector-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1px;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 2px;
   background: var(--border-faint);
   border: 1px solid var(--border-faint);
 }
@@ -814,9 +814,10 @@ aside[role="note"] strong {
   background: rgba(237,231,216,0.5);
   border-top: 0.5px solid var(--border-faint);
   border-bottom: 0.5px solid var(--border-faint);
+  scroll-margin-top: 56px;
 }
 .stats-cell {
-  padding: 26px 32px;
+  padding: 32px 36px;
   border-right: 0.5px solid var(--border-faint);
 }
 .stats-cell:last-child { border-right: none; }
@@ -853,9 +854,11 @@ aside[role="note"] strong {
   background: rgba(237,231,216,0.4);
 }
 .roi-cell {
-  padding: 32px 28px;
+  padding: 36px 32px;
   border-right: 0.5px solid var(--border-faint);
+  transition: background 0.15s;
 }
+.roi-cell:hover { background: rgba(122,46,26,0.05); }
 .roi-cell:last-child { border-right: none; }
 
 /* Omstallning plain-language callout */

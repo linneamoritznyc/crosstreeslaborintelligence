@@ -4,17 +4,16 @@ import AIActDisclaimer from "@/components/AIActDisclaimer";
 import HeroNet from "@/components/HeroNet";
 
 export const metadata: Metadata = {
-  title: "Kompetensgrafen: Regional arbetsmarknadsanalys Jönköpings län",
+  title: "Kompetensgrafen: Sorteringssystemet för arbetsmarknaden",
   description:
-    "Komplement till SKR:s demografiverktyg och regionala kompetensplaner. Kopplar bristdata till " +
-    "substituerbarhet mellan yrken och beräknar ROI per omställning. Live-data från AF Platsbanken och ESCO. " +
-    "Byggd för Kompetensrådet Region Jönköping.",
+    "Visar var det saknas personal i Jönköpings 13 kommuner, vilka yrkesgrupper som kan gå dit " +
+    "baserat på kompetensöverlapp, och vad en omställning kostar och sparar. Byggt för Kompetensrådet Region Jönköping.",
   alternates: { canonical: "/" },
 };
 
 const SEKTORER = [
-  { id: "industri",   namn: "Tillverkning & industri", yrken: "Svetsare · maskinoperatörer · automationstekniker", roi: 314 },
   { id: "vard",       namn: "Vård & omsorg",           yrken: "Undersköterskor · sjuksköterskor · personliga assistenter", roi: 301 },
+  { id: "industri",   namn: "Tillverkning & industri", yrken: "Svetsare · maskinoperatörer · automationstekniker", roi: 314 },
   { id: "it",         namn: "IT & digitalisering",     yrken: "Mjukvaruutvecklare · systemarkitekter · dataingenjörer", roi: 367 },
   { id: "bygg",       namn: "Bygg & anläggning",       yrken: "Elektriker · snickare · anläggningsarbetare", roi: 315 },
   { id: "logistik",   namn: "Logistik & transport",    yrken: "Truckförare · lastbilsförare · lagerarbetare", roi: 329 },
@@ -29,19 +28,11 @@ export default function StartPage() {
       <section className="hero">
         <div className="hero-bg" />
         <div className="hero-texture" />
-        <svg className="hero-contours" viewBox="0 0 680 420"
-          preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M-40 80 Q 180 55 400 100 T 720 75"   fill="none" stroke="#1A1A18" strokeWidth="0.8" />
-          <path d="M-40 140 Q 160 115 380 160 T 720 135" fill="none" stroke="#1A1A18" strokeWidth="0.8" />
-          <path d="M-40 200 Q 200 175 420 220 T 720 195" fill="none" stroke="#1A1A18" strokeWidth="0.8" />
-          <path d="M-40 260 Q 180 235 400 280 T 720 255" fill="none" stroke="#1A1A18" strokeWidth="0.8" />
-          <path d="M-40 320 Q 220 295 440 340 T 720 315" fill="none" stroke="#1A1A18" strokeWidth="0.8" />
-        </svg>
         <HeroNet />
         <div className="hero-content">
           <div className="hero-eyebrow">
             <div className="eyebrow-line" />
-            <span className="eyebrow-text">Jönköpings Kompetensråd · Regional arbetsmarknadsanalys</span>
+            <span className="eyebrow-text">Kompetensrådet Region Jönköping</span>
           </div>
           <div className="h1">
             Kompetens<span className="accent">-</span>
@@ -49,49 +40,55 @@ export default function StartPage() {
             grafen
           </div>
           <p className="tagline">
-            SKR visar var bristen finns. AF visar prognoser. Det som saknas är
-            kopplingen till substituerbarhet och ROI: vem kan faktiskt ställas om, och vad kostar det?
+            Sorteringssystemet för arbetsmarknaden.
+            Vi matchar kompetens med bristyrken, utifrån vad folk redan kan.
           </p>
           <div className="cta-row">
             <Link href="#sektorer" className="btn-main">
-              Börja här →
-            </Link>
-            <Link href="/chatt" className="btn-ghost">
-              Fråga AI-rådgivaren
+              Välj sektor och starta →
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ── HOW IT WORKS — 4 steps ────────────────────────────── */}
-      <div className="steps-band">
-        <div className="step-item">
-          <span className="step-num">1</span>
-          <span className="step-label">Välj din sektor</span>
+      {/* ── WHAT THIS IS — 3 plain-language items ─────────────── */}
+      <section style={{
+        padding: "48px 40px",
+        background: "var(--parchment-dark)",
+        borderBottom: "0.5px solid var(--border-faint)",
+      }}>
+        <p style={{ fontFamily: "'Courier Prime', monospace", fontWeight: 700,
+          fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase",
+          color: "var(--rust)", margin: "0 0 24px" }}>
+          DET HÄR VERKTYGET VISAR TRE SAKER
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 2,
+          background: "var(--border-faint)", border: "1px solid var(--border-faint)" }}>
+          {[
+            { num: "1", titel: "Var saknas det personal?", text: "En karta över Jönköpings alla 13 kommuner. Mörkare färg = större brist. Klicka på en sektor och se vilka kommuner som har det svårast." },
+            { num: "2", titel: "Vem kan gå dit?", text: "Vi jämför yrkenas kunskaper med varandra. En elektriker och en automationstekniker delar 71 % av sina kunskaper. Det är den matchningen myndigheterna inte gör idag." },
+            { num: "3", titel: "Vad kostar det och vad sparar det?", text: "En omställning kostar ungefär 185 000 kr. Regionen sparar 742 000 kr per person i minskad a-kassa och ökade skatteintäkter. ROI: 301 %." },
+          ].map(item => (
+            <div key={item.num} style={{ padding: "36px 32px", background: "var(--parchment)" }}>
+              <div style={{ fontFamily: "'Alumni Sans Condensed', Impact, sans-serif",
+                fontWeight: 900, fontSize: 56, color: "var(--rust)", lineHeight: 1,
+                opacity: 0.2, marginBottom: 8 }}>{item.num}</div>
+              <h3 style={{ fontFamily: "'Alumni Sans Condensed', Impact, sans-serif",
+                fontWeight: 900, fontSize: 26, textTransform: "uppercase", color: "var(--ink)",
+                margin: "0 0 12px", lineHeight: 1.1 }}>{item.titel}</h3>
+              <p style={{ fontFamily: "'Libre Baskerville', Georgia, serif",
+                fontSize: 16, lineHeight: 1.7, color: "var(--ink-soft)", margin: 0 }}>{item.text}</p>
+            </div>
+          ))}
         </div>
-        <div className="step-arrow">→</div>
-        <div className="step-item">
-          <span className="step-num">2</span>
-          <span className="step-label">Se karriärövergångarna</span>
-        </div>
-        <div className="step-arrow">→</div>
-        <div className="step-item">
-          <span className="step-num">3</span>
-          <span className="step-label">Beräkna ROI</span>
-        </div>
-        <div className="step-arrow">→</div>
-        <div className="step-item">
-          <span className="step-num">4</span>
-          <span className="step-label">Exportera rapport</span>
-        </div>
-      </div>
+      </section>
 
       {/* ── SECTOR TILES ──────────────────────────────────────── */}
       <section className="sector-section" id="sektorer">
         <div className="sector-intro">
-          <p className="rust-eyebrow">STEG 1 · VÄLJ DIN SEKTOR</p>
-          <h2 className="sec-head" style={{ margin: 0 }}>
-            Vilken sektor jobbar du med?
+          <p className="rust-eyebrow">VÄLJ DIN SEKTOR</p>
+          <h2 className="sec-head" style={{ margin: 0, fontSize: 28 }}>
+            Välj en sektor för att se analysen.
           </h2>
         </div>
         <div className="sector-grid">
@@ -107,7 +104,7 @@ export default function StartPage() {
               <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto" }}>
                 <span className="sector-card-cta">Öppna analysen →</span>
                 <span style={{ fontFamily: "'Courier Prime', monospace", fontWeight: 700,
-                  fontSize: 10, color: "var(--rust)", letterSpacing: "0.08em" }}>
+                  fontSize: 13, color: "var(--rust)", letterSpacing: "0.08em" }}>
                   ROI {s.roi}%
                 </span>
               </span>
@@ -116,59 +113,12 @@ export default function StartPage() {
         </div>
       </section>
 
-      {/* ── POSITIONING — what Crosstrees adds ───────────────── */}
-      <div className="position-band">
-        <p className="position-label">VAD KOMPETENSGRAFEN TILLFÖR</p>
-        <p className="position-text">
-          SKR:s demografiverktyg visar att antalet 80-åringar ökar. AF:s Yrkesbarometer visar
-          att det behövs fler undersköterskor. Kompetensgrafen svarar på nästa fråga:{" "}
-          <em>vilka yrkesgrupper kan faktiskt ställas om dit, baserat på faktiskt kompetensöverlapp
-          och vad kostar och sparar det per person?</em>
-        </p>
-      </div>
-
-      {/* ── WHAT YOU GET — 3 capability cards ────────────────── */}
-      <section className="cap-section">
-        <div className="cap-grid">
-          <div className="cap-card">
-            <span className="cap-num">01</span>
-            <h3 className="cap-title">Bristkarta</h3>
-            <p className="cap-q">I vilken kommun är bristen hårdast?</p>
-            <p className="cap-desc">
-              Realtidsdata från AF Platsbanken, uppdelad per yrke och kommun.
-              Komplement till SKR:s demografiöversikt. Operativt och uppdaterat dagligen.
-            </p>
-            <Link href="/analys/vard" className="cap-link">Se ett exempel →</Link>
-          </div>
-          <div className="cap-card">
-            <span className="cap-num">02</span>
-            <h3 className="cap-title">Substituerbarhet</h3>
-            <p className="cap-q">Vilka yrken kan faktiskt ställas om till bristyrken?</p>
-            <p className="cap-desc">
-              Baserat på ESCO-taxonomins kompetensöverlapp, inte antaganden.
-              Det här är det lager som saknas i regionala kompetensplaner och AF:s prognoser.
-            </p>
-            <Link href="/omstallning" className="cap-link">Se karriärvägar →</Link>
-          </div>
-          <div className="cap-card">
-            <span className="cap-num">03</span>
-            <h3 className="cap-title">ROI & PDF</h3>
-            <p className="cap-q">Vad kostar omställningen och vad sparar den regionen?</p>
-            <p className="cap-desc">
-              IFAU/OECD Cost-Benefit-metod. Interaktiv slider per antal omställningar.
-              Exportera beslutsunderlag direkt till Kompetensrådets nästa möte.
-            </p>
-            <Link href="/roi" className="cap-link">Beräkna ROI →</Link>
-          </div>
-        </div>
-      </section>
-
       {/* ── STATS ─────────────────────────────────────────────── */}
       <div className="band">
         <div className="band-cell">
           <div className="band-label">Kommuner</div>
           <div className="band-val">13</div>
-          <div className="band-note">Jönköpings läns alla kommuner</div>
+          <div className="band-note">Alla kommuner i Jönköpings län</div>
         </div>
         <div className="band-cell">
           <div className="band-label">Datakällor</div>
@@ -176,9 +126,9 @@ export default function StartPage() {
           <div className="band-note">AF · SCB · ESCO · Neo4j</div>
         </div>
         <div className="band-cell">
-          <div className="band-label">Tid till PDF</div>
+          <div className="band-label">Från fråga till PDF</div>
           <div className="band-val">&lt;3 min</div>
-          <div className="band-note">Från frågeställning till beslutsunderlag</div>
+          <div className="band-note">Klart att läggas fram på rådets nästa möte</div>
         </div>
       </div>
 
