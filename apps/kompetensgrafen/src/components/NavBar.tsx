@@ -18,7 +18,7 @@ export default function NavBar() {
       <Link href="/" className="mark">Crosstrees · Kompetensgrafen</Link>
       <nav className="nav" aria-label="Huvudnavigation">
         {LINKS.map(({ href, label }) => {
-          const active = href === "/" ? path === "/" : path.startsWith(href);
+          const active = href === "/" ? (path === "/" || path.startsWith("/analys")) : path.startsWith(href);
           return (
             <Link
               key={href}

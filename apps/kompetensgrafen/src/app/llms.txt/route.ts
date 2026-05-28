@@ -30,17 +30,17 @@ Cost-Benefit Analysis-metoden från IFAU och OECD.
 
 ## Sidor
 
-- /: Startsida: sektoröversikt, transferabilitetsgrafen för 13 kommuner, statistikband
-- /analys/{sektor}: Sektorsanalys (5 steg):
-    Steg 1: Bristkarta (D3 Voronoi choropleth, 13 kommuner, rust-intensitet = brist)
-    Steg 2: Topp-10 bristyrken (rankade efter AF-annonsvolym)
-    Steg 3: Karriärövergångar (animerad graf, ESCO-substitutabilitet)
-    Steg 4: ROI-kalkyl (IFAU/OECD CBA-metod, live slider)
-    Steg 5: Nästa steg → yrken, ROI, PDF-export
+- /: Startsida: sektortiles med 4-stegs flöde, substitutabilitetsexempel, statistikband
+- /analys/{sektor}: Sektorsanalys (4 steg):
+    Steg 1: Karriärövergångar (animerad ESCO-graf, sektorsspecifikt substitutabilitetsexempel)
+    Steg 2: Bristkarta (D3 Voronoi choropleth, 13 kommuner, rust-intensitet = brist)
+    Steg 3: Topp-10 bristyrken (rankade efter AF-annonsvolym, länk till omställningsanalys)
+    Steg 4: ROI-kalkyl (sektorsspecifik IFAU/OECD CBA-metod, live slider) + PDF-export
 - /omstallning: Omställningsanalys: vilka yrken kan substituera ett bristyrke?
 - /roi: ROI-kalkylator: kostnad vs besparing per omställd person
 - /chatt: AI-rådgivare (RAG-baserad, Claude + Qdrant vektorsök)
 - /export: PDF-rapport för beslutsfattare (Kompetensrådet)
+- /kontakt: Kontakt, pilotprogramsinformation, grundarinformation
 
 ## Sektorer (används i /analys/{sektor})
 

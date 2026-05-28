@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import * as d3 from "d3";
 
 interface KommunData {
@@ -16,16 +15,10 @@ interface KommunData {
 const W = 600, H = 460;
 const API = process.env.NEXT_PUBLIC_API_URL ?? "";
 
-function toSlug(namn: string) {
-  return namn.toLowerCase()
-    .replace(/å/g, "a").replace(/ä/g, "a").replace(/ö/g, "o")
-    .replace(/\s+/g, "-");
-}
-
 export default function Bristkarta({ sektor }: { sektor: string }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [data, setData] = useState<KommunData[] | null>(null);
-  const router = useRouter();
+  const [hovered, setHovered] = useState<string | null>(null);
   const today = new Date().toLocaleDateString("sv-SE");
 
   useEffect(() => {
@@ -74,13 +67,14 @@ export default function Bristkarta({ sektor }: { sektor: string }) {
     pts.forEach((d, i) => {
       const cell = voronoi.renderCell(i);
       const intensity = d.brist_index / maxBrist;
-      const g = svg.append("g").style("cursor", "pointer")
-        .on("click", () => router.push(`/analys/${sektor}/kommun/${toSlug(d.namn)}`))
+      const g = svg.append("g").style("cursor", "default")
         .on("mouseover", function () {
-          d3.select(this).select(".cell-base").attr("stroke", "#7A2E1A").attr("stroke-width", 1);
+          d3.select(this).select(".cell-base").attr("stroke", "#7A2E1A").attr("stroke-width", 1.5);
+          setHovered(`${d.namn}: ${d.antal_annonser} öppna annonser`);
         })
         .on("mouseout", function () {
           d3.select(this).select(".cell-base").attr("stroke", "rgba(26,26,24,0.4)").attr("stroke-width", 0.5);
+          setHovered(null);
         });
       g.append("path").attr("d", cell).attr("class", "cell-base")
         .attr("fill", "#F5F0E8").attr("stroke", "rgba(26,26,24,0.4)").attr("stroke-width", 0.5);
@@ -88,7 +82,6 @@ export default function Bristkarta({ sektor }: { sektor: string }) {
         g.append("path").attr("d", cell)
           .attr("fill", `rgba(122,46,26,${(0.15 + intensity * 0.7).toFixed(2)})`).attr("stroke", "none");
       }
-      g.append("title").text(`${d.namn}: ${d.antal_annonser} annonser`);
     });
 
     pts.forEach(d => {
@@ -125,16 +118,16 @@ export default function Bristkarta({ sektor }: { sektor: string }) {
       .attr("font-size", "7.5").attr("fill", "rgba(26,26,24,0.45)").text("BRIST · LÅG");
     svg.append("text").attr("x", W - 10).attr("y", 27).attr("font-family", "Courier Prime, monospace")
       .attr("font-size", "7.5").attr("fill", "rgba(122,46,26,0.75)").attr("text-anchor", "end").text("HÖG");
-  }, [data, sektor, router]);
+  }, [data, sektor]);
 
   return (
     <section className="analys-section">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8 }}>
         <div>
-          <p className="rust-eyebrow">KÄLLA · SCB GEODATA REGSO 2025</p>
-          <h2 className="analys-h2">BRISTKARTA · JÖNKÖPINGS LÄN</h2>
+          <p className="rust-eyebrow">STEG 2 · BRISTKARTA · JÖNKÖPINGS LÄN</p>
+          <h2 className="analys-h2">BRISTKARTA</h2>
           <p className="analys-subhead">
-            Mättnad i Signal Rust visar bristens allvarlighetsgrad per kommun. Klicka på en kommun för fördjupad analys.
+            Mättnad i rust visar bristens allvarlighetsgrad per kommun. Sväva över en kommun för detaljer.
           </p>
         </div>
         <span className="coord" style={{ whiteSpace: "nowrap", marginTop: 4 }}>57°24′N · 15°04′E · EPSG:3857</span>
@@ -145,6 +138,15 @@ export default function Bristkarta({ sektor }: { sektor: string }) {
         <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} role="img"
           aria-label="Bristkarta per kommun i Jönköpings län"
           style={{ width: "100%", maxWidth: W, height: "auto", display: "block" }} />
+        {hovered && (
+          <div style={{
+            position: "absolute", bottom: 8, left: 0, right: 0, textAlign: "center",
+            fontFamily: "'Courier Prime', monospace", fontSize: 10, letterSpacing: "0.08em",
+            color: "var(--rust)", pointerEvents: "none",
+          }}>
+            {hovered.toUpperCase()}
+          </div>
+        )}
       </div>
       <p className="coord" style={{ marginTop: 10 }}>
         KÄLLA: SCB GEODATA REGSO 2025 + AF YRKESBAROMETERN · {today}

@@ -13,13 +13,13 @@ export const metadata: Metadata = {
 };
 
 const SEKTORER = [
-  { id: "industri", namn: "Tillverkning & industri", yrken: "Svetsare · maskinoperatörer · automationstekniker" },
-  { id: "vard",     namn: "Vård & omsorg",           yrken: "Undersköterskor · sjuksköterskor · personliga assistenter" },
-  { id: "it",       namn: "IT & digitalisering",     yrken: "Mjukvaruutvecklare · systemarkitekter · dataingenjörer" },
-  { id: "bygg",     namn: "Bygg & anläggning",       yrken: "Elektriker · snickare · anläggningsarbetare" },
-  { id: "logistik", namn: "Logistik & transport",    yrken: "Truckförare · lastbilsförare · lagerarbetare" },
-  { id: "service",  namn: "Service & handel",        yrken: "Butikschefer · kockar · restaurangchefer" },
-  { id: "utbildning", namn: "Utbildning",            yrken: "Lärare · förskollärare" },
+  { id: "industri",   namn: "Tillverkning & industri", yrken: "Svetsare · maskinoperatörer · automationstekniker", roi: 314 },
+  { id: "vard",       namn: "Vård & omsorg",           yrken: "Undersköterskor · sjuksköterskor · personliga assistenter", roi: 301 },
+  { id: "it",         namn: "IT & digitalisering",     yrken: "Mjukvaruutvecklare · systemarkitekter · dataingenjörer", roi: 367 },
+  { id: "bygg",       namn: "Bygg & anläggning",       yrken: "Elektriker · snickare · anläggningsarbetare", roi: 315 },
+  { id: "logistik",   namn: "Logistik & transport",    yrken: "Truckförare · lastbilsförare · lagerarbetare", roi: 329 },
+  { id: "service",    namn: "Service & handel",        yrken: "Butikschefer · kockar · restaurangchefer", roi: 248 },
+  { id: "utbildning", namn: "Utbildning",              yrken: "Lärare · förskollärare", roi: 268 },
 ];
 
 export default function StartPage() {
@@ -104,7 +104,13 @@ export default function StartPage() {
             >
               <span className="sector-card-name">{s.namn}</span>
               <span className="sector-card-yrken">{s.yrken}</span>
-              <span className="sector-card-cta">Öppna analysen →</span>
+              <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto" }}>
+                <span className="sector-card-cta">Öppna analysen →</span>
+                <span style={{ fontFamily: "'Courier Prime', monospace", fontWeight: 700,
+                  fontSize: 10, color: "var(--rust)", letterSpacing: "0.08em" }}>
+                  ROI {s.roi}%
+                </span>
+              </span>
             </Link>
           ))}
         </div>

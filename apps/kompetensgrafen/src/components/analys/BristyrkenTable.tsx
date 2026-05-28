@@ -27,7 +27,7 @@ export default async function BristyrkenTable({ sektor }: Props) {
       <p className="rust-eyebrow">TOPP 10 BRISTYRKEN I SEKTORN</p>
       <h2 className="analys-h2">BRISTYRKEN</h2>
       <p className="analys-subhead" style={{ marginBottom: 32 }}>
-        De yrken inom sektorn där regionen har störst kompetensbrist.
+        De yrken inom sektorn där regionen har störst kompetensbrist. Klicka ett yrke för substitutabilitetsanalys.
       </p>
 
       {rows.length === 0 ? (
@@ -58,6 +58,10 @@ export default async function BristyrkenTable({ sektor }: Props) {
                 <span style={{ fontFamily: "'Courier Prime', monospace", fontWeight: 700,
                   fontSize: 14, color: "var(--rust)", width: 60, textAlign: "right" }}>
                   {row.shortage_pct}%
+                </span>
+                <span style={{ fontFamily: "'Courier Prime', monospace", fontSize: 11,
+                  color: "var(--rust)", width: 24, textAlign: "right", flexShrink: 0, opacity: 0.6 }}>
+                  →
                 </span>
               </div>
             </a>

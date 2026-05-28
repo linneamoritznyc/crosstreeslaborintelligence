@@ -49,7 +49,6 @@ export default async function AnalysPage({ params }: Props) {
         <StatsBand sektor={sektor} />
       </Suspense>
 
-      {/* Unique insight — first 90 seconds */}
       <div className="rope-divider" />
       <OmstallningsCanvas sektor={sektor} />
 
@@ -71,7 +70,6 @@ export default async function AnalysPage({ params }: Props) {
 
       <ROIBlock sektor={sektor} />
 
-      {/* PDF export — the payoff */}
       <PDFExportBlock sektor={sektor} sektorNamn={info.namn} />
 
       <div style={{ padding: "16px 40px", background: "var(--parchment-dark)",
