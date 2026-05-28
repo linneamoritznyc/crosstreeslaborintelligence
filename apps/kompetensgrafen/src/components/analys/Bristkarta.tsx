@@ -41,10 +41,10 @@ export default function Bristkarta({ sektor }: { sektor: string }) {
       const [, y] = pt;
       if (y < 0 || y > H) continue;
       svg.append("line").attr("x1", 0).attr("x2", W).attr("y1", y).attr("y2", y)
-        .attr("stroke", "#c4bfb4").attr("stroke-width", 0.4).attr("stroke-dasharray", "3,5");
+        .attr("stroke", "rgba(0,207,255,0.14)").attr("stroke-width", 0.4).attr("stroke-dasharray", "3,5");
       svg.append("text").attr("x", 5).attr("y", y - 3)
         .attr("font-family", "Courier Prime, monospace").attr("font-size", "7.5")
-        .attr("fill", "rgba(26,26,24,0.35)").text(`${lat.toFixed(1)}°N`);
+        .attr("fill", "rgba(0,207,255,0.30)").text(`${lat.toFixed(1)}°N`);
     }
 
     const pts = data.map(d => {
@@ -62,37 +62,37 @@ export default function Bristkarta({ sektor }: { sektor: string }) {
       "M-40 360 Q 200 330 400 380 T 640 350",
     ];
     contours.forEach(d => svg.append("path").attr("d", d).attr("fill", "none")
-      .attr("stroke", "rgba(26,26,24,0.10)").attr("stroke-width", 0.6));
+      .attr("stroke", "rgba(0,207,255,0.08)").attr("stroke-width", 0.6));
 
     pts.forEach((d, i) => {
       const cell = voronoi.renderCell(i);
       const intensity = d.brist_index / maxBrist;
       const g = svg.append("g").style("cursor", "default")
         .on("mouseover", function () {
-          d3.select(this).select(".cell-base").attr("stroke", "#7A2E1A").attr("stroke-width", 1.5);
+          d3.select(this).select(".cell-base").attr("stroke", "#00CFFF").attr("stroke-width", 1.5);
           setHovered(`${d.namn}: ${d.antal_annonser} öppna annonser`);
         })
         .on("mouseout", function () {
-          d3.select(this).select(".cell-base").attr("stroke", "rgba(26,26,24,0.4)").attr("stroke-width", 0.5);
+          d3.select(this).select(".cell-base").attr("stroke", "rgba(0,207,255,0.15)").attr("stroke-width", 0.5);
           setHovered(null);
         });
       g.append("path").attr("d", cell).attr("class", "cell-base")
-        .attr("fill", "#F5F0E8").attr("stroke", "rgba(26,26,24,0.4)").attr("stroke-width", 0.5);
+        .attr("fill", "#0D0F1A").attr("stroke", "rgba(0,207,255,0.15)").attr("stroke-width", 0.5);
       if (intensity > 0.05) {
         g.append("path").attr("d", cell)
-          .attr("fill", `rgba(122,46,26,${(0.15 + intensity * 0.7).toFixed(2)})`).attr("stroke", "none");
+          .attr("fill", `rgba(0,207,255,${(0.10 + intensity * 0.65).toFixed(2)})`).attr("stroke", "none");
       }
     });
 
     pts.forEach(d => {
       svg.append("text").attr("x", d.px).attr("y", d.py - 2).attr("text-anchor", "middle")
         .attr("font-family", "Courier Prime, monospace").attr("font-size", "8")
-        .attr("font-weight", "700").attr("fill", "rgba(26,26,24,0.8)").attr("letter-spacing", "0.05em")
+        .attr("font-weight", "700").attr("fill", "rgba(221,226,242,0.80)").attr("letter-spacing", "0.05em")
         .attr("pointer-events", "none").text(d.namn.toUpperCase());
       if (d.antal_annonser > 0) {
         svg.append("text").attr("x", d.px).attr("y", d.py + 11).attr("text-anchor", "middle")
           .attr("font-family", "Courier Prime, monospace").attr("font-size", "7")
-          .attr("fill", "rgba(122,46,26,0.85)").attr("pointer-events", "none")
+          .attr("fill", "rgba(0,207,255,0.75)").attr("pointer-events", "none")
           .text(`— ${d.antal_annonser}`);
       }
     });
@@ -101,23 +101,23 @@ export default function Bristkarta({ sektor }: { sektor: string }) {
     ([[0, -13, "N"], [13, 0, "Ö"], [0, 13, "S"], [-13, 0, "V"]] as [number, number, string][])
       .forEach(([dx, dy, lbl]) => {
         svg.append("line").attr("x1", cpx).attr("y1", cpy).attr("x2", cpx + dx).attr("y2", cpy + dy)
-          .attr("stroke", "rgba(26,26,24,0.38)").attr("stroke-width", 0.7);
+          .attr("stroke", "rgba(0,207,255,0.22)").attr("stroke-width", 0.7);
         svg.append("text").attr("x", cpx + dx * 1.8).attr("y", cpy + dy * 1.8 + 3)
           .attr("font-family", "Courier Prime, monospace").attr("font-size", "7")
-          .attr("fill", "rgba(26,26,24,0.4)").attr("text-anchor", "middle").text(lbl);
+          .attr("fill", "rgba(0,207,255,0.35)").attr("text-anchor", "middle").text(lbl);
       });
-    svg.append("circle").attr("cx", cpx).attr("cy", cpy).attr("r", 2.5).attr("fill", "rgba(26,26,24,0.4)");
+    svg.append("circle").attr("cx", cpx).attr("cy", cpy).attr("r", 2.5).attr("fill", "rgba(0,207,255,0.35)");
 
     const defs = svg.append("defs");
     const lg = defs.append("linearGradient").attr("id", "brist-grad");
-    lg.append("stop").attr("offset", "0%").attr("stop-color", "rgba(122,46,26,0.15)");
-    lg.append("stop").attr("offset", "100%").attr("stop-color", "rgba(122,46,26,0.85)");
+    lg.append("stop").attr("offset", "0%").attr("stop-color", "rgba(0,207,255,0.12)");
+    lg.append("stop").attr("offset", "100%").attr("stop-color", "rgba(0,207,255,0.80)");
     svg.append("rect").attr("x", W - 210).attr("y", 14).attr("width", 200).attr("height", 4)
       .attr("fill", "url(#brist-grad)");
     svg.append("text").attr("x", W - 210).attr("y", 27).attr("font-family", "Courier Prime, monospace")
-      .attr("font-size", "7.5").attr("fill", "rgba(26,26,24,0.45)").text("BRIST · LÅG");
+      .attr("font-size", "7.5").attr("fill", "rgba(221,226,242,0.35)").text("BRIST · LÅG");
     svg.append("text").attr("x", W - 10).attr("y", 27).attr("font-family", "Courier Prime, monospace")
-      .attr("font-size", "7.5").attr("fill", "rgba(122,46,26,0.75)").attr("text-anchor", "end").text("HÖG");
+      .attr("font-size", "7.5").attr("fill", "rgba(0,207,255,0.75)").attr("text-anchor", "end").text("HÖG");
   }, [data, sektor]);
 
   return (
@@ -132,8 +132,8 @@ export default function Bristkarta({ sektor }: { sektor: string }) {
         </div>
         <span className="coord" style={{ whiteSpace: "nowrap", marginTop: 4 }}>57°24′N · 15°04′E · EPSG:3857</span>
       </div>
-      <div style={{ position: "relative", border: "0.5px solid rgba(26,26,24,0.4)", marginTop: 24,
-        background: "var(--parchment)" }}>
+      <div style={{ position: "relative", border: "0.5px solid rgba(0,207,255,0.18)", marginTop: 24,
+        background: "var(--parchment-dark)" }}>
         {!data && <p className="coord" style={{ padding: "2rem", margin: 0 }}>Laddar kartdata…</p>}
         <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} role="img"
           aria-label="Bristkarta per kommun i Jönköpings län"

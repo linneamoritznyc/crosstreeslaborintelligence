@@ -44,9 +44,9 @@ export default function HeroNet() {
           const dy = a.y - b.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < 130) {
-            const alpha = (1 - dist / 130) * 0.15;
+            const alpha = (1 - dist / 130) * 0.18;
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(26,26,24,${alpha})`;
+            ctx.strokeStyle = `rgba(0,207,255,${alpha.toFixed(3)})`;
             ctx.lineWidth = 0.5;
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
@@ -57,7 +57,7 @@ export default function HeroNet() {
       for (const d of dots) {
         ctx.beginPath();
         ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-        ctx.fillStyle = d.rust ? "rgba(122,46,26,0.5)" : "rgba(26,26,24,0.3)";
+        ctx.fillStyle = d.rust ? "rgba(0,207,255,0.85)" : "rgba(221,226,242,0.22)";
         ctx.fill();
       }
       for (const d of dots) {

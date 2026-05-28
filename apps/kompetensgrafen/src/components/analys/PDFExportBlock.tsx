@@ -9,17 +9,19 @@ export default function PDFExportBlock({ sektor, sektorNamn }: Props) {
   return (
     <section style={{
       padding: "56px 40px",
-      background: "var(--ink)",
-      color: "var(--parchment)",
+      background: "#060710",
+      color: "#DDE2F2",
+      borderTop: "0.5px solid rgba(0,207,255,0.18)",
     }}>
       <p style={{
         fontFamily: "'Courier Prime', monospace",
         fontWeight: 700,
-        fontSize: 9,
+        fontSize: 11,
         letterSpacing: "0.14em",
         textTransform: "uppercase",
-        color: "rgba(245,240,232,0.5)",
+        color: "rgba(0,207,255,0.55)",
         margin: "0 0 16px",
+        textShadow: "0 0 14px rgba(0,207,255,0.3)",
       }}>
         STEG 4 · EXPORTERA BESLUTSUNDERLAG
       </p>
@@ -28,7 +30,7 @@ export default function PDFExportBlock({ sektor, sektorNamn }: Props) {
         fontWeight: 900,
         fontSize: 40,
         textTransform: "uppercase",
-        color: "var(--parchment)",
+        color: "#DDE2F2",
         lineHeight: 0.95,
         margin: "0 0 16px",
       }}>
@@ -38,7 +40,7 @@ export default function PDFExportBlock({ sektor, sektorNamn }: Props) {
         fontFamily: "'IM Fell English', 'Libre Baskerville', Georgia, serif",
         fontStyle: "italic",
         fontSize: 18,
-        color: "rgba(245,240,232,0.75)",
+        color: "rgba(221,226,242,0.65)",
         maxWidth: 560,
         margin: "0 0 36px",
         lineHeight: 1.5,
@@ -55,13 +57,14 @@ export default function PDFExportBlock({ sektor, sektorNamn }: Props) {
             fontSize: 12,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            background: "var(--parchment)",
-            color: "var(--ink)",
-            border: "0.5px solid var(--parchment)",
+            background: "#00CFFF",
+            color: "#060710",
+            border: "0.5px solid #00CFFF",
             padding: "18px 40px",
             textDecoration: "none",
             display: "inline-flex",
             alignItems: "center",
+            boxShadow: "0 0 20px rgba(0,207,255,0.3)",
           }}
         >
           Exportera PDF-rapport →
@@ -75,8 +78,8 @@ export default function PDFExportBlock({ sektor, sektorNamn }: Props) {
             letterSpacing: "0.14em",
             textTransform: "uppercase",
             background: "transparent",
-            color: "rgba(245,240,232,0.7)",
-            border: "0.5px solid rgba(245,240,232,0.3)",
+            color: "rgba(221,226,242,0.6)",
+            border: "0.5px solid rgba(0,207,255,0.22)",
             borderLeft: "none",
             padding: "18px 28px",
             textDecoration: "none",
@@ -90,7 +93,7 @@ export default function PDFExportBlock({ sektor, sektorNamn }: Props) {
       <p style={{
         fontFamily: "'Courier Prime', monospace",
         fontSize: "0.72rem",
-        color: "rgba(245,240,232,0.35)",
+        color: "rgba(221,226,242,0.22)",
         letterSpacing: "0.04em",
         marginTop: 24,
         marginBottom: 0,
