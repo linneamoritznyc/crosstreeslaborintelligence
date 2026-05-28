@@ -95,7 +95,7 @@ li { margin: 0.3rem 0; }
 /* Data / codes / labels / eyebrows — Courier Prime */
 .data, small {
   font-family: "Courier Prime", monospace;
-  font-size: 9px;
+  font-size: 11px;
   color: var(--muted);
   letter-spacing: 0.08em;
   display: inline;
@@ -103,7 +103,7 @@ li { margin: 0.3rem 0; }
 
 .coord {
   font-family: "Courier Prime", monospace;
-  font-size: 0.78rem;
+  font-size: 0.9rem;
   color: var(--ink-faint);
   letter-spacing: 0.04em;
 }
@@ -133,12 +133,12 @@ li { margin: 0.3rem 0; }
   text-decoration: none;
 }
 
-/* Navigation → Courier Prime 700 · 10px · UPPERCASE · 0.14em */
+/* Navigation → Courier Prime 700 · 12px · UPPERCASE · 0.14em */
 .nav { display: flex; gap: 0; }
 .nav a {
   font-family: "Courier Prime", monospace;
   font-weight: 700;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink);
@@ -181,7 +181,7 @@ li { margin: 0.3rem 0; }
 .eyebrow-text {
   font-family: "Courier Prime", monospace;
   font-weight: 700;
-  font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+  font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--rust);
 }
 
@@ -201,10 +201,10 @@ li { margin: 0.3rem 0; }
 .tagline {
   font-family: "IM Fell English", "Libre Baskerville", Georgia, serif;
   font-style: italic;
-  font-size: 17px;
-  line-height: 1.6;
+  font-size: 21px;
+  line-height: 1.55;
   color: var(--ink-soft);
-  max-width: 460px;
+  max-width: 520px;
   margin: 0 0 32px;
 }
 
@@ -214,7 +214,7 @@ li { margin: 0.3rem 0; }
 .btn-main, .btn-ghost {
   font-family: "Courier Prime", monospace;
   font-weight: 700;
-  font-size: 11px;
+  font-size: 14px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   cursor: pointer;
@@ -269,14 +269,14 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 .band-label {
   font-family: "Courier Prime", monospace;
   font-weight: 700;
-  font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--rust);
   margin-bottom: 5px;
 }
 .band-val {
   font-family: "Alumni Sans Condensed", Impact, sans-serif;
   font-weight: 900;
-  font-size: 36px;
+  font-size: 40px;
   text-transform: uppercase;
   line-height: 1;
   color: var(--ink);
@@ -284,7 +284,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 .band-note {
   font-family: "Libre Baskerville", Georgia, serif;
   font-style: italic;
-  font-size: 13px;
+  font-size: 15px;
   color: var(--muted);
   margin-top: 4px;
 }
@@ -330,7 +330,7 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
   font-weight: 400;
 }
 
-.body-t { font-size: 15px; line-height: 1.78; color: var(--ink-soft); margin: 0; }
+.body-t { font-size: 17px; line-height: 1.75; color: var(--ink-soft); margin: 0; }
 
 /* Match rows → career transitions, occupation listings */
 .matches { margin-top: 22px; padding: 0; list-style: none; }
@@ -480,7 +480,7 @@ aside[role="note"] strong {
 }
 .foot-t {
   font-family: "Courier Prime", monospace;
-  font-size: 9px; color: var(--muted); letter-spacing: 0.08em;
+  font-size: 12px; color: var(--muted); letter-spacing: 0.08em;
 }
 .foot-mark {
   font-family: "Alumni Sans Condensed", Impact, sans-serif;
@@ -664,17 +664,16 @@ aside[role="note"] strong {
   color: var(--ink);
 }
 .sector-card-yrken {
-  font-family: "Courier Prime", monospace;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  color: var(--muted);
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 14px;
+  color: var(--ink-soft);
   line-height: 1.6;
 }
 .sector-card-cta {
   font-family: "Courier Prime", monospace;
   font-weight: 700;
-  font-size: 10px;
-  letter-spacing: 0.12em;
+  font-size: 13px;
+  letter-spacing: 0.10em;
   text-transform: uppercase;
   color: var(--rust);
   margin-top: auto;
@@ -731,7 +730,7 @@ aside[role="note"] strong {
 .cap-num {
   font-family: "Courier Prime", monospace;
   font-weight: 700;
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 0.14em;
   color: var(--rust);
 }
@@ -754,7 +753,7 @@ aside[role="note"] strong {
 }
 .cap-desc {
   font-family: "Libre Baskerville", Georgia, serif;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.7;
   color: var(--ink-soft);
   margin: 0;
@@ -763,8 +762,8 @@ aside[role="note"] strong {
 .cap-link {
   font-family: "Courier Prime", monospace;
   font-weight: 700;
-  font-size: 10px;
-  letter-spacing: 0.12em;
+  font-size: 13px;
+  letter-spacing: 0.10em;
   text-transform: uppercase;
   color: var(--rust);
   text-decoration: none;
@@ -797,15 +796,15 @@ aside[role="note"] strong {
 
 .analys-subhead {
   font-family: "IM Fell English", "Libre Baskerville", Georgia, serif;
-  font-style: italic; font-size: 18px;
-  color: var(--muted); line-height: 1.5;
+  font-style: italic; font-size: 20px;
+  color: var(--ink-soft); line-height: 1.55;
   margin: 12px 0 0; max-width: 640px;
 }
 
 .rust-eyebrow {
   font-family: "Courier Prime", monospace;
-  font-weight: 700; font-size: 9px;
-  letter-spacing: 0.14em; text-transform: uppercase;
+  font-weight: 700; font-size: 13px;
+  letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--rust); margin-bottom: 16px;
 }
 
@@ -830,7 +829,7 @@ aside[role="note"] strong {
 .stats-val.rust { color: var(--rust); }
 .stats-note {
   font-family: "Libre Baskerville", Georgia, serif;
-  font-style: italic; font-size: 13px; color: var(--muted);
+  font-style: italic; font-size: 15px; color: var(--muted);
 }
 
 /* Brist table rows */
