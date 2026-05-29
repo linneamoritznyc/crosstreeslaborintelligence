@@ -17,6 +17,7 @@ WORKDIR /app
 ENV NODE_ENV=production HOSTNAME=0.0.0.0
 COPY --from=builder /repo/apps/kompetensgrafen/.next/standalone ./
 COPY --from=builder /repo/apps/kompetensgrafen/.next/static ./apps/kompetensgrafen/.next/static
+COPY --from=builder /repo/apps/kompetensgrafen/public ./apps/kompetensgrafen/public
 EXPOSE 8080
 # sh -c wrapper ensures stdout is line-buffered so startup logs surface in Railway.
 CMD ["sh", "-c", "node apps/kompetensgrafen/server.js"]
