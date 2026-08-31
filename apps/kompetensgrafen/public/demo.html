@@ -644,13 +644,14 @@ document.getElementById("kalla").textContent = KALLA==="af-taxonomi"
   ? "Arbetsförmedlingens taxonomi · "+DATA.meta.kanter_riktade+" riktade kanter · hämtad "+(DATA.meta.hamtad||"").slice(0,10)
   : "Inbyggd seed-data · "+DATA.meta.kanter_riktade+" riktade kanter · "+DATA.meta.kompetenser+" kompetenser";
 if(KALLA==="af-taxonomi") document.getElementById("notis").hidden=true;
-document.getElementById("legNot").textContent = "Storlek = antal kopplingar"
-  + (KALLA==="af-taxonomi" ? " · medelgrad "+DATA.meta.medelgrad : " (annonsdata saknas)");
 const brukade=[...new Set(DATA.noder.map(n=>n.sektor))];
 document.getElementById("legLista").innerHTML =
   brukade.map(s=>'<li><span class="dot" style="background:'+(SEKTOR[s]||SEKTOR.ovrigt).f
     +'"></span>'+(SEKTOR[s]||SEKTOR.ovrigt).n+'</li>').join("")
   +'<li class="not" id="legNot"></li>';
+// legNot skapas av raden ovan, så texten måste sättas efteråt.
+document.getElementById("legNot").textContent = "Storlek = antal kopplingar"
+  + (KALLA==="af-taxonomi" ? " · medelgrad "+DATA.meta.medelgrad : " (annonsdata saknas)");
 rakn();
 
 })();
