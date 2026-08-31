@@ -23,7 +23,7 @@ export default function KontaktPage() {
         Pilotsamarbete, prisdiskussion eller tekniska frågor.
       </p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1,
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 1,
         background: "var(--border-faint)", border: "1px solid var(--border-faint)",
         maxWidth: 640, marginBottom: "2rem" }}>
         {[
