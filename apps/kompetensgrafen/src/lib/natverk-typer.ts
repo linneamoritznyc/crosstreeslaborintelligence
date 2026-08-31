@@ -48,8 +48,11 @@ export interface NatverkKant {
 }
 
 export interface NatverkMeta {
-  /** "api" = live från Neo4j. "seed" = inbyggd kopia av seed-datan. */
-  kalla: "api" | "seed";
+  /**
+   * "af-taxonomi" = hela AF-taxonomins graf, statiskt byggd av CI.
+   * "api" = live från Neo4j. "seed" = inbyggd kopia av seed-datan.
+   */
+  kalla: "af-taxonomi" | "api" | "seed";
   yrken: number;
   kompetenser: number;
   kanter_riktade: number;
