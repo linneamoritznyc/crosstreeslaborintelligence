@@ -1,0 +1,49 @@
+name: Bygg nätverksdata från AF-taxonomin
+
+# Hämtar hela substituerbarhetsgrafen från Arbetsförmedlingens öppna
+# taxonomi-API och committar resultatet som statisk JSON. Kräver varken
+# Neo4j, Railway eller några secrets — AF:s API är öppet.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * 1'
+
+permissions:
+  contents: write
+
+jobs:
+  bygg:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Hämta taxonomin och bygg grafen
+        run: python -m src.bygg_natverksdata
+        working-directory: services/data-pipeline
+
+      - name: Visa resultatet
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          p = pathlib.Path("apps/kompetensgrafen/public/natverk-full.json")
+          d = json.loads(p.read_text(encoding="utf-8"))
+          print(json.dumps(d["meta"], ensure_ascii=False, indent=2))
+          print("filstorlek:", p.stat().st_size, "bytes")
+          PY
+
+      - name: Committa om datan ändrats
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- apps/kompetensgrafen/public/natverk-full.json; then
+            echo "Ingen förändring i nätverksdatan."
+            exit 0
+          fi
+          git add apps/kompetensgrafen/public/natverk-full.json
+          git commit -m "chore: uppdatera nätverksdata från AF-taxonomin"
+          git push

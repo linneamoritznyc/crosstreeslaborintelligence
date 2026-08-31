@@ -648,9 +648,11 @@ export default function Kompetensnatverk() {
           Klicka på ett för att se vad du kan bli härnäst.
         </p>
         <p className="coord natverk-aha-kalla">
-          {natverk.meta.kalla === "api"
-            ? `LIVE FRÅN NEO4J · ${natverk.meta.kanter_riktade} RIKTADE KANTER · ${natverk.meta.kompetenser} KOMPETENSER`
-            : `INBYGGD SEED-KOPIA · ${natverk.meta.kanter_riktade} RIKTADE KANTER · ${natverk.meta.kompetenser} KOMPETENSER`}
+          {natverk.meta.kalla === "af-taxonomi"
+            ? `ARBETSFÖRMEDLINGENS TAXONOMI · ${natverk.meta.kanter_riktade} RIKTADE KANTER`
+            : natverk.meta.kalla === "api"
+              ? `LIVE FRÅN NEO4J · ${natverk.meta.kanter_riktade} RIKTADE KANTER · ${natverk.meta.kompetenser} KOMPETENSER`
+              : `INBYGGD SEED-KOPIA · ${natverk.meta.kanter_riktade} RIKTADE KANTER · ${natverk.meta.kompetenser} KOMPETENSER`}
         </p>
       </div>
 
