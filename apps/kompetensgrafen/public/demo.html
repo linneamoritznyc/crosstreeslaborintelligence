@@ -3,913 +3,657 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kompetensgrafen · Crosstrees Labor Intelligence</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Kompetensnätverket</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alumni+Sans+Condensed:wght@700;900&family=Libre+Baskerville:ital,wght@0,400;1,400&family=Courier+Prime:wght@400;700&display=swap">
 <style>
-:root {
-  --bg:       #09090B;
-  --bg-2:     #0D0D10;
-  --surface:  #111115;
-  --surface-2:#17171D;
-  --surface-3:#1E1E26;
-  --line:     rgba(255,255,255,0.06);
-  --line-mid: rgba(255,255,255,0.11);
-  --line-strong: rgba(255,255,255,0.20);
-  --text:     #EEEEF0;
-  --text-2:   #A8A8B3;
-  --text-dim: #6B6B78;
-  --text-faint:#42424E;
-  --accent:   #FF5A36;
-  --accent-glow: rgba(255,90,54,0.28);
-  --accent-dim:  rgba(255,90,54,0.10);
-  --good:     #6EE7B7;
-  --f-sans:   'Geist', system-ui, sans-serif;
-  --f-mono:   'Geist Mono', ui-monospace, monospace;
+:root{
+  --ground:#0D0F1A; --ground-deep:#08090F; --panel:rgba(13,15,26,.72);
+  --ink:#DDE2F2; --ink-soft:#7B80A0; --ink-faint:#4A4F68;
+  --accent:#00CFFF; --warn:#FFD75E;
+  --line:rgba(0,207,255,.12); --line-mid:rgba(0,207,255,.24);
+  --display:'Alumni Sans Condensed',Impact,sans-serif;
+  --body:'Libre Baskerville',Georgia,serif;
+  --mono:'Courier Prime',ui-monospace,monospace;
 }
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--body);
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(16px,4vw,40px) 56px}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--f-sans);
-  font-size: 18px;
-  line-height: 1.65;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-}
+/* ── topp ─────────────────────────────────────────── */
+.hero{padding:clamp(34px,6vw,64px) 0 26px;border-bottom:.5px solid var(--line)}
+.eyebrow{font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 14px;display:flex;
+  align-items:center;gap:12px}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--accent);flex:none}
+h1{font-family:var(--display);font-weight:900;text-transform:uppercase;
+  font-size:clamp(52px,10vw,104px);line-height:.86;margin:0;text-wrap:balance;
+  letter-spacing:-.01em}
+h1 .b{color:var(--accent)}
+.ingress{font-family:var(--body);font-style:italic;font-size:clamp(15px,2vw,19px);
+  line-height:1.6;color:var(--ink-soft);max-width:60ch;margin:20px 0 0}
 
-/* grid texture */
-body::before {
-  content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 20%, transparent 70%);
-}
+/* ── aha ──────────────────────────────────────────── */
+.aha{padding:26px 0 20px;border-bottom:.5px solid var(--line)}
+.aha p{font-family:var(--display);font-weight:900;text-transform:uppercase;
+  font-size:clamp(23px,3.6vw,40px);line-height:1.06;margin:0;text-wrap:balance}
+.aha b{color:var(--accent);font-variant-numeric:tabular-nums}
+.kalla{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-faint);margin:12px 0 0}
 
-a { color: inherit; text-decoration: none; }
-::selection { background: var(--accent); color: #09090B; }
-button, input, select { font-family: inherit; color: inherit; }
+/* ── notis ────────────────────────────────────────── */
+.notis{margin:20px 0 0;padding:14px 18px;border:.5px solid rgba(255,215,94,.4);
+  background:rgba(255,215,94,.06);font-size:13.5px;line-height:1.65;color:var(--ink)}
+.notis b{color:var(--warn)}
 
-/* ═══ SCROLL PROGRESS ═══ */
-#prog {
-  position: fixed; top: 0; left: 0; height: 2px; width: 0%;
-  background: linear-gradient(90deg, var(--accent), #ff8c6e);
-  z-index: 200; transition: width 0.1s linear;
-  box-shadow: 0 0 12px var(--accent-glow);
-}
+/* ── kontroller ───────────────────────────────────── */
+.ctrl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:22px;padding:24px 0 16px}
+.f{display:flex;flex-direction:column;gap:7px;position:relative;min-width:0}
+label,.lbl{font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--accent)}
+input[type=search],select{background:rgba(8,9,15,.8);border:.5px solid var(--line-mid);
+  color:var(--ink);font-family:var(--mono);font-size:13.5px;padding:10px 12px;
+  border-radius:0;width:100%;min-width:0}
+input[type=search]:focus-visible,select:focus-visible,input[type=range]:focus-visible,
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+select{appearance:none;cursor:pointer}
+.par{display:flex;gap:8px}
+.par select{flex:1 1 0}
+input[type=range]{width:100%;accent-color:var(--accent);appearance:none;height:3px;
+  background:var(--ink-faint);outline:none;cursor:pointer;margin:8px 0 0}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:15px;height:15px;
+  border-radius:50%;background:var(--accent);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border:0;border-radius:50%;
+  background:var(--accent);cursor:pointer}
+.hint{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);line-height:1.5}
+.hint.w{color:var(--warn)}
+.traffar{position:absolute;top:100%;left:0;right:0;z-index:40;margin-top:2px;padding:0;
+  list-style:none;background:rgba(8,9,15,.98);border:.5px solid var(--line-mid);
+  max-height:210px;overflow-y:auto}
+.traffar button{display:flex;justify-content:space-between;gap:10px;width:100%;
+  padding:9px 12px;background:none;border:0;border-bottom:.5px solid var(--line);
+  color:var(--ink);font-family:var(--mono);font-size:12.5px;text-align:left;cursor:pointer}
+.traffar button:hover,.traffar button:focus-visible{background:rgba(0,207,255,.14)}
+.traffar span{color:var(--ink-faint);font-size:10.5px}
 
-/* ═══ TOPBAR ═══ */
-.top {
-  position: sticky; top: 0; z-index: 60;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 13px clamp(20px, 3.5vw, 44px);
-  background: rgba(9,9,11,0.80);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border-bottom: 1px solid var(--line);
-}
-.brand { display: flex; align-items: center; gap: 12px; }
-.brand .wm { font-family: var(--f-mono); font-weight: 600; font-size: 14px; letter-spacing: 0.03em; }
-.brand .wm span { color: var(--text-dim); }
-nav.nav { display: flex; gap: 2px; }
-nav.nav a {
-  font-family: var(--f-mono); font-size: 13px; letter-spacing: 0.03em;
-  padding: 7px 13px; color: var(--text-dim); border-radius: 6px; transition: .15s;
-}
-nav.nav a:hover, nav.nav a.on { background: var(--surface-2); color: var(--text); }
-.live {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.04em; color: var(--text-dim);
-  padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px;
-}
-.live .dot {
-  width: 6px; height: 6px; border-radius: 50%; background: var(--good);
-  box-shadow: 0 0 8px var(--good); animation: pulse 2.4s ease-in-out infinite;
-}
-@keyframes pulse { 50% { opacity: .35; } }
-.btn {
-  font-family: var(--f-mono); font-size: 13px; font-weight: 500; letter-spacing: 0.02em;
-  padding: 8px 16px; border: 1px solid var(--line-strong); border-radius: 8px;
-  background: transparent; color: var(--text); cursor: pointer; transition: .15s;
-  display: inline-flex; align-items: center; gap: 8px;
-}
-.btn:hover { background: var(--surface-2); }
-.btn-acc {
-  background: var(--accent); border-color: var(--accent); color: #09090B; font-weight: 600;
-  box-shadow: 0 0 20px rgba(255,90,54,0.22);
-}
-.btn-acc:hover { background: #ff6f50; border-color: #ff6f50; box-shadow: 0 0 28px rgba(255,90,54,0.35); }
-.top-cta { display: flex; align-items: center; gap: 10px; }
-@media(max-width: 880px) { nav.nav { display: none; } .live { display: none; } }
+/* ── räkneverk ────────────────────────────────────── */
+.rakn{display:flex;justify-content:space-between;align-items:center;gap:14px;
+  flex-wrap:wrap;padding-bottom:12px;font-family:var(--mono);font-size:12px;
+  letter-spacing:.05em;color:var(--ink-soft)}
+.rakn b{color:var(--accent);font-variant-numeric:tabular-nums}
+button.k{font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;background:none;color:var(--accent);
+  border:.5px solid var(--accent);padding:7px 14px;cursor:pointer;border-radius:0;
+  transition:background .15s,color .15s}
+button.k:hover{background:var(--accent);color:var(--ground-deep)}
 
-/* ═══ HERO ═══ */
-.hero {
-  position: relative; overflow: hidden;
-  padding: clamp(96px,12vw,160px) clamp(20px,4vw,44px) clamp(72px,9vw,112px);
-  border-bottom: 1px solid var(--line);
-}
-#heroCanvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
-.hero-glow {
-  position: absolute; width: 800px; height: 800px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,90,54,0.18) 0%, transparent 65%);
-  top: -260px; right: -160px; z-index: 0; pointer-events: none;
-  transition: transform 0.6s cubic-bezier(.2,.8,.2,1);
-}
-.hero-inner { position: relative; z-index: 3; max-width: 1160px; margin: 0 auto; }
-.eyebrow {
-  display: inline-flex; align-items: center; gap: 10px;
-  font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.05em; color: var(--text-dim);
-  padding: 6px 13px; border: 1px solid var(--line-mid); border-radius: 999px;
-  background: rgba(255,255,255,0.02);
-}
-.eyebrow .acc { color: var(--accent); }
-.hero h1 {
-  font-size: clamp(52px, 8.2vw, 106px);
-  font-weight: 600; letter-spacing: -0.042em; line-height: 0.95;
-  margin-top: 28px; max-width: 17ch;
-}
-.hero h1 .hl {
-  color: var(--accent); position: relative; display: inline-block;
-}
-.hero h1 .hl::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: 0.06em; height: 0.055em;
-  background: var(--accent); filter: blur(8px); opacity: 0.5; border-radius: 2px;
-}
-.hero .lead {
-  font-size: clamp(19px, 1.8vw, 23px); color: var(--text-2);
-  margin-top: 28px; max-width: 58ch; line-height: 1.6;
-}
-.hero .lead b { color: var(--text); font-weight: 500; }
-.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 38px; }
-.hero-meta {
-  display: flex; gap: 36px; margin-top: 52px; padding-top: 24px;
-  border-top: 1px solid var(--line); flex-wrap: wrap;
-}
-.hero-meta .m { font-family: var(--f-mono); font-size: 12px; color: var(--text-dim); letter-spacing: 0.04em; }
-.hero-meta .m b {
-  display: block; font-family: var(--f-sans); font-size: 16px; color: var(--text);
-  font-weight: 500; letter-spacing: -0.01em; margin-top: 5px;
-}
+/* ── scen ─────────────────────────────────────────── */
+.scen{position:relative;border:.5px solid var(--line-mid);background:var(--ground-deep);
+  overflow:hidden}
+.blobbar{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+.blobb{position:absolute;border-radius:50%;filter:blur(96px);opacity:.2}
+.b1{width:400px;height:400px;top:-90px;left:3%;background:#00CFFF;animation:d1 26s ease-in-out infinite}
+.b2{width:340px;height:340px;bottom:-110px;right:8%;background:#9D7BFF;animation:d2 32s ease-in-out infinite}
+.b3{width:280px;height:280px;top:34%;right:36%;background:#FF9F45;opacity:.13;animation:d3 24s ease-in-out infinite}
+@keyframes d1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(64px,42px) scale(1.12)}}
+@keyframes d2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-56px,-36px) scale(1.08)}}
+@keyframes d3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(34px,-48px) scale(.9)}}
+canvas#g{position:relative;z-index:2;display:block;cursor:grab;touch-action:none}
+canvas#g:active{cursor:grabbing}
 
-/* ═══ STATS ═══ */
-.stats {
-  display: grid; grid-template-columns: repeat(4,1fr);
-  border-bottom: 1px solid var(--line); position: relative; z-index: 2;
-}
-.stat { padding: 30px clamp(20px,3vw,36px); border-right: 1px solid var(--line); }
-.stat:last-child { border-right: none; }
-.stat .l { font-family: var(--f-mono); font-size: 13px; letter-spacing: 0.05em; color: var(--text-dim); text-transform: uppercase; }
-.stat .v {
-  font-family: var(--f-sans); font-weight: 600; font-size: clamp(36px,4.5vw,56px);
-  letter-spacing: -0.04em; line-height: 1; margin-top: 12px; font-variant-numeric: tabular-nums;
-}
-.stat .v.acc { color: var(--accent); }
-.stat .n { font-size: 15px; color: var(--text-dim); margin-top: 8px; }
-@media(max-width:860px){.stats{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:none}.stat:nth-child(1),.stat:nth-child(2){border-bottom:1px solid var(--line)}}
-@media(max-width:520px){.stats{grid-template-columns:1fr}.stat{border-right:none;border-bottom:1px solid var(--line)}.stat:last-child{border-bottom:none}}
+/* ── glaskort ─────────────────────────────────────── */
+.tip{position:absolute;z-index:30;width:226px;padding:13px 15px;background:var(--panel);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:.5px solid rgba(0,207,255,.45);box-shadow:0 10px 34px rgba(0,0,0,.6);
+  pointer-events:none}
+.tip h3{font-family:var(--display);font-weight:900;font-size:22px;text-transform:uppercase;
+  margin:0 0 8px;line-height:1.03;color:var(--ink)}
+.tip p{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);margin:0 0 4px}
+.tip p b{color:var(--accent)}
+.tip .na{color:var(--ink-faint)}
 
-/* ═══ SECTIONS ═══ */
-section { position: relative; z-index: 2; padding: clamp(72px,9vw,120px) clamp(20px,4vw,44px); border-bottom: 1px solid var(--line); }
-.sec-inner { max-width: 1160px; margin: 0 auto; }
-.sec-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 48px; flex-wrap: wrap; margin-bottom: 52px; }
-.sec-head .left { flex: 1; min-width: 280px; }
-.sec-head .right { flex: 1; min-width: 280px; max-width: 520px; }
-.tag { font-family: var(--f-mono); font-size: 13px; letter-spacing: 0.05em; color: var(--text-dim); }
-.tag .num { color: var(--accent); }
-h2 { font-size: clamp(34px,4.2vw,52px); font-weight: 600; letter-spacing: -0.04em; line-height: 1.04; max-width: 18ch; margin-top: 12px; }
-.lead2 { font-size: 20px; color: var(--text-2); line-height: 1.6; margin-top: 16px; }
+/* ── minikarta & legend ───────────────────────────── */
+.mini{position:absolute;right:12px;bottom:12px;z-index:20;border:.5px solid var(--line-mid);
+  background:rgba(8,9,15,.92);cursor:crosshair}
+.mini canvas{display:block}
+.mini span{display:block;padding:3px 6px;font-family:var(--mono);font-size:8.5px;
+  letter-spacing:.14em;color:var(--ink-faint);border-top:.5px solid var(--line)}
+.legend{position:absolute;left:12px;top:12px;z-index:20;background:rgba(8,9,15,.92);
+  border:.5px solid var(--line-mid);max-width:238px}
+.legend>button{display:block;width:100%;padding:8px 12px;background:none;border:0;
+  color:var(--accent);font-family:var(--mono);font-weight:700;font-size:10px;
+  letter-spacing:.12em;text-transform:uppercase;text-align:left;cursor:pointer}
+.legend ul{list-style:none;margin:0;padding:0 12px 10px}
+.legend li{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;
+  color:var(--ink-soft);padding:3px 0}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.legend .not{color:var(--ink-faint);font-size:10px;border-top:.5px solid var(--line);
+  margin-top:6px;padding-top:7px;display:block}
 
-/* ═══ STEP CARDS ═══ */
-.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-.step { background: var(--surface); padding: 32px 28px; transition: background .2s; }
-.step:hover { background: var(--surface-2); }
-.step .num {
-  font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.04em; color: var(--accent);
-  margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
-}
-.step .num::before { content: ''; width: 22px; height: 1px; background: var(--accent); }
-.step h3 { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 10px; }
-.step p { font-size: 17px; color: var(--text-2); line-height: 1.65; }
-@media(max-width:860px){ .steps { grid-template-columns: 1fr; } }
+/* ── paneler ──────────────────────────────────────── */
+.panel{margin-top:18px;padding:20px 24px;background:var(--panel);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:.5px solid var(--line-mid)}
+.panel.vag{border-color:rgba(0,207,255,.5)}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.pt{font-family:var(--display);font-weight:900;font-size:27px;text-transform:uppercase;
+  margin:6px 0 10px;line-height:1.04;color:var(--ink)}
+.panel p{font-size:14.5px;line-height:1.7;color:var(--ink-soft);margin:0 0 8px}
+.panel p b{color:var(--accent)}
+.kedja{font-size:17px;line-height:1.75;color:var(--ink);margin:6px 0}
+.kedja i{color:var(--accent);font-family:var(--mono);font-style:normal}
+.rikt{list-style:none;margin:8px 0 0;padding:0}
+.rikt li{font-size:14px;color:var(--ink-soft);padding:6px 0;border-bottom:.5px solid var(--line)}
+.rikt em{color:var(--accent);font-style:italic}
+.chips{list-style:none;display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 0;padding:0}
+.chips button,.chips li{font-family:var(--mono);font-size:11.5px;color:var(--accent);
+  background:none;border:.5px solid var(--line-mid);padding:5px 11px;cursor:pointer}
+.chips button:hover{background:rgba(0,207,255,.14)}
 
-/* ═══ SECTOR CARDS ═══ */
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-.card { background: var(--surface); padding: 24px 26px; cursor: pointer; transition: background .2s; position: relative; overflow: hidden; }
-.card::before {
-  content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity .2s;
-  background: linear-gradient(135deg, rgba(255,90,54,0.05) 0%, transparent 60%);
-}
-.card:hover { background: var(--surface-2); }
-.card:hover::before { opacity: 1; }
-.card:hover .card-border { opacity: 1; }
-.card-border {
-  position: absolute; inset: 0; opacity: 0; transition: opacity .2s; pointer-events: none;
-  box-shadow: inset 0 0 0 1px rgba(255,90,54,0.25);
-  border-radius: inherit;
-}
-.card .ix { font-family: var(--f-mono); font-size: 10.5px; color: var(--text-faint); letter-spacing: 0.04em; }
-.card h3 { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin: 8px 0; }
-.card .roles { font-size: 16px; color: var(--text-dim); line-height: 1.55; min-height: 42px; }
-.card .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--line); }
-.roi-chip { font-family: var(--f-mono); font-size: 11.5px; font-weight: 600; color: var(--accent); padding: 3px 8px; background: var(--accent-dim); border-radius: 4px; }
-.open { font-family: var(--f-mono); font-size: 11.5px; color: var(--text-dim); display: inline-flex; align-items: center; gap: 5px; transition: color .15s; }
-.open .arr { display: inline-block; transition: transform .2s; }
-.card:hover .open { color: var(--accent); }
-.card:hover .open .arr { transform: translateX(3px); }
+/* ── intro ────────────────────────────────────────── */
+.intro{margin:20px 0 0;padding:24px 26px;background:var(--panel);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:.5px solid rgba(0,207,255,.42);max-width:640px}
+.intro p{font-size:15.5px;line-height:1.7;color:var(--ink);margin:10px 0 16px}
+.intro ul{list-style:none;margin:0 0 18px;padding:0}
+.intro li{display:flex;gap:10px;font-family:var(--mono);font-size:12.5px;line-height:1.6;
+  color:var(--ink-soft);padding:4px 0}
+.intro li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent);
+  flex:none;margin-top:6px}
 
-/* ═══ MAP ═══ */
-.map-row { display: grid; grid-template-columns: 1.45fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-@media(max-width:880px){ .map-row { grid-template-columns: 1fr; } }
-.map-stage { background: var(--surface); padding: 28px; position: relative; min-height: 520px; }
-.map-stage::before {
-  content: ''; position: absolute; inset: 0; pointer-events: none;
-  background-image: linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);
-  background-size: 22px 22px; opacity: 0.7;
-}
-.map-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: relative; z-index: 2; }
-.map-head .h { font-size: 19px; font-weight: 600; letter-spacing: -0.015em; }
-.map-head .meta { font-family: var(--f-mono); font-size: 13px; color: var(--text-dim); letter-spacing: 0.04em; }
-.map-geo { position: relative; width: 100%; max-width: 520px; margin: 0 auto; aspect-ratio: 5/6; z-index: 2; }
-.km {
-  position: absolute; display: flex; align-items: center; justify-content: center; text-align: center;
-  cursor: pointer; transition: transform .2s, box-shadow .25s, border-color .2s;
-  border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);
-  width: 17%; height: 14%;
-}
-.km span { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: 0.02em; line-height: 1.2; padding: 2px; pointer-events: none; }
-.km:hover, .km.sel {
-  transform: scale(1.08); z-index: 6;
-  border-color: var(--accent);
-  box-shadow: 0 0 24px var(--accent-glow), 0 0 0 1px rgba(255,90,54,0.3);
-}
-.legend { display: flex; align-items: center; gap: 12px; margin-top: 20px; font-family: var(--f-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.04em; position: relative; z-index: 2; }
-.legend .bar { flex: 1; height: 5px; max-width: 240px; background: linear-gradient(90deg, var(--surface-3), var(--accent)); border-radius: 3px; }
-.map-detail { background: var(--surface); padding: 28px; }
-.dk-l { font-family: var(--f-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; }
-.dk { font-size: 32px; font-weight: 600; letter-spacing: -0.03em; margin-top: 8px; line-height: 1; }
-.detail-rows { margin-top: 22px; }
-.drow { display: flex; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid var(--line); font-size: 16px; color: var(--text-2); }
-.drow b { color: var(--text); font-family: var(--f-mono); font-weight: 500; font-variant-numeric: tabular-nums; }
-.drow b.acc { color: var(--accent); }
-.occ-pills { margin-top: 22px; }
-.occ-pill { display: inline-flex; font-family: var(--f-mono); font-size: 11px; padding: 5px 10px; border: 1px solid var(--line-mid); border-radius: 999px; margin: 5px 5px 0 0; color: var(--text-2); }
+.fot{margin-top:30px;padding-top:18px;border-top:.5px solid var(--line);
+  display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.fot aside{font-size:13px;color:var(--ink-soft);max-width:62ch;line-height:1.6}
+.fot aside b{color:var(--ink)}
 
-/* ═══ TRANSITIONS ═══ */
-.trans-row { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-@media(max-width:880px){ .trans-row { grid-template-columns: 1fr; } }
-.trans-stage { background: var(--surface); padding: 20px; min-height: 420px; position: relative; }
-.trans-stage::before {
-  content: ''; position: absolute; inset: 0; pointer-events: none;
-  background-image: linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);
-  background-size: 22px 22px; opacity: 0.5;
-}
-#transSvg { position: relative; z-index: 2; width: 100%; height: auto; }
-.nl { font-family: 'Geist Mono',monospace; font-size: 14px; fill: var(--text); }
-.nl.dim { fill: var(--text-dim); }
-.npct { font-family: 'Geist Mono',monospace; font-weight: 700; font-size: 14px; fill: var(--accent); }
-.ch { font-family: 'Geist Mono',monospace; font-size: 12px; fill: var(--text-faint); letter-spacing: 0.08em; }
-.trans-list { background: var(--surface); padding: 24px; }
-.tth { font-family: var(--f-mono); font-size: 13px; letter-spacing: 0.06em; color: var(--text-dim); text-transform: uppercase; margin-bottom: 12px; }
-.mrow {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 12px 12px; border: 1px solid transparent; border-radius: 8px;
-  cursor: pointer; transition: .15s; margin-bottom: 3px;
-}
-.mrow:hover, .mrow.on { background: var(--surface-2); border-color: var(--line-mid); }
-.mrow.on { border-color: rgba(255,90,54,0.4); box-shadow: 0 0 0 1px var(--accent-dim) inset; }
-.mrow .pair { font-size: 16px; color: var(--text); }
-.mrow .pair .arr { color: var(--text-faint); margin: 0 7px; }
-.mrow .pct { font-family: var(--f-mono); font-weight: 600; font-size: 15px; color: var(--accent); font-variant-numeric: tabular-nums; }
-
-/* ═══ ROI ═══ */
-.roi-row { display: grid; grid-template-columns: 1fr 1.2fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-@media(max-width:880px){ .roi-row { grid-template-columns: 1fr; } }
-.roi-in { background: var(--surface); padding: 30px; }
-.field { margin-bottom: 26px; }
-.field label {
-  display: flex; justify-content: space-between; align-items: baseline;
-  font-family: var(--f-mono); font-size: 11px; color: var(--text-dim);
-  letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 12px;
-}
-.field label b { color: var(--accent); font-size: 14.5px; font-family: var(--f-mono); font-weight: 600; font-variant-numeric: tabular-nums; }
-input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 3px; background: var(--surface-3); border-radius: 2px; outline: none; }
-input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 17px; height: 17px; background: var(--accent); border-radius: 50%; cursor: pointer; box-shadow: 0 0 12px var(--accent-glow); }
-select, input[type=number] { width: 100%; font-size: 15px; padding: 11px 13px; background: var(--surface-2); border: 1px solid var(--line-mid); color: var(--text); border-radius: 8px; }
-select:focus, input:focus { outline: none; border-color: rgba(255,90,54,0.5); }
-.roi-note { font-family: var(--f-mono); font-size: 13px; color: var(--text-dim); letter-spacing: 0.01em; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); line-height: 1.6; }
-.roi-out { background: var(--surface); padding: 30px; position: relative; overflow: hidden; }
-.roi-out::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at top right, rgba(255,90,54,0.10) 0%, transparent 55%); }
-.roi-nums { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; position: relative; z-index: 2; }
-.rn { background: var(--surface); padding: 18px; }
-.rn .l { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--text-dim); text-transform: uppercase; }
-.rn .v { font-family: var(--f-mono); font-weight: 500; font-size: 28px; letter-spacing: -0.015em; line-height: 1; margin-top: 9px; font-variant-numeric: tabular-nums; }
-.rn.acc .v { color: var(--accent); }
-.rn .d { font-size: 12px; color: var(--text-dim); margin-top: 6px; }
-
-/* ROI bar comparison */
-.roi-bars { position: relative; z-index: 2; margin-top: 20px; }
-.roi-bar-row { margin-bottom: 14px; }
-.roi-bar-label { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 11px; color: var(--text-dim); margin-bottom: 6px; letter-spacing: 0.02em; }
-.roi-bar-label b { color: var(--text); }
-.roi-bar-track { height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden; }
-.roi-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s cubic-bezier(.4,0,.2,1); }
-.roi-bar-fill.cost { background: var(--text-dim); }
-.roi-bar-fill.save { background: linear-gradient(90deg, var(--accent), #ff8c6e); box-shadow: 0 0 10px rgba(255,90,54,0.3); }
-
-.roi-pct-row { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
-.roi-pct { font-family: var(--f-mono); font-size: 52px; font-weight: 600; color: var(--accent); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1; }
-.roi-pct-meta { text-align: right; font-family: var(--f-mono); font-size: 11.5px; color: var(--text-dim); line-height: 1.6; }
-.roi-pct-meta b { color: var(--text); display: block; font-weight: 500; font-size: 13px; margin-bottom: 4px; }
-
-/* ═══ DISCLAIMER + FOOTER ═══ */
-.disc { padding: 20px clamp(20px,4vw,44px); background: var(--surface); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 16px; font-size: 15px; color: var(--text-2); flex-wrap: wrap; }
-.disc .pill { font-family: var(--f-mono); font-size: 10.5px; color: var(--accent); background: var(--accent-dim); padding: 4px 10px; border-radius: 4px; letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; white-space: nowrap; }
-footer { padding: 52px clamp(20px,4vw,44px); background: var(--bg-2); }
-.ft { max-width: 1160px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 48px; }
-@media(max-width:760px){ .ft { grid-template-columns: 1fr; gap: 32px; } }
-.ft-brand .wm { font-family: var(--f-mono); font-weight: 600; font-size: 18px; }
-.ft-brand p { font-size: 16px; color: var(--text-dim); margin-top: 12px; max-width: 36ch; line-height: 1.6; }
-.ft h4 { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--text-dim); text-transform: uppercase; margin-bottom: 14px; }
-.ft a { display: block; font-size: 16px; color: var(--text-2); padding: 5px 0; transition: color .15s; }
-.ft a:hover { color: var(--accent); }
-.ft-bot { max-width: 1160px; margin: 44px auto 0; padding-top: 22px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 11.5px; color: var(--text-faint); flex-wrap: wrap; gap: 10px; }
-
-/* ═══ TOOLTIP + REVEAL ═══ */
-.tip { position: fixed; pointer-events: none; background: var(--surface-2); color: var(--text); font-family: var(--f-mono); font-size: 11.5px; padding: 7px 12px; border-radius: 7px; border: 1px solid var(--line-strong); z-index: 200; opacity: 0; transition: opacity .1s; white-space: nowrap; box-shadow: 0 8px 28px rgba(0,0,0,0.5); }
-.tip b { color: var(--accent); }
-.reveal { opacity: 0; transform: translateY(22px); transition: opacity .65s ease, transform .65s ease; }
-.reveal.in { opacity: 1; transform: none; }
-.reveal[data-d="1"] { transition-delay: .08s; }
-.reveal[data-d="2"] { transition-delay: .16s; }
-.reveal[data-d="3"] { transition-delay: .24s; }
+@media (max-width:720px){ .mini{display:none} .legend{max-width:168px} }
+@media (prefers-reduced-motion:reduce){ .blobb{animation:none} button.k{transition:none} }
 </style>
 </head>
 <body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 
-<div id="prog"></div>
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">Kompetensrådet Region Jönköping</p>
+    <h1>Kompetens<span class="b">nätverket</span></h1>
+    <p class="ingress">Arbetsmarknaden är inte en lista med yrken. Den är ett nätverk.
+      Här ser du hur yrkena faktiskt hänger ihop, och vem som kan gå vart.</p>
+  </header>
 
-<!-- TOPBAR -->
-<header class="top">
-  <div class="brand">
-    <svg viewBox="0 0 22 22" width="20" height="20">
-      <path d="M3 11 L11 3 L19 11 L11 19 Z" fill="none" stroke="#FF5A36" stroke-width="1.4"/>
-      <circle cx="11" cy="11" r="2.2" fill="#FF5A36"/>
-      <path d="M11 3 L11 19 M3 11 L19 11" stroke="#FF5A36" stroke-width="0.7" opacity="0.35"/>
-    </svg>
-    <div class="wm">crosstrees<span>/kompetensgrafen</span></div>
+  <section class="aha">
+    <p><b id="ahaY">0</b> yrken. <b id="ahaK">0</b> kopplingar mellan dem.
+       Klicka på ett för att se vad du kan bli härnäst.</p>
+    <p class="kalla" id="kalla"></p>
+  </section>
+
+  <div class="notis" id="notis">
+    <b>Detta är seed-datamängden, inte live-data.</b> Siffrorna ovan är exakt det
+    som ligger i Neo4j i dag. Live-annonsvolym, lön per yrke och trenddata saknas i
+    databasen, och visas därför som ”okänt” i stället för att fyllas med exempelvärden.
   </div>
-  <nav class="nav">
-    <a href="#hero" class="on">Översikt</a>
-    <a href="#sektorer">Sektorer</a>
-    <a href="#karta">Bristkarta</a>
-    <a href="#graf">Omställning</a>
-    <a href="#roi">ROI</a>
-  </nav>
-  <div class="top-cta">
-    <span class="live"><span class="dot"></span>Live · AF.platsbanken</span>
-    <a href="#roi" class="btn btn-acc">Boka demo</a>
-  </div>
-</header>
 
-<!-- HERO -->
-<section class="hero" id="hero">
-  <div class="hero-glow" id="heroGlow"></div>
-  <canvas id="heroCanvas"></canvas>
-  <div class="hero-inner">
-    <span class="eyebrow"><span class="acc">◆</span>&nbsp;&nbsp;Regionalt beslutsstöd · Jönköpings län · v0.4</span>
-    <h1>Den dolda strukturen i den <span class="hl">svenska arbetsmarknaden</span>.</h1>
-    <p class="lead">Arbetsförmedlingen har redan kartlagt <b>51 000 övergångsvägar</b> mellan yrken. Kompetensgrafen gör den kartan användbar: var folk saknas, vilka som kan ställas om dit, och vad det kostar — och sparar.</p>
-    <div class="hero-cta">
-      <a href="#karta" class="btn btn-acc">Öppna bristkartan →</a>
-      <a href="#roi" class="btn">Beräkna ROI</a>
+  <section class="intro" id="intro">
+    <p class="lbl">Så funkar det</p>
+    <p>Varje prick är ett yrke. Två prickar som sitter nära varandra delar mycket
+      kompetens. Det betyder att någon i det ena yrket ofta snabbt kan lära sig det andra.
+      Klicka på en prick för att utforska.</p>
+    <ul>
+      <li>Färgen visar vilken bransch yrket hör till.</li>
+      <li>Tjocka streck betyder starkt överlapp mellan två yrken.</li>
+      <li>Dra en prick åt sidan så stannar den kvar. Dubbelklicka för att släppa den fri.</li>
+    </ul>
+    <button class="k" id="introStang">Jag förstår, visa grafen</button>
+  </section>
+
+  <div class="ctrl">
+    <div class="f">
+      <label for="sok">Sök ett yrke</label>
+      <input id="sok" type="search" placeholder="Sök ett yrke…" autocomplete="off"
+             aria-describedby="sokH">
+      <span class="hint" id="sokH">Enter centrerar grafen på första träffen.</span>
+      <ul class="traffar" id="traffar" role="listbox" aria-label="Sökträffar" hidden></ul>
     </div>
-    <div class="hero-meta">
-      <div class="m">DATAKÄLLOR<b>AF · SCB · ESCO · Yrkesbarometern</b></div>
-      <div class="m">METOD<b>Cost-Benefit, IFAU / OECD</b></div>
-      <div class="m">UPPDATERAS<b>Dagligen · Platsbanken</b></div>
-      <div class="m">REGLERING<b>EU AI Act, Annex III</b></div>
+
+    <div class="f">
+      <label for="trosk">Visa kopplingar från <span id="troskV">0</span>% överlapp</label>
+      <input id="trosk" type="range" min="0" max="75" step="5" value="0">
+      <span class="hint">Dra åt höger för att bara se de starkaste kopplingarna.</span>
+    </div>
+
+    <div class="f">
+      <span class="lbl">Hitta väg mellan två yrken</span>
+      <div class="par">
+        <select id="fran" aria-label="Från yrke"><option value="">Från…</option></select>
+        <select id="till" aria-label="Till yrke"><option value="">Till…</option></select>
+      </div>
+      <span class="hint w" id="vagFel" hidden>Ingen väg finns mellan de yrkena.</span>
     </div>
   </div>
-</section>
 
-<!-- STATS -->
-<div class="stats">
-  <div class="stat"><div class="l">Kommuner</div><div class="v" data-count="13">13</div><div class="n">Hela Jönköpings län</div></div>
-  <div class="stat"><div class="l">Övergångsvägar</div><div class="v" data-count="51000">51 000</div><div class="n">Från AF:s öppna data</div></div>
-  <div class="stat"><div class="l">Sektorer</div><div class="v" data-count="7">7</div><div class="n">Industri till utbildning</div></div>
-  <div class="stat"><div class="l">Till beslutsunderlag</div><div class="v acc">&lt;3 min</div><div class="n">Från fråga till PDF</div></div>
+  <div class="rakn">
+    <span>Visar <b id="rN">0</b> av <b id="rTot">0</b> yrken, <b id="rK">0</b> kopplingar</span>
+    <button class="k" id="reset">Återställ vy</button>
+  </div>
+
+  <div class="scen" id="scen">
+    <div class="blobbar" aria-hidden="true">
+      <span class="blobb b1"></span><span class="blobb b2"></span><span class="blobb b3"></span>
+    </div>
+    <canvas id="g" role="img"
+      aria-label="Kompetensnätverk med 22 yrken och 19 kopplingar. Använd sökfältet ovan för att navigera utan mus."></canvas>
+
+    <div class="tip" id="tip" hidden></div>
+
+    <div class="legend" id="legend">
+      <button id="legToggle" aria-expanded="false">Färgförklaring ▸</button>
+      <ul id="legLista" hidden></ul>
+    </div>
+
+    <div class="mini" id="mini">
+      <canvas id="m" width="150" height="105"
+        aria-label="Översiktskarta. Klicka för att hoppa dit."></canvas>
+      <span>Översikt</span>
+    </div>
+  </div>
+
+  <div id="paneler"></div>
+
+  <div class="fot">
+    <aside><b>AI Act-förbehåll:</b> Karriärövergångarna är AI-genererade
+      rekommendationer baserade på Arbetsförmedlingens substituerbarhetsdata.
+      Beslut fattas av användaren.</aside>
+    <p class="kalla">Källa: Neo4j yrkesgraf (AF substituerbarhetsdata) · Jönköpings län</p>
+  </div>
 </div>
-
-<!-- STEPS -->
-<section>
-  <div class="sec-inner">
-    <div class="sec-head">
-      <div class="left">
-        <span class="tag"><span class="num">01</span> · Så fungerar det</span>
-        <h2>Tre frågor. Ett beslutsunderlag.</h2>
-      </div>
-      <div class="right">
-        <p class="lead2">SKR visar att antalet äldre ökar. AF visar att det behövs fler undersköterskor. Kompetensgrafen svarar på nästa fråga: vilka kan ställas om dit, och lönar det sig?</p>
-      </div>
-    </div>
-    <div class="steps">
-      <div class="step reveal" data-d="0"><div class="num">01</div><h3>Var saknas folk?</h3><p>Bristkarta över länets 13 kommuner. Färgintensitet visar hur hård bristen är per kommun, hämtat direkt från Arbetsförmedlingens öppna data.</p></div>
-      <div class="step reveal" data-d="1"><div class="num">02</div><h3>Vem kan ställas om?</h3><p>Grafen visar vilka yrkesgrupper som ligger nära ett bristyrke, baserat på faktiskt kompetensöverlapp i EU:s ESCO-taxonomi med 3 000+ kompetenser.</p></div>
-      <div class="step reveal" data-d="2"><div class="num">03</div><h3>Vad kostar det?</h3><p>Kalkyl per omställd person. Utbildningskostnad ställs mot besparing i a-kassa, ökade skatteintäkter och minskade vakansförluster, modellerat över 5 år.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- SECTORS -->
-<section id="sektorer">
-  <div class="sec-inner">
-    <div class="sec-head">
-      <div class="left">
-        <span class="tag"><span class="num">02</span> · Välj sektor</span>
-        <h2>Sju sektorer. En analys per klick.</h2>
-      </div>
-      <div class="right">
-        <p class="lead2">Klicka på en sektor för att se bristyrken, möjliga omställningar och beräknad avkastning för regionen.</p>
-      </div>
-    </div>
-    <div class="cards" id="cards"></div>
-  </div>
-</section>
-
-<!-- MAP -->
-<section id="karta">
-  <div class="sec-inner">
-    <div class="sec-head">
-      <div class="left">
-        <span class="tag"><span class="num">03</span> · Bristkarta</span>
-        <h2>Var är bristen störst?</h2>
-      </div>
-      <div class="right">
-        <p class="lead2">Bristindex per kommun. Hovra för värde, klicka för detaljpanel med bristyrken och möjliga omställningskandidater.</p>
-      </div>
-    </div>
-    <div class="map-row reveal">
-      <div class="map-stage">
-        <div class="map-head">
-          <span class="h">Jönköpings läns 13 kommuner</span>
-          <span class="meta">SCB RegSO 2025 · 57°N 14°E</span>
-        </div>
-        <div class="map-geo" id="mapGeo"></div>
-        <div class="legend"><span>Låg brist</span><div class="bar"></div><span>Hög brist</span></div>
-      </div>
-      <div class="map-detail" id="mapDetail"></div>
-    </div>
-  </div>
-</section>
-
-<!-- TRANSITIONS -->
-<section id="graf">
-  <div class="sec-inner">
-    <div class="sec-head">
-      <div class="left">
-        <span class="tag"><span class="num">04</span> · Omställningsanalys</span>
-        <h2>Karriärövergångar.</h2>
-      </div>
-      <div class="right">
-        <p class="lead2">Klicka på ett par för att markera vägen. Procenten är kompetensöverlapp enligt EU:s ESCO-taxonomi — en elektriker är redan 71&nbsp;% av vägen till automationstekniker.</p>
-      </div>
-    </div>
-    <div class="trans-row reveal">
-      <div class="trans-stage">
-        <svg id="transSvg" viewBox="0 0 680 400" preserveAspectRatio="xMidYMid meet"></svg>
-      </div>
-      <div class="trans-list">
-        <div class="tth">Matchningar · rangordnade</div>
-        <div id="mlist"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ROI -->
-<section id="roi">
-  <div class="sec-inner">
-    <div class="sec-head">
-      <div class="left">
-        <span class="tag"><span class="num">05</span> · Business case</span>
-        <h2>Vad får regionen tillbaka?</h2>
-      </div>
-      <div class="right">
-        <p class="lead2">Cost-Benefit-modell enligt IFAU och OECD. Justera reglagen — siffrorna uppdateras direkt.</p>
-      </div>
-    </div>
-    <div class="roi-row reveal">
-      <div class="roi-in">
-        <div class="field">
-          <label>Sektor</label>
-          <select id="roiSector"></select>
-        </div>
-        <div class="field">
-          <label>Antal omställningar <b id="roiCountV">100</b></label>
-          <input type="range" id="roiCount" min="1" max="300" value="100">
-        </div>
-        <div class="field">
-          <label>Utbildningskostnad / person (kr)</label>
-          <input type="number" id="roiCost" value="148000" step="5000">
-        </div>
-        <p class="roi-note">Modellen viktar a-kasseersättning, skatteintäkter och vakansförluster över 5 år med matchningssannolikhet från AF:s efterfrågedata.</p>
-      </div>
-      <div class="roi-out">
-        <div class="roi-nums">
-          <div class="rn"><div class="l">Investering / pers</div><div class="v" id="oCostP">148 TKR</div><div class="d">Utbildning 12 mån</div></div>
-          <div class="rn"><div class="l">Besparing / pers · 5 år</div><div class="v" id="oSaveP">612 TKR</div><div class="d">Modellerad totaleffekt</div></div>
-          <div class="rn"><div class="l">Total investering</div><div class="v" id="oCostT">14,8 MKR</div><div class="d">Hela kohorten</div></div>
-          <div class="rn acc"><div class="l">Nettoeffekt</div><div class="v" id="oNet">+46,4 MKR</div><div class="d">Över 5 år</div></div>
-        </div>
-        <div class="roi-bars">
-          <div class="roi-bar-row">
-            <div class="roi-bar-label"><span>Investering</span><b id="bCostV">14,8 MKR</b></div>
-            <div class="roi-bar-track"><div class="roi-bar-fill cost" id="bCost" style="width:20%"></div></div>
-          </div>
-          <div class="roi-bar-row">
-            <div class="roi-bar-label"><span>Besparing</span><b id="bSaveV">61,2 MKR</b></div>
-            <div class="roi-bar-track"><div class="roi-bar-fill save" id="bSave" style="width:100%"></div></div>
-          </div>
-        </div>
-        <div class="roi-pct-row">
-          <div><div class="roi-pct" id="oRoi">314%</div><div style="font-family:var(--f-mono);font-size:11px;color:var(--text-dim);margin-top:5px;letter-spacing:0.04em">Avkastning på investering</div></div>
-          <div class="roi-pct-meta">95% konfidensintervall<b id="oCi">+39,4 till +53,4 MKR</b></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- DISCLAIMER -->
-<div class="disc">
-  <span class="pill">EU AI Act</span>
-  <span>Modellen är AI-genererad baserat på Arbetsförmedlingens öppna data och ESCO-taxonomin. Beslut fattas av ansvarig handläggare vid Kompetensrådet. Klassificerad som högrisk, Annex III artikel 6.</span>
-</div>
-
-<!-- FOOTER -->
-<footer id="kontakt">
-  <div class="ft">
-    <div class="ft-brand">
-      <div class="wm">crosstrees<span style="color:var(--text-dim)">/labor intelligence</span></div>
-      <p>Kompetensinfrastruktur för svenska regioner. Vi gör Arbetsförmedlingens öppna data användbar som beslutsstöd för regional planering.</p>
-    </div>
-    <div>
-      <h4>Produkt</h4>
-      <a href="#karta">Bristkarta</a>
-      <a href="#graf">Omställningsanalys</a>
-      <a href="#roi">ROI-kalkyl</a>
-      <a href="#sektorer">Sektorer</a>
-    </div>
-    <div>
-      <h4>Kontakt</h4>
-      <a href="mailto:linnea@crosstrees.se">linnea@crosstrees.se</a>
-      <a href="#">Vetlanda · Sverige</a>
-    </div>
-  </div>
-  <div class="ft-bot">
-    <span>© 2026 Crosstrees Labor Intelligence</span>
-    <span>Byggd för Kompetensrådet Region Jönköping</span>
-  </div>
-</footer>
-
-<div class="tip" id="tip"></div>
 
 <script>
-/* ═══ DATA ═══ */
-const SECTORS = [
-  {id:'industri', name:'Tillverkning & industri', roles:'Svetsare · maskinoperatörer · automationstekniker', roi:314, save:612000, ix:'01'},
-  {id:'vard',     name:'Vård & omsorg',           roles:'Undersköterskor · sjuksköterskor · personliga assistenter', roi:301, save:593000, ix:'02'},
-  {id:'it',       name:'IT & digitalisering',     roles:'Mjukvaruutvecklare · systemarkitekter · dataingenjörer', roi:367, save:689000, ix:'03'},
-  {id:'bygg',     name:'Bygg & anläggning',       roles:'Elektriker · snickare · anläggningsarbetare', roi:315, save:614000, ix:'04'},
-  {id:'logistik', name:'Logistik & transport',    roles:'Truckförare · lastbilsförare · lagerarbetare', roi:329, save:635000, ix:'05'},
-  {id:'service',  name:'Service & handel',        roles:'Butikschefer · kockar · restaurangchefer', roi:248, save:515000, ix:'06'},
-  {id:'utbildning',name:'Utbildning',             roles:'Lärare · förskollärare', roi:268, save:545000, ix:'07'},
-];
-
-/* geo positions (left%, top%) within the map container, approximating real Jönköping county */
-const KOMMUNER = [
-  {n:'Habo',      lp:14, tp: 9, brist:34, top:'Undersköterska'},
-  {n:'Mullsjö',   lp: 7, tp:24, brist:41, top:'Sjuksköterska'},
-  {n:'Jönköping', lp:20, tp:30, brist:88, top:'Undersköterska'},
-  {n:'Vaggeryd',  lp:20, tp:54, brist:52, top:'Truckförare'},
-  {n:'Gnosjö',    lp: 5, tp:66, brist:67, top:'Maskinoperatör'},
-  {n:'Gislaved',  lp:16, tp:75, brist:69, top:'Automationstekniker'},
-  {n:'Värnamo',   lp:28, tp:82, brist:81, top:'Svetsare'},
-  {n:'Aneby',     lp:48, tp:10, brist:46, top:'Undersköterska'},
-  {n:'Tranås',    lp:72, tp:10, brist:58, top:'Svetsare'},
-  {n:'Nässjö',    lp:52, tp:36, brist:74, top:'Lastbilsförare'},
-  {n:'Eksjö',     lp:65, tp:28, brist:63, top:'Sjuksköterska'},
-  {n:'Sävsjö',    lp:54, tp:60, brist:55, top:'Undersköterska'},
-  {n:'Vetlanda',  lp:68, tp:52, brist:71, top:'Undersköterska'},
-];
-
-const TRANSITIONS = [
-  {from:'Handelsbiträde',  to:'Undersköterska',      pct:85},
-  {from:'Maskinoperatör',  to:'Automationstekniker',  pct:83},
-  {from:'Lagerarbetare',   to:'Spec.undersköterska',  pct:81},
-  {from:'Butiksbiträde',   to:'Kock',                 pct:80},
-  {from:'Barnskötare',     to:'Förskollärare',         pct:75},
-  {from:'Elektriker',      to:'Automationstekniker',  pct:71},
-];
-
-/* ═══ SCROLL PROGRESS ═══ */
-window.addEventListener('scroll', () => {
-  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
-  document.getElementById('prog').style.width = pct + '%';
-});
-
-/* ═══ HERO CANVAS ═══ */
-const cv = document.getElementById('heroCanvas'), cx = cv.getContext('2d');
-let nodes=[], edges=[], particles=[];
-
-function setupCanvas() {
-  const r = cv.parentElement.getBoundingClientRect();
-  cv.width = r.width * devicePixelRatio; cv.height = r.height * devicePixelRatio;
-  cv.style.width = r.width+'px'; cv.style.height = r.height+'px';
-  cx.scale(devicePixelRatio, devicePixelRatio);
-  const w = r.width, h = r.height;
-  /* seed with mulberry32 so layout is deterministic after first setup */
-  let s = 0x9e3779b9;
-  const rand = () => { s ^= s<<13; s ^= s>>17; s ^= s<<5; return ((s>>>0)/4294967296); };
-  nodes = Array.from({length:55}, () => ({
-    x: rand()*w, y: rand()*h,
-    vx: (rand()-.5)*0.22, vy: (rand()-.5)*0.22,
-    r: 0.8 + rand()*1.8,
-    hot: rand() < 0.14,
-  }));
-  edges = [];
-  for (let i=0; i<nodes.length; i++)
-    for (let j=i+1; j<nodes.length; j++)
-      if (Math.hypot(nodes[i].x-nodes[j].x, nodes[i].y-nodes[j].y) < 160) edges.push([i,j]);
-  particles = Array.from({length:18}, () => ({
-    e: Math.floor(rand()*edges.length), t: rand(), sp: 0.0015+rand()*0.003
-  }));
-}
-
-function loopCanvas() {
-  const w = cv.width/devicePixelRatio, h = cv.height/devicePixelRatio;
-  cx.clearRect(0,0,w,h);
-  for (const n of nodes) {
-    n.x+=n.vx; n.y+=n.vy;
-    if(n.x<0||n.x>w) n.vx*=-1;
-    if(n.y<0||n.y>h) n.vy*=-1;
-  }
-  for (const [i,j] of edges) {
-    const a=nodes[i],b=nodes[j];
-    const d = Math.hypot(a.x-b.x,a.y-b.y);
-    if (d < 160) {
-      cx.strokeStyle = `rgba(255,255,255,${0.07*(1-d/160)})`; cx.lineWidth=0.5;
-      cx.beginPath(); cx.moveTo(a.x,a.y); cx.lineTo(b.x,b.y); cx.stroke();
+(async function(){
+  const SEED = {"noder":[{"id":"n0","namn":"Mjukvaruutvecklare","ssyk":"2512","sektor":"it","def":"Analyserar, konstruerar, testar och underhåller programvara och system."},{"id":"n1","namn":"Systemarkitekt","ssyk":"2511","sektor":"it","def":"Planerar och utformar IT-system och teknisk infrastruktur."},{"id":"n2","namn":"Dataingenjör","ssyk":"2529","sektor":"it","def":"Bygger och underhåller datapipelines och infrastruktur för dataanalys."},{"id":"n3","namn":"IT-tekniker","ssyk":"3512","sektor":"it","def":"Installerar, konfigurerar och felsöker datorer, nätverk och programvara."},{"id":"n4","namn":"Undersköterska","ssyk":"5321","sektor":"vard","def":"Ger vård och omsorg till patienter och brukare inom hälso- och sjukvård."},{"id":"n5","namn":"Sjuksköterska","ssyk":"2221","sektor":"vard","def":"Planerar och utför omvårdnad samt administrerar medicinsk behandling."},{"id":"n6","namn":"Personlig assistent","ssyk":"5341","sektor":"vard","def":"Ger stöd och assistans till personer med funktionsnedsättning i vardagen."},{"id":"n7","namn":"Lärare i grundskolan","ssyk":"2341","sektor":"utbildning","def":"Planerar och genomför undervisning för elever i grundskolan."},{"id":"n8","namn":"Förskollärare","ssyk":"2342","sektor":"utbildning","def":"Planerar och genomför pedagogisk verksamhet för barn i förskoleåldern."},{"id":"n9","namn":"Automationstekniker","ssyk":"3115","sektor":"industri","def":"Installerar, programmerar och underhåller industrirobotar och automationssystem."},{"id":"n10","namn":"Maskinoperatör","ssyk":"8121","sektor":"industri","def":"Hanterar och övervakar industriella maskiner i tillverkningsprocesser."},{"id":"n11","namn":"Svetsare","ssyk":"7212","sektor":"industri","def":"Sammanfogar metaller med svetsning enligt ritningar och toleranser."},{"id":"n12","namn":"Vindkrafttekniker","ssyk":"7412","sektor":"industri","def":"Installerar och underhåller vindkraftverk samt tillhörande elsystem."},{"id":"n13","namn":"Elektriker","ssyk":"7411","sektor":"industri","def":"Installerar, underhåller och reparerar elinstallationer i byggnader och anläggningar."},{"id":"n14","namn":"Logistikkoordinator","ssyk":"4321","sektor":"logistik","def":"Koordinerar transport, lager och leveranskedjor."},{"id":"n15","namn":"Lagerarbetare","ssyk":"9333","sektor":"logistik","def":"Packar, plockar, lastar och lossar varor i lager och distributionscentraler."},{"id":"n16","namn":"Truckförare","ssyk":"8344","sektor":"logistik","def":"Kör truck för att transportera, lasta och lossa material och varor."},{"id":"n17","namn":"Lastbilsförare","ssyk":"8332","sektor":"logistik","def":"Transporterar gods med lastbil mellan kunder, lager och terminaler."},{"id":"n18","namn":"Butikschef","ssyk":"1422","sektor":"service","def":"Leder driften av butik inklusive personal, försäljning och ekonomi."},{"id":"n19","namn":"Restaurangchef","ssyk":"1411","sektor":"service","def":"Leder driften av restaurang inklusive personal, kök och serviceflöden."},{"id":"n20","namn":"Kock","ssyk":"5120","sektor":"service","def":"Tillagar mat enligt recept och meny i restaurang- eller storkök."},{"id":"n21","namn":"Snickare","ssyk":"7115","sektor":"bygg","def":"Bygger, monterar och renoverar trästommar, inredning och byggnadsdetaljer."}],"kanter":[{"a":"n0","b":"n1","score":75,"r":[{"f":"n0","t":"n1","d":"can_become"},{"f":"n1","t":"n0","d":"can_replace"}]},{"a":"n0","b":"n2","score":75,"r":[{"f":"n0","t":"n2","d":"can_become"},{"f":"n2","t":"n0","d":"can_replace"}]},{"a":"n0","b":"n3","score":50,"r":[{"f":"n0","t":"n3","d":"can_become"},{"f":"n3","t":"n0","d":"can_replace"}]},{"a":"n1","b":"n2","score":50,"r":[{"f":"n1","t":"n2","d":"can_become"},{"f":"n2","t":"n1","d":"can_replace"}]},{"a":"n7","b":"n8","score":50,"r":[{"f":"n7","t":"n8","d":"can_become"},{"f":"n8","t":"n7","d":"can_replace"}]},{"a":"n21","b":"n11","score":25,"r":[{"f":"n21","t":"n11","d":"can_become"},{"f":"n11","t":"n21","d":"can_replace"}]},{"a":"n21","b":"n13","score":25,"r":[{"f":"n13","t":"n21","d":"can_become"},{"f":"n21","t":"n13","d":"can_replace"}]},{"a":"n6","b":"n4","score":75,"r":[{"f":"n4","t":"n6","d":"can_become"},{"f":"n6","t":"n4","d":"can_replace"}]},{"a":"n6","b":"n5","score":25,"r":[{"f":"n6","t":"n5","d":"can_become"},{"f":"n5","t":"n6","d":"can_replace"}]},{"a":"n15","b":"n16","score":75,"r":[{"f":"n15","t":"n16","d":"can_become"},{"f":"n16","t":"n15","d":"can_replace"}]},{"a":"n15","b":"n14","score":25,"r":[{"f":"n15","t":"n14","d":"can_become"},{"f":"n14","t":"n15","d":"can_replace"}]},{"a":"n16","b":"n17","score":50,"r":[{"f":"n16","t":"n17","d":"can_become"},{"f":"n17","t":"n16","d":"can_replace"}]},{"a":"n9","b":"n10","score":50,"r":[{"f":"n9","t":"n10","d":"can_become"},{"f":"n10","t":"n9","d":"can_replace"}]},{"a":"n9","b":"n12","score":50,"r":[{"f":"n9","t":"n12","d":"can_become"},{"f":"n12","t":"n9","d":"can_replace"}]},{"a":"n4","b":"n5","score":50,"r":[{"f":"n4","t":"n5","d":"can_become"},{"f":"n5","t":"n4","d":"can_replace"}]},{"a":"n10","b":"n11","score":25,"r":[{"f":"n10","t":"n11","d":"can_become"},{"f":"n11","t":"n10","d":"can_replace"}]},{"a":"n18","b":"n19","score":50,"r":[{"f":"n18","t":"n19","d":"can_become"},{"f":"n19","t":"n18","d":"can_replace"}]},{"a":"n19","b":"n20","score":50,"r":[{"f":"n20","t":"n19","d":"can_become"},{"f":"n19","t":"n20","d":"can_replace"}]},{"a":"n12","b":"n13","score":75,"r":[{"f":"n12","t":"n13","d":"can_become"},{"f":"n13","t":"n12","d":"can_replace"}]}],"meta":{"yrken":22,"kompetenser":51,"kanter_riktade":38,"kanter_odirigerade":19}};
+  let DATA = SEED, KALLA = "seed";
+  try {
+    const r = await fetch("natverk-full.json", {cache:"no-store"});
+    if (r.ok) {
+      const j = await r.json();
+      if (j && j.noder && j.noder.length && j.kanter && j.kanter.length) { DATA = j; KALLA = "af-taxonomi"; }
     }
+  } catch (e) { /* filen finns inte än — seed-datan används */ }
+
+const SEKTOR = {
+  vard:{n:"Vård & omsorg",f:"#00CFFF"}, industri:{n:"Tillverkning & industri",f:"#FF9F45"},
+  it:{n:"IT & digitalisering",f:"#9D7BFF"}, bygg:{n:"Bygg & anläggning",f:"#FFD75E"},
+  logistik:{n:"Logistik & transport",f:"#3DDC97"}, service:{n:"Service & handel",f:"#FF6B9D"},
+  utbildning:{n:"Utbildning",f:"#5EC8FF"}, ovrigt:{n:"Övrigt",f:"#7B80A0"}
+};
+const RIKT = {can_become:"kan bli", can_replace:"kan ersätta"};
+const reducerad = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const idx = new Map(DATA.noder.map(n=>[n.id,n]));
+const grad = new Map();
+DATA.kanter.forEach(k=>{grad.set(k.a,(grad.get(k.a)||0)+1); grad.set(k.b,(grad.get(k.b)||0)+1);});
+
+const STOR = DATA.noder.length > 220;
+const RSKAL = STOR ? 2.2 : 5.5, RBAS = STOR ? 2.6 : 5;
+const noder = DATA.noder.map(n=>({...n, grad:grad.get(n.id)||0,
+  radie:RBAS+Math.log1p(grad.get(n.id)||0)*RSKAL, pin:false}));
+const nmap = new Map(noder.map(n=>[n.id,n]));
+const kanter = DATA.kanter.map(k=>({source:nmap.get(k.a),target:nmap.get(k.b),
+  nyckel:[k.a,k.b].sort().join("|"), score:k.score, data:k}));
+
+let troskel=0, vald=null, valdKant=null, vag=null, vagSet=new Set(), hover=null, puls=0;
+let bredd=900, hojd=560, transform=d3.zoomIdentity;
+
+const scen=document.getElementById("scen"), cv=document.getElementById("g"),
+      ctx=cv.getContext("2d"), tip=document.getElementById("tip"),
+      mcv=document.getElementById("m"), mctx=mcv.getContext("2d");
+
+/* ── simulering ─────────────────────────────────────── */
+const sim = d3.forceSimulation(noder)
+  .force("link", d3.forceLink(kanter).id(d=>d.id).distance(d=>STOR?(90-d.score*0.55):(190-d.score*1.1)).strength(STOR?.35:.7))
+  .force("charge", d3.forceManyBody().strength(STOR?-90:-420).distanceMax(STOR?420:Infinity))
+  .force("collide", d3.forceCollide().radius(d=>d.radie+(STOR?4:26)))
+  .force("center", d3.forceCenter(bredd/2,hojd/2))
+  .force("x", d3.forceX(bredd/2).strength(.04))
+  .force("y", d3.forceY(hojd/2).strength(.06));
+if(reducerad){ sim.stop(); for(let i=0;i<320;i++) sim.tick(); }
+
+/* ── storlek ────────────────────────────────────────── */
+function anpassa(){
+  bredd = scen.clientWidth; hojd = Math.min(620, Math.max(420, Math.round(bredd*0.56)));
+  const dpr = devicePixelRatio||1;
+  cv.width=bredd*dpr; cv.height=hojd*dpr; cv.style.width=bredd+"px"; cv.style.height=hojd+"px";
+  sim.force("center", d3.forceCenter(bredd/2,hojd/2));
+  sim.force("x", d3.forceX(bredd/2).strength(.04));
+  sim.force("y", d3.forceY(hojd/2).strength(.06));
+  if(!reducerad) sim.alpha(.3).restart();
+}
+new ResizeObserver(anpassa).observe(scen); anpassa();
+
+/* ── härledd vy ─────────────────────────────────────── */
+const synligaKanter = ()=> kanter.filter(k=>k.score>=troskel);
+function synligaNoder(){
+  if(troskel===0) return new Set(noder.map(n=>n.id));
+  const s=new Set(); synligaKanter().forEach(k=>{s.add(k.source.id);s.add(k.target.id);}); return s;
+}
+function grannar(id){
+  const s=new Set(); if(!id) return s;
+  synligaKanter().forEach(k=>{ if(k.source.id===id)s.add(k.target.id); if(k.target.id===id)s.add(k.source.id); });
+  return s;
+}
+
+/* ── kortaste väg: kostnad 100 − score ──────────────── */
+function kortasteVag(a,b){
+  if(!a||!b||a===b) return null;
+  const gr=new Map();
+  synligaKanter().forEach(k=>{
+    const c=Math.max(1,100-k.score);
+    if(!gr.has(k.source.id))gr.set(k.source.id,[]); if(!gr.has(k.target.id))gr.set(k.target.id,[]);
+    gr.get(k.source.id).push({id:k.target.id,c}); gr.get(k.target.id).push({id:k.source.id,c});
+  });
+  if(!gr.has(a)||!gr.has(b)) return null;
+  const dist=new Map(), prev=new Map(), kvar=new Set(gr.keys());
+  kvar.forEach(k=>dist.set(k,Infinity)); dist.set(a,0);
+  while(kvar.size){
+    let cur=null,best=Infinity;
+    kvar.forEach(k=>{const d=dist.get(k); if(d<best){best=d;cur=k;}});
+    if(cur===null||best===Infinity) break;
+    if(cur===b) break;
+    kvar.delete(cur);
+    (gr.get(cur)||[]).forEach(g=>{
+      if(!kvar.has(g.id)) return;
+      const nd=best+g.c;
+      if(nd<dist.get(g.id)){ dist.set(g.id,nd); prev.set(g.id,cur); }
+    });
   }
-  for (const n of nodes) {
-    cx.fillStyle = n.hot ? 'rgba(255,90,54,0.88)' : 'rgba(255,255,255,0.42)';
-    cx.beginPath(); cx.arc(n.x,n.y,n.r,0,7); cx.fill();
-    if (n.hot) {
-      cx.fillStyle='rgba(255,90,54,0.12)'; cx.beginPath(); cx.arc(n.x,n.y,n.r*5,0,7); cx.fill();
+  if(dist.get(b)===Infinity) return null;
+  const p=[b]; let s=b;
+  while(s!==a){ const f=prev.get(s); if(!f) return null; p.unshift(f); s=f; }
+  return {vag:p, kostnad:dist.get(b)};
+}
+
+/* ── rendering ──────────────────────────────────────── */
+function rita(){
+  const dpr=devicePixelRatio||1;
+  ctx.save(); ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,bredd,hojd);
+  ctx.translate(transform.x,transform.y); ctx.scale(transform.k,transform.k);
+  const syn=synligaNoder(), gr=grannar(vald);
+
+  for(const k of kanter){
+    if(k.score<troskel) continue;
+    const a=k.source,b=k.target; if(a.x==null||b.x==null) continue;
+    const iVag=vagSet.has(k.nyckel);
+    const ror = vald && (a.id===vald||b.id===vald);
+    const damp = vald && !ror;
+    ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+    ctx.lineWidth = .6 + (k.score/100)*3.4;
+    if(iVag){
+      ctx.strokeStyle="#00CFFF"; ctx.lineWidth+=1.6;
+      ctx.shadowColor="rgba(0,207,255,.85)"; ctx.shadowBlur=14;
+      if(!reducerad){ ctx.setLineDash([10,8]); ctx.lineDashOffset=-puls*.6; }
+    } else if(ror){ ctx.strokeStyle="rgba(0,207,255,.55)"; }
+    else ctx.strokeStyle = damp ? "rgba(221,226,242,.05)"
+                                : "rgba(221,226,242,"+(.08+(k.score/100)*.16)+")";
+    ctx.stroke(); ctx.setLineDash([]); ctx.shadowBlur=0;
+  }
+
+  for(const n of noder){
+    if(n.x==null) continue;
+    if(troskel>0 && !syn.has(n.id)) continue;
+    const st=SEKTOR[n.sektor]||SEKTOR.ovrigt;
+    const erVald=n.id===vald, erGranne=gr.has(n.id);
+    const iVag = vag ? vag.vag.includes(n.id) : false;
+    const damp = vald && !erVald && !erGranne;
+    if(erVald||iVag){
+      ctx.beginPath(); ctx.arc(n.x,n.y,n.radie+7,0,6.284);
+      ctx.fillStyle="rgba(0,207,255,.16)"; ctx.fill();
     }
-  }
-  for (const p of particles) {
-    const e=edges[p.e]; if(!e){p.e=Math.floor(Math.random()*edges.length);continue;}
-    const a=nodes[e[0]],b=nodes[e[1]];
-    const x=a.x+(b.x-a.x)*p.t, y=a.y+(b.y-a.y)*p.t;
-    cx.fillStyle='rgba(255,90,54,0.92)'; cx.beginPath(); cx.arc(x,y,1.8,0,7); cx.fill();
-    cx.fillStyle='rgba(255,90,54,0.18)'; cx.beginPath(); cx.arc(x,y,5.5,0,7); cx.fill();
-    p.t+=p.sp; if(p.t>1){p.t=0; p.e=Math.floor(Math.random()*edges.length);}
-  }
-  requestAnimationFrame(loopCanvas);
-}
-setupCanvas(); loopCanvas();
-window.addEventListener('resize', setupCanvas);
-
-/* mouse parallax on hero glow */
-document.getElementById('hero').addEventListener('mousemove', e => {
-  const r = e.currentTarget.getBoundingClientRect();
-  const dx = (e.clientX - r.width/2) / r.width * 30;
-  const dy = (e.clientY - r.height/2) / r.height * 20;
-  document.getElementById('heroGlow').style.transform = `translate(${dx}px,${dy}px)`;
-});
-
-/* ═══ STATS COUNT-UP ═══ */
-function countUp(el, target, duration=1200) {
-  const start = performance.now();
-  const update = now => {
-    const p = Math.min((now-start)/duration, 1);
-    const ease = 1-Math.pow(1-p,3);
-    const val = Math.round(ease*target);
-    el.textContent = val >= 1000 ? val.toLocaleString('sv-SE') : val;
-    if (p < 1) requestAnimationFrame(update);
-  };
-  requestAnimationFrame(update);
-}
-const statsObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.querySelectorAll('[data-count]').forEach(el => {
-        countUp(el, +el.dataset.count);
-      });
-      statsObs.unobserve(e.target);
+    ctx.beginPath(); ctx.arc(n.x,n.y,n.radie,0,6.284);
+    ctx.globalAlpha = damp?.28:1; ctx.fillStyle=st.f; ctx.fill();
+    if(n.pin){ ctx.lineWidth=2; ctx.strokeStyle="#DDE2F2"; ctx.stroke(); }
+    const visa = STOR ? (erVald||erGranne||iVag||transform.k>2.2||n.grad>=14)
+                      : (erVald||erGranne||iVag||n.grad>=3||transform.k>1.4);
+    if(visa){
+      ctx.globalAlpha = damp?.32:1;
+      ctx.font = "700 "+(11/Math.max(transform.k,.8))+"px 'Courier Prime',monospace";
+      ctx.fillStyle = (erVald||iVag) ? "#00CFFF" : "rgba(221,226,242,.82)";
+      ctx.textAlign="center"; ctx.fillText(n.namn, n.x, n.y-n.radie-7);
     }
-  });
-}, {threshold:0.5});
-statsObs.observe(document.querySelector('.stats'));
+    ctx.globalAlpha=1;
+  }
+  ctx.restore();
+  ritaMini();
+}
 
-/* ═══ SECTOR CARDS ═══ */
-const cardsEl = document.getElementById('cards');
-SECTORS.forEach(s => {
-  const d = document.createElement('div');
-  d.className = 'card';
-  d.innerHTML = `<div class="card-border"></div>
-    <div class="ix">SEKTOR · ${s.ix}</div>
-    <h3>${s.name}</h3>
-    <div class="roles">${s.roles}</div>
-    <div class="foot">
-      <span class="open">Öppna analysen <span class="arr">→</span></span>
-      <span class="roi-chip">ROI ${s.roi}%</span>
-    </div>`;
-  d.onclick = () => {
-    document.getElementById('roiSector').value = s.id;
-    updateRoi();
-    document.getElementById('roi').scrollIntoView({behavior:'smooth',block:'start'});
-  };
-  cardsEl.appendChild(d);
+function ritaMini(){
+  const dpr=devicePixelRatio||1, W=150,H=105,M=12;
+  mcv.width=W*dpr; mcv.height=H*dpr;
+  mctx.setTransform(dpr,0,0,dpr,0,0); mctx.clearRect(0,0,W,H);
+  mctx.fillStyle="rgba(8,9,15,.85)"; mctx.fillRect(0,0,W,H);
+  const p=noder.filter(n=>n.x!=null); if(!p.length) return;
+  const xs=p.map(n=>n.x), ys=p.map(n=>n.y);
+  const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+  const s=Math.min((W-M*2)/Math.max(x1-x0,1),(H-M*2)/Math.max(y1-y0,1));
+  mcv._omf={x0,y0,s,M};
+  const T=(x,y)=>({x:(x-x0)*s+M, y:(y-y0)*s+M});
+  p.forEach(n=>{ const q=T(n.x,n.y); mctx.beginPath(); mctx.arc(q.x,q.y,1.8,0,6.284);
+    mctx.fillStyle=(SEKTOR[n.sektor]||SEKTOR.ovrigt).f; mctx.globalAlpha=.85; mctx.fill(); });
+  mctx.globalAlpha=1;
+  const A=T(transform.invertX(0),transform.invertY(0)),
+        B=T(transform.invertX(bredd),transform.invertY(hojd));
+  mctx.strokeStyle="rgba(0,207,255,.85)"; mctx.lineWidth=1;
+  mctx.strokeRect(A.x,A.y,Math.max(B.x-A.x,2),Math.max(B.y-A.y,2));
+}
+
+(function loop(){ if(!reducerad) puls+=1; rita(); requestAnimationFrame(loop); })();
+
+/* ── träffytor ──────────────────────────────────────── */
+function nodVid(cx,cy){
+  const r=cv.getBoundingClientRect();
+  const x=transform.invertX(cx-r.left), y=transform.invertY(cy-r.top), syn=synligaNoder();
+  for(let i=noder.length-1;i>=0;i--){
+    const n=noder[i]; if(n.x==null) continue;
+    if(troskel>0 && !syn.has(n.id)) continue;
+    if((x-n.x)**2+(y-n.y)**2 < (n.radie+6)**2) return n;
+  } return null;
+}
+function kantVid(cx,cy){
+  const r=cv.getBoundingClientRect();
+  const x=transform.invertX(cx-r.left), y=transform.invertY(cy-r.top);
+  let bast=null,bd=8;
+  for(const k of kanter){
+    if(k.score<troskel) continue;
+    const a=k.source,b=k.target; if(a.x==null) continue;
+    const dx=b.x-a.x, dy=b.y-a.y, L=dx*dx+dy*dy; if(!L) continue;
+    let t=((x-a.x)*dx+(y-a.y)*dy)/L; t=Math.max(0,Math.min(1,t));
+    const d=Math.hypot(x-(a.x+t*dx), y-(a.y+t*dy));
+    if(d<bd){ bd=d; bast=k; }
+  } return bast;
+}
+
+/* ── zoom & drag ────────────────────────────────────── */
+const zoom=d3.zoom().scaleExtent([.35,4]).on("zoom",e=>{transform=e.transform;});
+let dragNod=null;
+const drag=d3.drag()
+  .subject(e=>nodVid(e.sourceEvent.clientX,e.sourceEvent.clientY))
+  .on("start",e=>{ dragNod=e.subject; if(dragNod&&!reducerad) sim.alphaTarget(.25).restart(); })
+  .on("drag",e=>{ if(!dragNod) return;
+    const r=cv.getBoundingClientRect();
+    dragNod.fx=transform.invertX(e.sourceEvent.clientX-r.left);
+    dragNod.fy=transform.invertY(e.sourceEvent.clientY-r.top);
+    if(reducerad){ dragNod.x=dragNod.fx; dragNod.y=dragNod.fy; } })
+  .on("end",()=>{ if(!dragNod) return; dragNod.pin=true; sim.alphaTarget(0); dragNod=null; });
+d3.select(cv).call(zoom).call(drag).on("dblclick.zoom",null);
+
+cv.addEventListener("mousemove",e=>{
+  const n=nodVid(e.clientX,e.clientY);
+  if(!n){ tip.hidden=true; hover=null; return; }
+  hover=n; const r=cv.getBoundingClientRect();
+  tip.hidden=false;
+  tip.innerHTML='<h3>'+n.namn+'</h3>'
+    +'<p>'+(SEKTOR[n.sektor]||SEKTOR.ovrigt).n+' · SSYK '+n.ssyk+'</p>'
+    +'<p>Lediga jobb: <b class="na">okänt</b></p>'
+    +'<p>Snittlön: <b class="na">saknas i databasen</b></p>'
+    +'<p class="na">'+n.grad+' koppling'+(n.grad===1?'':'ar')+'</p>';
+  tip.style.left=Math.min(e.clientX-r.left+16, bredd-240)+"px";
+  tip.style.top =Math.min(e.clientY-r.top+16,  hojd-140)+"px";
+});
+cv.addEventListener("mouseleave",()=>{tip.hidden=true;hover=null;});
+
+cv.addEventListener("click",e=>{
+  const n=nodVid(e.clientX,e.clientY);
+  if(n){ vald = vald===n.id?null:n.id; valdKant=null; paneler(); return; }
+  const k=kantVid(e.clientX,e.clientY);
+  if(k){ valdKant=k; vald=null; paneler(); return; }
+  vald=null; valdKant=null; paneler();
+});
+cv.addEventListener("dblclick",e=>{
+  const n=nodVid(e.clientX,e.clientY); if(!n) return;
+  n.fx=null; n.fy=null; n.pin=false; if(!reducerad) sim.alpha(.3).restart();
 });
 
-/* ═══ MAP ═══ */
-const geo = document.getElementById('mapGeo');
-const detail = document.getElementById('mapDetail');
-const tip = document.getElementById('tip');
-
-function renderDetail(k) {
-  detail.innerHTML = `
-    <div class="dk-l">Vald kommun</div>
-    <div class="dk">${k.n}</div>
-    <div class="detail-rows">
-      <div class="drow"><span>Bristindex</span><b class="acc">${k.brist} / 100</b></div>
-      <div class="drow"><span>Hårdast bristyrke</span><b>${k.top}</b></div>
-      <div class="drow"><span>Öppna platser (Platsbanken)</span><b>${Math.round(k.brist*4.2)}</b></div>
-      <div class="drow"><span>Möjliga omställningar</span><b>${Math.round(k.brist*1.7)} pers.</b></div>
-      <div class="drow"><span>Prognos 2030</span><b>${k.brist>60?'Förvärrad':'Stabil'}</b></div>
-    </div>
-    <div class="occ-pills">
-      <div class="dk-l" style="margin-bottom:10px">Möjliga källyrken</div>
-      <span class="occ-pill">Handelsbiträde</span>
-      <span class="occ-pill">Lagerarbetare</span>
-      <span class="occ-pill">Maskinoperatör</span>
-    </div>`;
+function centrera(id){
+  const n=nmap.get(id); if(!n||n.x==null) return;
+  const k=1.7;
+  const mal=d3.zoomIdentity.translate(bredd/2-n.x*k, hojd/2-n.y*k).scale(k);
+  const sel=d3.select(cv);
+  reducerad ? sel.call(zoom.transform,mal)
+            : sel.transition().duration(600).ease(d3.easeCubicOut).call(zoom.transform,mal);
+  vald=id; valdKant=null; paneler();
 }
+document.getElementById("reset").onclick=()=>{
+  d3.select(cv).call(zoom.transform,d3.zoomIdentity); vald=null; valdKant=null; paneler();
+};
 
-KOMMUNER.forEach(k => {
-  const el = document.createElement('div');
-  el.className = 'km';
-  const t = k.brist/100;
-  /* interpolate from dark surface to coral */
-  const r = Math.round(17 + (255-17)*t*0.9);
-  const g = Math.round(17 + (90-17)*t*0.7);
-  const b = Math.round(21 + (54-21)*t*0.7);
-  el.style.background = `rgb(${r},${g},${b})`;
-  if (k.brist > 65) el.style.boxShadow = `0 0 ${k.brist*0.25}px rgba(255,90,54,${0.2+t*0.25})`;
-  el.style.left = k.lp+'%';
-  el.style.top  = k.tp+'%';
-  el.innerHTML  = `<span style="color:${k.brist>55?'#fff':'#EEEEF0'}">${k.n}</span>`;
-  el.onmousemove = e => {
-    tip.style.opacity = 1;
-    tip.innerHTML = `${k.n} · brist <b>${k.brist}</b>`;
-    tip.style.left = (e.clientX+14)+'px'; tip.style.top = (e.clientY+14)+'px';
+/* ── kontroller ─────────────────────────────────────── */
+const sorterade=[...DATA.noder].sort((a,b)=>a.namn.localeCompare(b.namn,"sv"));
+["fran","till"].forEach(id=>{
+  const s=document.getElementById(id);
+  sorterade.forEach(n=>{ const o=document.createElement("option"); o.value=n.id; o.textContent=n.namn; s.appendChild(o); });
+  s.onchange=()=>{
+    const a=document.getElementById("fran").value, b=document.getElementById("till").value;
+    vag = (a&&b) ? kortasteVag(a,b) : null;
+    vagSet = new Set();
+    if(vag) for(let i=0;i<vag.vag.length-1;i++) vagSet.add([vag.vag[i],vag.vag[i+1]].sort().join("|"));
+    document.getElementById("vagFel").hidden = !(a&&b&&!vag);
+    paneler();
   };
-  el.onmouseleave = () => tip.style.opacity = 0;
-  el.onclick = () => {
-    document.querySelectorAll('.km').forEach(x => x.classList.remove('sel'));
-    el.classList.add('sel');
-    renderDetail(k);
-  };
-  geo.appendChild(el);
 });
-renderDetail(KOMMUNER.find(k => k.n==='Jönköping'));
 
-/* ═══ TRANSITIONS SVG ═══ */
-const svgEl = document.getElementById('transSvg');
-const NS='http://www.w3.org/2000/svg';
-const TW=680, TH=400, padY=56;
-const gap = (TH-2*padY)/(TRANSITIONS.length-1);
-const Lx=165, Rx=515;
-let active=5;
-
-function mkEl(tag,attrs,txt) {
-  const e=document.createElementNS(NS,tag);
-  for(const k in attrs) e.setAttribute(k,attrs[k]);
-  if(txt!==undefined) e.textContent=txt;
-  return e;
-}
-
-function drawTrans() {
-  svgEl.innerHTML='';
-  /* defs */
-  const defs=mkEl('defs');
-  defs.innerHTML='<filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
-  svgEl.appendChild(defs);
-
-  svgEl.appendChild(mkEl('text',{x:Lx,y:24,'text-anchor':'middle',class:'ch'},'NUVARANDE YRKE'));
-  svgEl.appendChild(mkEl('text',{x:Rx,y:24,'text-anchor':'middle',class:'ch'},'BRISTYRKE'));
-
-  /* inactive edges */
-  TRANSITIONS.forEach((t,i) => {
-    if(i===active) return;
-    const y=padY+i*gap;
-    svgEl.appendChild(mkEl('path',{d:`M ${Lx} ${y} C ${(Lx+Rx)/2} ${y}, ${(Lx+Rx)/2} ${y}, ${Rx} ${y}`,fill:'none',stroke:'rgba(255,255,255,0.10)','stroke-width':1.2}));
+const sok=document.getElementById("sok"), traffar=document.getElementById("traffar");
+sok.addEventListener("input",()=>{
+  const t=sok.value.trim().toLowerCase();
+  if(!t){ traffar.hidden=true; traffar.innerHTML=""; return; }
+  const hit=sorterade.filter(n=>n.namn.toLowerCase().includes(t)).slice(0,6);
+  traffar.innerHTML=""; traffar.hidden=!hit.length;
+  hit.forEach(n=>{
+    const li=document.createElement("li"), b=document.createElement("button");
+    b.type="button";
+    b.innerHTML=n.namn+'<span>'+(SEKTOR[n.sektor]||SEKTOR.ovrigt).n+'</span>';
+    b.onclick=()=>{ centrera(n.id); sok.value=n.namn; traffar.hidden=true; };
+    li.appendChild(b); traffar.appendChild(li);
   });
-
-  /* active edge with animation */
-  const ay=padY+active*gap;
-  const pathLen=Rx-Lx;
-  const activePath=mkEl('path',{d:`M ${Lx} ${ay} C ${(Lx+Rx)/2} ${ay}, ${(Lx+Rx)/2} ${ay}, ${Rx} ${ay}`,fill:'none',stroke:'#FF5A36','stroke-width':2.5,'stroke-dasharray':pathLen,'stroke-dashoffset':pathLen,filter:'url(#glow)'});
-  svgEl.appendChild(activePath);
-  /* animate draw */
-  activePath.animate([{strokeDashoffset:pathLen},{strokeDashoffset:0}],{duration:420,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});
-
-  /* pct badge on active */
-  const mid=(Lx+Rx)/2;
-  svgEl.appendChild(mkEl('rect',{x:mid-28,y:ay-22,width:56,height:18,fill:'#0D0D10',stroke:'#FF5A36','stroke-width':1,rx:5}));
-  svgEl.appendChild(mkEl('text',{x:mid,y:ay-9,'text-anchor':'middle',class:'npct'},TRANSITIONS[active].pct+'%'));
-
-  /* nodes */
-  TRANSITIONS.forEach((t,i) => {
-    const y=padY+i*gap, on=i===active;
-    svgEl.appendChild(mkEl('circle',{cx:Lx,cy:y,r:on?7:4.5,fill:on?'#FF5A36':'#1E1E26',stroke:on?'#FF5A36':'rgba(255,255,255,0.25)','stroke-width':1.2}));
-    svgEl.appendChild(mkEl('text',{x:Lx-14,y:y+4,'text-anchor':'end',class:on?'nl':'nl dim'},t.from));
-    svgEl.appendChild(mkEl('circle',{cx:Rx,cy:y,r:on?7:4.5,fill:on?'#FF5A36':'#1E1E26',stroke:on?'#FF5A36':'rgba(255,90,54,0.4)','stroke-width':1.2}));
-    svgEl.appendChild(mkEl('text',{x:Rx+14,y:y+4,'text-anchor':'start',class:on?'nl':'nl dim'},t.to));
-    /* row divider */
-    svgEl.appendChild(mkEl('line',{x1:0,x2:TW,y1:y,y2:y,stroke:'rgba(255,255,255,0.04)','stroke-width':1}));
-  });
-}
-
-const mlist=document.getElementById('mlist');
-TRANSITIONS.forEach((t,i) => {
-  const r=document.createElement('div');
-  r.className='mrow'+(i===active?' on':'');
-  r.innerHTML=`<span class="pair">${t.from}<span class="arr">→</span>${t.to}</span><span class="pct">${t.pct}%</span>`;
-  r.onclick=()=>{
-    active=i; drawTrans();
-    document.querySelectorAll('.mrow').forEach(x=>x.classList.remove('on'));
-    r.classList.add('on');
-  };
-  mlist.appendChild(r);
 });
-drawTrans();
+sok.addEventListener("keydown",e=>{
+  if(e.key!=="Enter") return;
+  const t=sok.value.trim().toLowerCase();
+  const f=sorterade.find(n=>n.namn.toLowerCase().includes(t));
+  if(f){ centrera(f.id); sok.value=f.namn; traffar.hidden=true; }
+});
 
-/* ═══ ROI CALCULATOR ═══ */
-const roiSel=document.getElementById('roiSector');
-SECTORS.forEach(s=>{const o=document.createElement('option');o.value=s.id;o.textContent=s.name;roiSel.appendChild(o);});
-roiSel.value='industri';
+const tr=document.getElementById("trosk");
+tr.addEventListener("input",()=>{
+  troskel=+tr.value; document.getElementById("troskV").textContent=troskel;
+  const a=document.getElementById("fran").value, b=document.getElementById("till").value;
+  vag=(a&&b)?kortasteVag(a,b):null; vagSet=new Set();
+  if(vag) for(let i=0;i<vag.vag.length-1;i++) vagSet.add([vag.vag[i],vag.vag[i+1]].sort().join("|"));
+  rakn(); paneler();
+});
 
-const fmt1=v=>(v/1e6).toLocaleString('sv-SE',{minimumFractionDigits:1,maximumFractionDigits:1})+' MKR';
-const fmtT=v=>Math.round(v/1000).toLocaleString('sv-SE')+' TKR';
+document.getElementById("legToggle").onclick=function(){
+  const l=document.getElementById("legLista"), o=l.hidden;
+  l.hidden=!o; this.setAttribute("aria-expanded",String(o));
+  this.textContent = "Färgförklaring "+(o?"▾":"▸");
+};
+document.getElementById("introStang").onclick=()=>{ document.getElementById("intro").hidden=true; };
 
-function updateRoi() {
-  const s=SECTORS.find(x=>x.id===roiSel.value)||SECTORS[0];
-  const cnt=+document.getElementById('roiCount').value;
-  const cost=+document.getElementById('roiCost').value;
-  const saveP=s.save, netP=saveP-cost;
-  const totC=cost*cnt, totS=saveP*cnt, net=netP*cnt;
-  const roi=cost>0?Math.round(netP/cost*100):0;
-  document.getElementById('roiCountV').textContent=cnt;
-  document.getElementById('oCostP').textContent=fmtT(cost);
-  document.getElementById('oSaveP').textContent=fmtT(saveP);
-  document.getElementById('oCostT').textContent=fmt1(totC);
-  document.getElementById('oNet').textContent='+'+fmt1(net);
-  document.getElementById('oRoi').textContent=roi+'%';
-  document.getElementById('oCi').textContent='+'+fmt1(net*0.85)+' till +'+fmt1(net*1.15);
-  /* bars */
-  const maxBar=Math.max(totC,totS);
-  document.getElementById('bCost').style.width=(totC/maxBar*100)+'%';
-  document.getElementById('bSave').style.width=(totS/maxBar*100)+'%';
-  document.getElementById('bCostV').textContent=fmt1(totC);
-  document.getElementById('bSaveV').textContent=fmt1(totS);
+document.getElementById("mini").onclick=e=>{
+  const o=mcv._omf; if(!o) return;
+  const r=mcv.getBoundingClientRect();
+  const x=(e.clientX-r.left-o.M)/o.s+o.x0, y=(e.clientY-r.top-o.M)/o.s+o.y0;
+  d3.select(cv).call(zoom.transform,
+    d3.zoomIdentity.translate(bredd/2-x*transform.k, hojd/2-y*transform.k).scale(transform.k));
+};
+
+/* ── paneler ────────────────────────────────────────── */
+function paneler(){
+  const el=document.getElementById("paneler"); el.innerHTML="";
+  if(vag){
+    const kedja=vag.vag.map(id=>"<strong>"+idx.get(id).namn+"</strong>").join(' <i>→</i> ');
+    el.insertAdjacentHTML("beforeend",
+      '<div class="panel vag"><p class="lbl">Kortaste omställningsvägen</p>'
+      +'<p class="kedja">'+kedja+'</p>'
+      +'<p class="hint">'+(vag.vag.length-1)+' steg. Vägen väljs på högst sammanlagt '
+      +'kompetensöverlapp, inte på färrast hopp.</p></div>');
+  }
+  if(valdKant){
+    const k=valdKant;
+    const rikt=k.data.r.map(r=>'<li>'+idx.get(r.f).namn+' <em>'+(RIKT[r.d]||r.d)+'</em> '
+      +idx.get(r.t).namn+'</li>').join("");
+    el.insertAdjacentHTML("beforeend",
+      '<div class="panel"><div class="ph"><p class="lbl">Varför finns den här kopplingen?</p>'
+      +'<button class="k" data-act="stangKant">Stäng</button></div>'
+      +'<p class="pt">'+k.source.namn+' ↔ '+k.target.namn+'</p>'
+      +'<p>Substituerbarhet: <b>'+k.score+'%</b> enligt Arbetsförmedlingens data.</p>'
+      +'<ul class="rikt">'+rikt+'</ul>'
+      +'<p class="hint w" style="margin-top:12px">Listan över delade kompetenser saknas: '
+      +'databasen innehåller ännu inga kopplingar mellan yrke och kompetens. Kanten bygger '
+      +'på Arbetsförmedlingens substituerbarhetspoäng.</p></div>');
+  }
+  if(vald && !valdKant){
+    const n=idx.get(vald), gr=[...grannar(vald)];
+    const chips=gr.map(id=>'<li><button data-centrera="'+id+'">'
+      +idx.get(id).namn+'</button></li>').join("");
+    el.insertAdjacentHTML("beforeend",
+      '<div class="panel"><div class="ph"><p class="lbl">Valt yrke</p>'
+      +'<button class="k" data-act="stangNod">Stäng</button></div>'
+      +'<p class="pt">'+n.namn+'</p><p>'+n.def+'</p>'
+      +'<p class="hint">SSYK '+n.ssyk+' · '+(SEKTOR[n.sektor]||SEKTOR.ovrigt).n+' · '
+      +gr.length+' närliggande yrke'+(gr.length===1?'':'n')+'</p>'
+      +(gr.length?'<ul class="chips">'+chips+'</ul>':'')+'</div>');
+  }
+  rakn();
 }
-['roiSector','roiCount','roiCost'].forEach(id=>document.getElementById(id).addEventListener('input',updateRoi));
-updateRoi();
+document.getElementById("paneler").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  if(b.dataset.centrera){ centrera(b.dataset.centrera); return; }
+  if(b.dataset.act==="stangKant"){ valdKant=null; paneler(); return; }
+  if(b.dataset.act==="stangNod"){ vald=null; paneler(); }
+});
+function rakn(){
+  const syn=synligaNoder();
+  document.getElementById("rN").textContent = troskel>0?syn.size:noder.length;
+  document.getElementById("rTot").textContent = noder.length;
+  document.getElementById("rK").textContent = synligaKanter().length;
+}
 
-/* ═══ REVEAL ON SCROLL ═══ */
-const io=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting) e.target.classList.add('in');});
-},{threshold:0.12});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+/* ── init ───────────────────────────────────────────── */
+document.getElementById("ahaY").textContent=DATA.meta.yrken;
+document.getElementById("ahaK").textContent=DATA.meta.kanter_odirigerade;
+document.getElementById("kalla").textContent = KALLA==="af-taxonomi"
+  ? "Arbetsförmedlingens taxonomi · "+DATA.meta.kanter_riktade+" riktade kanter · hämtad "+(DATA.meta.hamtad||"").slice(0,10)
+  : "Inbyggd seed-data · "+DATA.meta.kanter_riktade+" riktade kanter · "+DATA.meta.kompetenser+" kompetenser";
+if(KALLA==="af-taxonomi") document.getElementById("notis").hidden=true;
+document.getElementById("legNot").textContent = "Storlek = antal kopplingar"
+  + (KALLA==="af-taxonomi" ? " · medelgrad "+DATA.meta.medelgrad : " (annonsdata saknas)");
+const brukade=[...new Set(DATA.noder.map(n=>n.sektor))];
+document.getElementById("legLista").innerHTML =
+  brukade.map(s=>'<li><span class="dot" style="background:'+(SEKTOR[s]||SEKTOR.ovrigt).f
+    +'"></span>'+(SEKTOR[s]||SEKTOR.ovrigt).n+'</li>').join("")
+  +'<li class="not" id="legNot"></li>';
+rakn();
 
-/* ═══ NAV ACTIVE STATE ═══ */
-const navLinks=document.querySelectorAll('nav.nav a');
-const sectionIds=['hero','sektorer','karta','graf','roi'];
-window.addEventListener('scroll',()=>{
-  const y=window.scrollY+180;
-  let cur=0;
-  sectionIds.forEach((id,i)=>{const el=document.getElementById(id);if(el&&el.offsetTop<=y)cur=i;});
-  navLinks.forEach((a,i)=>a.classList.toggle('on',i===cur));
-},{passive:true});
+})();
 </script>
 </body>
 </html>
