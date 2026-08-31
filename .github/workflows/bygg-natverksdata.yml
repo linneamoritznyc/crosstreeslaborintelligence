@@ -8,6 +8,13 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 4 * * 1'
+  # Kör om vid ändring av hämtaren eller workflowen. Filtret hindrar att
+  # workflowens egen commit av natverk-full.json startar en ny körning.
+  push:
+    branches: [main]
+    paths:
+      - 'services/data-pipeline/src/bygg_natverksdata.py'
+      - '.github/workflows/bygg-natverksdata.yml'
 
 permissions:
   contents: write
