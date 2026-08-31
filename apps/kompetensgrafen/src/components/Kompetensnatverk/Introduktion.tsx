@@ -31,12 +31,12 @@ export default function Introduktion() {
   };
 
   return (
-    <div className="natverk-intro" role="dialog" aria-label="Så funkar grafen">
+    <section className="natverk-intro" aria-labelledby="natverk-intro-rubrik">
       <div className="natverk-intro-kort">
-        <p className="rust-eyebrow">SÅ FUNKAR DET</p>
+        <p className="rust-eyebrow" id="natverk-intro-rubrik">SÅ FUNKAR DET</p>
         <p className="natverk-intro-text">
           Varje prick är ett yrke. Två prickar som sitter nära varandra delar
-          mycket kompetens — det betyder att någon i det ena yrket ofta snabbt
+          mycket kompetens. Det betyder att någon i det ena yrket ofta snabbt
           kan lära sig det andra. Klicka på en prick för att utforska.
         </p>
         <ul className="natverk-intro-lista">
@@ -54,9 +54,9 @@ export default function Introduktion() {
           </li>
         </ul>
         <button className="natverk-knapp" onClick={stang}>
-          Jag förstår — visa grafen
+          Jag förstår, visa grafen
         </button>
       </div>
-    </div>
+    </section>
   );
 }

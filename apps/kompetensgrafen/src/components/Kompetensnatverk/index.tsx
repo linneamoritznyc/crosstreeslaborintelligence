@@ -659,7 +659,7 @@ export default function Kompetensnatverk() {
         <div className="natverk-notis" role="status">
           <strong>Visar inbyggd seed-data.</strong> API:t svarade inte
           {fel ? ` (${fel})` : ""}. Siffrorna ovan är den faktiska seed-datamängden
-          som laddas in i Neo4j — inte live-data, och inte uppskattningar.
+          som laddas in i Neo4j, inte live-data och inte uppskattningar.
           <button
             className="natverk-knapp natverk-knapp-liten"
             onClick={() => setForsok((f) => f + 1)}

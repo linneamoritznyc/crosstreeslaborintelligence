@@ -28,7 +28,7 @@ export default function NatverkPage() {
         </h1>
         <p className="natverk-ingress">
           Arbetsmarknaden är inte en lista med yrken. Den är ett nätverk. Här ser
-          du hur yrkena faktiskt hänger ihop — och vem som kan gå vart.
+          du hur yrkena faktiskt hänger ihop, och vem som kan gå vart.
         </p>
       </section>
 
