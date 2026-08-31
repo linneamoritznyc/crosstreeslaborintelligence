@@ -23,6 +23,7 @@ from ..services.kompetensgrafen_service import (
     get_top_shortage_occupations,
     list_occupations_for_sektor,
 )
+from ..services.natverk_service import hamta_natverk
 
 log = get_logger(__name__)
 router = APIRouter()
@@ -93,6 +94,21 @@ async def karta_data(sektor: str = Query(...)):
     return await get_with_swr(
         f"kompetensgrafen:karta:{sektor}",
         lambda: get_karta_for_sektor(sektor),
+        OCCUPATION_OVERVIEW_TTL,
+        JOB_SEARCH_REVALIDATE_AFTER,
+    )
+
+
+@router.get("/natverk")
+async def natverk(annonser: bool = Query(default=True)):
+    """Hela kompetensnätverket: yrken som noder, substituerbarhet som kanter.
+
+    `meta` beskriver datans faktiska omfång och vilka fält som saknas, så att
+    gränssnittet kan visa verkliga tal i stället för uppskattningar.
+    """
+    return await get_with_swr(
+        f"kompetensgrafen:natverk:{int(annonser)}",
+        lambda: hamta_natverk(inkludera_annonser=annonser),
         OCCUPATION_OVERVIEW_TTL,
         JOB_SEARCH_REVALIDATE_AFTER,
     )

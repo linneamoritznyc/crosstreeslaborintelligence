@@ -73,7 +73,13 @@ QDRANT_API_KEY=<qdrant-nyckel>
 
 3. Verifiera deployen — kalla:
    - `GET https://<railway-url>/health` — JSON-status
-   - `GET https://<railway-url>/demo/neo4j-check` — ska visa 22 yrken, 51 kompetenser, 22 kanter
+   - `GET https://<railway-url>/demo/neo4j-check` — ska visa 22 yrken, 51 kompetenser,
+     38 kanter. Siffrorna är seed-datans faktiska omfång
+     (`services/matching-api/seed/`): 22 yrken, 51 kompetenser och 19 yrkespar
+     lagrade som 38 riktade `SUBSTITUTABLE_BY`-relationer. Detta är hela
+     datamängden i den körande databasen — den fullständiga ESCO-taxonomin laddas
+     först när `python -m src.pipeline` körs mot en Neo4j-instans med satta
+     `NEO4J_*`-secrets.
 
 ### Frontend — Vercel (två projekt)
 

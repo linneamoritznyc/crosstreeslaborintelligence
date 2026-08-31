@@ -24,7 +24,12 @@ TalentFlow           Kompetensgrafen
 
 1. **CV-uppladdning**: TalentFlow → `/cv/parse` → Claude AI → skill-ID:n → Redis-session
 2. **Jobbmatchning**: skill-ID:n → `/match/score` → `calculate_fit_score()` → Wilson-CI
-3. **Karriärgraf**: Neo4j SUBSTITUTABLE_BY-relationer → PageRank → rekommenderade nästa steg
+3. **Karriärgraf**: Neo4j SUBSTITUTABLE_BY-relationer → sortering på AF:s
+   substituerbarhetspoäng → rekommenderade nästa steg.
+   (PageRank ingår *inte* i den körande vägen. `compute_pagerank` i
+   `data-pipeline/src/evaluate/pagerank_sensitivity.py` anropas endast från
+   enhetstester. Se `docs/GRAFMATEMATIK_FARDPLAN.md` för vad som är byggt,
+   specificerat respektive forskningsriktning.)
 4. **Regional analys**: SCB PxWebApi → `/kompetensgrafen/brist` → BristTabell
 
 ## Skalning

@@ -90,7 +90,9 @@ async def get_omstallning(target_occupation_id: str | None = None) -> dict:
                     }
                     for k in kallor
                 ],
-                "datakalla": "AF Substitutabilitetsdata + Neo4j PageRank",
+                # Rangordningen är en sortering på AF:s substituerbarhetspoäng.
+                # Ingen centralitetsalgoritm körs i den här vägen.
+                "datakalla": "AF Substitutabilitetsdata (Neo4j), sorterad på score",
             }
         result = await db.run(
             """
