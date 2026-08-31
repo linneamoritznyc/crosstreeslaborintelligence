@@ -80,11 +80,12 @@ Arbetsförmedlingens substitutabilitetsdata. Beslut fattas av behöriga handläg
 
 ## Kontakt
 
-Crosstrees Labor Intelligence · Vetlanda, Sverige · crosstrees.se
+Crosstrees Labor Intelligence · Vetlanda, Sverige
 `;
 
 export function GET() {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "https://api.crosstrees.se";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL ??
+    "https://kompetensgrafen-production.up.railway.app";
   const body = CONTENT
     .replaceAll(BASE_PLACEHOLDER, getSiteUrl())
     .replaceAll("{API_URL}", apiUrl);
