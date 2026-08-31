@@ -922,3 +922,557 @@ aside[role="note"] strong {
   .foot { padding: 13px 20px; flex-direction: column; gap: 8px; text-align: center; }
   .nav { display: none; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   KOMPETENSNÄTVERKET — /natverk
+   Interaktiv force-directed graf över yrken och deras kompetensöverlapp.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.natverk-hero {
+  padding: 56px 40px 28px;
+  background: var(--parchment-dark);
+  border-bottom: 0.5px solid var(--border-faint);
+}
+
+.natverk-h1 {
+  font-family: 'Alumni Sans Condensed', Impact, sans-serif;
+  font-weight: 900;
+  font-size: clamp(52px, 8vw, 84px);
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 12px 0 0;
+}
+
+.natverk-h1 .accent { color: var(--rust); }
+
+.natverk-ingress {
+  font-family: 'IM Fell English', 'Libre Baskerville', Georgia, serif;
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  max-width: 620px;
+  margin: 18px 0 0;
+}
+
+.natverk-rot { padding: 0 0 40px; }
+
+/* ── aha-raden ─────────────────────────────────────────────────────── */
+
+.natverk-aha {
+  padding: 28px 40px 18px;
+  border-bottom: 0.5px solid var(--border-faint);
+}
+
+.natverk-aha-text {
+  font-family: 'Alumni Sans Condensed', Impact, sans-serif;
+  font-weight: 900;
+  font-size: clamp(26px, 3.4vw, 38px);
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0;
+}
+
+.natverk-aha-text strong { color: var(--rust); }
+.natverk-aha-kalla { margin: 10px 0 0; }
+
+/* ── datavarning ───────────────────────────────────────────────────── */
+
+.natverk-notis {
+  margin: 16px 40px 0;
+  padding: 14px 18px;
+  border: 0.5px solid rgba(255, 215, 94, 0.42);
+  background: rgba(255, 215, 94, 0.07);
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ── kontroller ────────────────────────────────────────────────────── */
+
+.natverk-kontroller {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  padding: 24px 40px 18px;
+}
+
+.natverk-falt { position: relative; display: flex; flex-direction: column; gap: 7px; }
+
+.natverk-input {
+  background: rgba(13, 15, 26, 0.72);
+  border: 0.5px solid var(--border-mid);
+  color: var(--ink);
+  font-family: 'Courier Prime', monospace;
+  font-size: 14px;
+  padding: 11px 13px;
+  border-radius: 0;
+  width: 100%;
+}
+
+.natverk-input:focus-visible {
+  outline: 2px solid var(--rust);
+  outline-offset: 1px;
+  border-color: var(--rust);
+}
+
+.natverk-vagval { display: flex; gap: 8px; flex-wrap: wrap; }
+.natverk-vagval .natverk-input { flex: 1 1 130px; min-width: 0; }
+
+.natverk-slider {
+  width: 100%;
+  accent-color: var(--rust);
+  appearance: none;
+  height: 3px;
+  background: var(--ink-faint);
+  outline: none;
+  cursor: pointer;
+}
+
+.natverk-slider:focus-visible { outline: 2px solid var(--rust); outline-offset: 6px; }
+
+.natverk-hjalp {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.natverk-varning { color: #FFD75E; }
+
+.natverk-traffar {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+  background: rgba(8, 9, 15, 0.97);
+  border: 0.5px solid var(--border-mid);
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.natverk-traffar button {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  background: transparent;
+  border: none;
+  border-bottom: 0.5px solid var(--border-faint);
+  color: var(--ink);
+  font-family: 'Courier Prime', monospace;
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.natverk-traffar button:hover,
+.natverk-traffar button:focus-visible { background: rgba(0, 207, 255, 0.12); }
+.natverk-traff-sektor { color: var(--muted); font-size: 10.5px; }
+
+/* ── knappar ───────────────────────────────────────────────────────── */
+
+.natverk-knapp {
+  font-family: 'Courier Prime', monospace;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--rust);
+  border: 0.5px solid var(--rust);
+  padding: 10px 18px;
+  cursor: pointer;
+  border-radius: 0;
+  transition: background 0.15s, color 0.15s;
+}
+
+.natverk-knapp:hover { background: var(--rust); color: #060710; }
+.natverk-knapp:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.natverk-knapp-liten { padding: 6px 12px; font-size: 10px; }
+
+/* ── räkneverk ─────────────────────────────────────────────────────── */
+
+.natverk-rakneverk {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 0 40px 14px;
+  font-family: 'Courier Prime', monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+.natverk-rakneverk strong { color: var(--rust); }
+
+/* ── scen ──────────────────────────────────────────────────────────── */
+
+.natverk-scen {
+  position: relative;
+  margin: 0 40px;
+  border: 0.5px solid var(--border-mid);
+  background: var(--parchment-dark);
+  overflow: hidden;
+}
+
+.natverk-canvas {
+  position: relative;
+  z-index: 2;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+}
+
+.natverk-canvas:active { cursor: grabbing; }
+
+/* drivande färgblobbar bakom grafen */
+.natverk-blobbar { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
+
+.blobb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.2;
+}
+
+.blobb-1 {
+  width: 420px; height: 420px; top: -90px; left: 4%;
+  background: #00CFFF;
+  animation: blobbDrift1 26s ease-in-out infinite;
+}
+
+.blobb-2 {
+  width: 360px; height: 360px; bottom: -110px; right: 10%;
+  background: #9D7BFF;
+  animation: blobbDrift2 32s ease-in-out infinite;
+}
+
+.blobb-3 {
+  width: 300px; height: 300px; top: 32%; right: 34%;
+  background: #FF9F45;
+  opacity: 0.14;
+  animation: blobbDrift3 24s ease-in-out infinite;
+}
+
+@keyframes blobbDrift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(70px, 46px) scale(1.13); }
+}
+@keyframes blobbDrift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-60px, -40px) scale(1.09); }
+}
+@keyframes blobbDrift3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(38px, -54px) scale(0.9); }
+}
+
+/* ── tooltip (glaskort) ────────────────────────────────────────────── */
+
+.natverk-tooltip {
+  position: absolute;
+  z-index: 20;
+  width: 224px;
+  padding: 13px 15px;
+  background: rgba(13, 15, 26, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 0.5px solid rgba(0, 207, 255, 0.42);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+}
+
+.natverk-tooltip-namn {
+  font-family: 'Alumni Sans Condensed', Impact, sans-serif;
+  font-weight: 900;
+  font-size: 21px;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0 0 7px;
+  line-height: 1.05;
+}
+
+.natverk-tooltip-rad {
+  font-family: 'Courier Prime', monospace;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  margin: 0 0 4px;
+}
+
+.natverk-tooltip-rad strong { color: var(--rust); }
+.natverk-tooltip-svag { color: var(--muted); margin-top: 7px; }
+
+/* ── minikarta ─────────────────────────────────────────────────────── */
+
+.natverk-minikarta {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 15;
+  border: 0.5px solid var(--border-mid);
+  background: rgba(8, 9, 15, 0.9);
+  cursor: crosshair;
+}
+
+.natverk-minikarta-text {
+  display: block;
+  padding: 3px 6px;
+  font-family: 'Courier Prime', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  border-top: 0.5px solid var(--border-faint);
+}
+
+/* ── legend ────────────────────────────────────────────────────────── */
+
+.natverk-legend {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 15;
+  background: rgba(8, 9, 15, 0.9);
+  border: 0.5px solid var(--border-mid);
+  max-width: 240px;
+}
+
+.natverk-legend-knapp {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  color: var(--rust);
+  font-family: 'Courier Prime', monospace;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+}
+
+.natverk-legend-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0 12px 10px;
+}
+
+.natverk-legend-lista li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Courier Prime', monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  padding: 3px 0;
+}
+
+.natverk-legend-prick {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.natverk-legend-not {
+  color: var(--muted);
+  font-size: 10px;
+  border-top: 0.5px solid var(--border-faint);
+  margin-top: 6px;
+  padding-top: 7px;
+}
+
+/* ── paneler ───────────────────────────────────────────────────────── */
+
+.natverk-panel {
+  margin: 18px 40px 0;
+  padding: 20px 24px;
+  background: rgba(13, 15, 26, 0.68);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 0.5px solid var(--border-mid);
+}
+
+.natverk-panel-vag { border-color: rgba(0, 207, 255, 0.5); }
+
+.natverk-panel-huvud {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.natverk-panel-titel {
+  font-family: 'Alumni Sans Condensed', Impact, sans-serif;
+  font-weight: 900;
+  font-size: 27px;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 6px 0 10px;
+  line-height: 1.05;
+}
+
+.natverk-vag-kedja {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--ink);
+  margin: 8px 0 6px;
+}
+
+.natverk-pil { color: var(--rust); font-family: 'Courier Prime', monospace; }
+
+.natverk-riktningar,
+.natverk-kompetenser,
+.natverk-grannar {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.natverk-riktningar li {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: 14px;
+  color: var(--ink-soft);
+  padding: 5px 0;
+  border-bottom: 0.5px solid var(--border-faint);
+}
+
+.natverk-riktningar em { color: var(--rust); font-style: italic; }
+
+.natverk-kompetenser { display: flex; flex-wrap: wrap; gap: 7px; }
+
+.natverk-kompetenser li {
+  font-family: 'Courier Prime', monospace;
+  font-size: 11.5px;
+  color: var(--ink);
+  border: 0.5px solid var(--border-mid);
+  padding: 4px 10px;
+}
+
+.natverk-grannar { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+
+.natverk-grannar button {
+  font-family: 'Courier Prime', monospace;
+  font-size: 11.5px;
+  color: var(--rust);
+  background: transparent;
+  border: 0.5px solid var(--border-mid);
+  padding: 5px 11px;
+  cursor: pointer;
+}
+
+.natverk-grannar button:hover { background: rgba(0, 207, 255, 0.12); }
+
+/* ── laddning & fel ────────────────────────────────────────────────── */
+
+.natverk-skal {
+  margin: 28px 40px;
+  padding: 56px 32px;
+  border: 0.5px solid var(--border-mid);
+  background: var(--parchment-dark);
+  text-align: center;
+}
+
+.natverk-fel { border-color: rgba(255, 107, 157, 0.5); }
+.natverk-fel .natverk-knapp { margin-top: 16px; }
+
+/* ── introduktion ──────────────────────────────────────────────────── */
+
+.natverk-intro {
+  margin: 20px 40px 0;
+  padding: 0;
+}
+
+.natverk-intro-kort {
+  padding: 26px 28px;
+  background: rgba(13, 15, 26, 0.74);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 0.5px solid rgba(0, 207, 255, 0.4);
+  max-width: 640px;
+}
+
+.natverk-intro-text {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--ink);
+  margin: 10px 0 16px;
+}
+
+.natverk-intro-lista { list-style: none; margin: 0 0 20px; padding: 0; }
+
+.natverk-intro-lista li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: 'Courier Prime', monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  padding: 4px 0;
+}
+
+.natverk-intro-mark {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--rust);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+/* ── fot ───────────────────────────────────────────────────────────── */
+
+.natverk-fot {
+  margin-top: 26px;
+  padding: 18px 40px;
+  background: var(--parchment-dark);
+  border-top: 0.5px solid var(--border-faint);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* ── mobil ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  .natverk-hero { padding: 36px 20px 22px; }
+  .natverk-aha,
+  .natverk-kontroller,
+  .natverk-rakneverk { padding-left: 20px; padding-right: 20px; }
+  .natverk-scen,
+  .natverk-panel,
+  .natverk-notis,
+  .natverk-intro { margin-left: 20px; margin-right: 20px; }
+  .natverk-fot { padding: 16px 20px; }
+  .natverk-legend { max-width: 170px; }
+  .natverk-tooltip { width: 190px; }
+}
+
+/* ── dämpad rörelse ────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .blobb { animation: none !important; }
+  .natverk-knapp { transition: none; }
+}
