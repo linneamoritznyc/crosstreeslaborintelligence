@@ -28,7 +28,6 @@ export default function KontaktPage() {
         maxWidth: 640, marginBottom: "2rem" }}>
         {[
           { label: "E-POST", value: "linnea@crosstrees.se", href: "mailto:linnea@crosstrees.se" },
-          { label: "HEMSIDA", value: "crosstrees.se", href: "https://crosstrees.se" },
           { label: "GRUNDARE", value: "Linnea Moritz", href: undefined },
           { label: "ORT", value: "Vetlanda, Sverige", href: undefined },
         ].map(({ label, value, href }) => (
@@ -50,9 +49,9 @@ export default function KontaktPage() {
         Pilotprogram
       </h2>
       <p className="body-t" style={{ maxWidth: 520, marginBottom: "1rem" }}>
-        Jönköpings Kompetensråd är första pilotregion. Vi söker ytterligare en till två
-        regionala partners för att validera modellen under 2026 innan nationell skalning
-        via Tillväxtverkets nätverk.
+        Vi söker en till två regionala pilotpartners för att validera modellen
+        under 2026. Kompetensgrafen är byggd med Jönköpings län som utgångspunkt,
+        men inga pilotavtal är ännu tecknade.
       </p>
       <p className="body-t" style={{ maxWidth: 520, marginBottom: "2rem" }}>
         Pilotpartners får bästa villkor och direkt inflytande över produktens riktning.

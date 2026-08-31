@@ -96,7 +96,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <span className="foot-mark">Crosstrees</span>
           <span className="foot-t">
             <a href="/kontakt" style={{ color: "inherit", textDecoration: "none" }}>Kontakt</a>
-            {" · crosstrees.se · © 2026"}
+            {" · © 2026"}
           </span>
         </footer>
       </body>

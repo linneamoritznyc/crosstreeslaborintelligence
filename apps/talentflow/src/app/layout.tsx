@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   const regionUrl =
     process.env.NEXT_PUBLIC_KOMPETENSGRAFEN_URL ??
-    "https://kompetensgrafen.crosstrees.se";
+    "https://crosstreeslaborintelligence.vercel.app";
   return (
     <html lang="sv">
       <body>
@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <footer className="foot">
           <span className="foot-t">Crosstrees Labor Intelligence · Vetlanda, Sverige</span>
           <span className="foot-mark">Crosstrees</span>
-          <span className="foot-t">crosstrees.se · © 2026</span>
+          <span className="foot-t">© 2026</span>
         </footer>
       </body>
     </html>
